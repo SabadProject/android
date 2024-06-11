@@ -78,4 +78,9 @@
     <string name="icon_eye_closed">&#xf070;</string>
     <string name="default_notification_channel_id">push-notifications-channel</string>
     <string name="FaraBank">فرابانک</string>
+    <string name="invoice_item_form_dialog_title">جزئیات کالای برداشته</string>
+    <string name="invoice_item_form_dialog_scan_barcode_hint">بارکد کالا را درج یا اسکن کنید</string>
+    <string name="invoice_item_form_dialog_group_label">کالاگروه مد نظر</string>
+    <string name="invoice_item_form_dialog_camera_permission_needed">برای استفاده از اسکنر، لازم است به «سبد» اجازه‌ی دسترسی به دوربین را بدهید</string>
+    <string name="invoice_item_form_dialog_camera_permission_needed_unrational">بدون دلیل</string>
 </resources>

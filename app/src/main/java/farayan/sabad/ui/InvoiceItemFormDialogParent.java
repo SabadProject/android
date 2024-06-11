@@ -37,7 +37,6 @@ public abstract class InvoiceItemFormDialogParent extends SabadBaseDialog {
 		} else {
 			requestWindowFeature(Window.FEATURE_NO_TITLE);
 		}
-		NullLoadedViews();
 		long start = System.currentTimeMillis();
 		setContentView(layoutID);
 		long finish = System.currentTimeMillis();

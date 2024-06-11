@@ -1,15 +1,18 @@
 apply plugin: "com.android.application"
-apply plugin: "dagger.hilt.android.plugin"
 apply plugin: "kotlin-android"
 apply plugin: "com.google.gms.google-services"
 apply plugin: "maven-publish"
+apply plugin: "kotlin-kapt"
+apply plugin: "com.google.dagger.hilt.android"
 
 android {
     dexOptions {
         javaMaxHeapSize "5g"
     }
-    compileSdkVersion 30
-    buildToolsVersion "29.0.2"
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.4.3"
+    }
+
     signingConfigs {
         FarayanKey {
             if (!project.hasProperty('FARAYAN_KEY_STORE_FILE_PATH') || !project.hasProperty('FARAYAN_KEY_STORE_FILE_PASS')  || !project.hasProperty('FARAYAN_KEY_STORE_ALIAS_NAME') || !project.hasProperty('FARAYAN_KEY_STORE_ALIAS_PASS') ) {
@@ -31,7 +34,8 @@ android {
 
         applicationId "farayan.sabad"
         minSdkVersion 24
-        targetSdkVersion 30
+        compileSdkVersion 34
+        targetSdkVersion 34
 
         /**
          * 9
@@ -111,6 +115,7 @@ android {
     buildFeatures {
         viewBinding true
         //dataBinding true
+        compose true
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -139,15 +144,13 @@ dependencies {
     implementation "com.google.firebase:firebase-analytics"
     implementation 'com.google.firebase:firebase-messaging'
 
-    implementation "androidx.appcompat:appcompat:1.2.0"
+    implementation "androidx.appcompat:appcompat:1.4.1"
     implementation "androidx.constraintlayout:constraintlayout:2.0.4"
     implementation "com.google.android.material:material:1.2.1"
     implementation "androidx.navigation:navigation-fragment-ktx:2.3.2"
     implementation "androidx.navigation:navigation-ui-ktx:2.3.2"
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
     implementation "androidx.legacy:legacy-support-v4:1.0.0"
-    implementation "com.google.dagger:hilt-android:$hiltVersion"
-    implementation "androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha02"
     implementation "com.beardedhen:androidbootstrap:2.3.1"
     implementation "io.github.inflationx:calligraphy3:3.1.1"
     implementation "io.github.inflationx:viewpump:2.0.3"
@@ -155,7 +158,9 @@ dependencies {
     implementation "com.journeyapps:zxing-android-embedded:4.1.0"
     implementation group: "commons-io", name: "commons-io", version: "2.8.0"
 
-    annotationProcessor "com.google.dagger:hilt-android-compiler:$hiltVersion"
+    implementation "com.google.dagger:hilt-android:$hiltVersion"
+    kapt "com.google.dagger:hilt-compiler:$hiltVersion"
+
 
     googlePlayImplementation "com.google.android.play:core-ktx:1.8.1"
 
@@ -199,6 +204,34 @@ dependencies {
 
     implementation "com.github.behzadian:android-number-entry:$numberEntryVersion"
     //implementation project(path: ':number-entry')
+
+    // Compose
+    def composeBom = platform('androidx.compose:compose-bom:2024.05.00')
+    implementation(composeBom)
+    androidTestImplementation(composeBom)
+
+    implementation "androidx.compose.runtime:runtime"
+    implementation "androidx.compose.ui:ui"
+    implementation "androidx.compose.foundation:foundation"
+    implementation "androidx.compose.foundation:foundation-layout"
+    implementation "androidx.compose.material:material"
+    implementation "androidx.compose.runtime:runtime-livedata"
+    implementation "androidx.compose.ui:ui-tooling"
+    implementation "com.google.accompanist:accompanist-themeadapter-material:0.28.0"
+
+    // ViewModel
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleVersion"
+    // ViewModel utilities for Compose
+    implementation "androidx.lifecycle:lifecycle-viewmodel-compose:$lifecycleVersion"
+    // Lifecycles only (without ViewModel or LiveData)
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycleVersion"
+    // Lifecycle utilities for Compose
+    implementation "androidx.lifecycle:lifecycle-runtime-compose:$lifecycleVersion"
+
+    // Saved state module for ViewModel
+    implementation "androidx.lifecycle:lifecycle-viewmodel-savedstate:$lifecycleVersion"
+
+    implementation "com.google.accompanist:accompanist-permissions:0.35.1-alpha"
 }
 afterEvaluate {
     publishing {
@@ -207,4 +240,8 @@ afterEvaluate {
             }
         }
     }
+}
+// Allow references to generated code
+kapt {
+    correctErrorTypes true
 }

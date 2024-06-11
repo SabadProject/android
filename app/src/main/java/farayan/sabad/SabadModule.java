@@ -3,7 +3,7 @@ package farayan.sabad;
 import dagger.Module;
 import dagger.Provides;
 import dagger.hilt.InstallIn;
-import dagger.hilt.android.components.ApplicationComponent;
+import dagger.hilt.components.SingletonComponent;
 import farayan.sabad.models.Category.CategoryRepo;
 import farayan.sabad.models.CategoryGroup.CategoryGroupRepo;
 import farayan.sabad.models.Invoice.InvoiceRepo;
@@ -32,7 +32,7 @@ import farayan.sabad.core.OnePlace.StoreGroup.IStoreGroupRepo;
 import farayan.sabad.core.OnePlace.Unit.IUnitRepo;
 
 @Module
-@InstallIn(ApplicationComponent.class)
+@InstallIn(SingletonComponent.class)
 public class SabadModule
 {
 	@Provides

@@ -1,5 +1,7 @@
 package farayan.sabad.ui;
 
+import androidx.lifecycle.ViewModelProvider;
+
 import com.google.zxing.client.android.BeepManager;
 import com.journeyapps.barcodescanner.BarcodeCallback;
 import com.journeyapps.barcodescanner.BarcodeResult;
@@ -19,6 +21,7 @@ import farayan.sabad.core.OnePlace.ProductBarcode.IProductBarcodeRepo;
 import farayan.sabad.core.OnePlace.GroupUnit.IGroupUnitRepo;
 import farayan.sabad.core.OnePlace.Unit.IUnitRepo;
 import farayan.sabad.SabadConstants;
+import farayan.sabad.vms.InvoiceItemFormViewModel;
 
 @AndroidEntryPoint
 public class ScanActivity extends ScanActivityParent
@@ -30,6 +33,8 @@ public class ScanActivity extends ScanActivityParent
 	private IInvoiceItemRepo TheInvoiceItemRepo;
 	private IUnitRepo TheUnitRepo;
 	private boolean dataChanged;
+
+	private final InvoiceItemFormViewModel invoiceItemFormViewModel = new ViewModelProvider(this).get(InvoiceItemFormViewModel.class);
 
 	@Inject
 	public void Inject(
@@ -61,7 +66,7 @@ public class ScanActivity extends ScanActivityParent
 
 			beepManager.playBeepSoundAndVibrate();
 			InvoiceItemFormDialog dialog = new InvoiceItemFormDialog(
-					new InvoiceItemFormDialog.InputArgs(
+					new InputArgs(
 							null,
 							productEntity == null ? null : productEntity.Group,
 							productEntity,
@@ -91,7 +96,8 @@ public class ScanActivity extends ScanActivityParent
 					dialogInterface -> {
 						ScanBarcodeView().resume();
 						FarayanUtility.KeepScreenOn(getWindow());
-					}
+					},
+					invoiceItemFormViewModel
 			);
 			dialog.show();
 		}

@@ -1,463 +1,352 @@
-package farayan.sabad.ui;
+package farayan.sabad.ui
 
-import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.content.Context;
-import android.view.View;
-import android.view.inputmethod.InputMethodManager;
+import android.Manifest
+import android.content.DialogInterface
+import android.util.Log
+import android.view.Gravity
+import android.view.WindowManager
+import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.text.InlineTextContent
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.text.appendInlineContent
+import androidx.compose.material.DropdownMenuItem
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.ExposedDropdownMenuBox
+import androidx.compose.material.ExposedDropdownMenuDefaults
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
+import androidx.compose.material.LocalTextStyle
+import androidx.compose.material.OutlinedTextField
+import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material.icons.outlined.Add
+import androidx.compose.material.icons.outlined.CheckCircle
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.onFocusEvent
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.Placeholder
+import androidx.compose.ui.text.PlaceholderVerticalAlign
+import androidx.compose.ui.text.TextRange
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDirection
+import androidx.compose.ui.unit.LayoutDirection
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.lifecycle.setViewTreeLifecycleOwner
+import androidx.lifecycle.setViewTreeViewModelStoreOwner
+import androidx.savedstate.setViewTreeSavedStateRegistryOwner
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.isGranted
+import com.google.accompanist.permissions.rememberPermissionState
+import com.google.accompanist.permissions.shouldShowRationale
+import farayan.sabad.R
+import farayan.sabad.core.OnePlace.Group.GroupEntity
+import farayan.sabad.core.OnePlace.InvoiceItem.InvoiceItemEntity
+import farayan.sabad.ui.Core.SabadBaseDialog
+import farayan.sabad.utility.hasValue
+import farayan.sabad.vms.InvoiceItemFormViewModel
 
-import com.google.zxing.client.android.BeepManager;
-import com.journeyapps.barcodescanner.BarcodeCallback;
-import com.journeyapps.barcodescanner.DefaultDecoderFactory;
+@OptIn(ExperimentalPermissionsApi::class)
+class InvoiceItemFormDialog(
+    private val inputArgs: InputArgs,
+    context: AppCompatActivity,
+    cancelable: Boolean,
+    cancelListener: DialogInterface.OnCancelListener?,
+    private val viewModel: InvoiceItemFormViewModel
+) : SabadBaseDialog(context, cancelable, cancelListener) {
+    init {
+        if (dialogFullScreen()) {
+            val window = window
+            val wlp = window!!.attributes
+            wlp.gravity = Gravity.CENTER
+            window.attributes = wlp
+            getWindow()!!.setLayout(
+                WindowManager.LayoutParams.MATCH_PARENT,
+                WindowManager.LayoutParams.MATCH_PARENT
+            )
+        }
+        setContentView(ComposeView(context).apply {
+            setViewTreeLifecycleOwner(context)
+            setViewTreeSavedStateRegistryOwner(context)
+            setViewTreeViewModelStoreOwner(context)
+            setContent {
+                val groups = viewModel.groups.collectAsState()
+                var barcodeScannerState by remember { mutableStateOf(BarcodeScanState.None) }
+                val cameraPermissionState = rememberPermissionState(
+                    Manifest.permission.CAMERA
+                ) {
+                    Log.i("Permission", "resulted")
+                    barcodeScannerState =
+                        if (it) BarcodeScanState.DisplayScanning else BarcodeScanState.DisplayingPermissionMessage
+                }
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
+                CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
+                    Column(modifier = Modifier.fillMaxSize()) {
+                        Text(
+                            text = stringResource(id = R.string.invoice_item_form_dialog_title),
+                            style = TextStyle(color = Color.White, fontFamily = appFont),
+                            modifier = Modifier
+                                .background(Color.Black)
+                                .fillMaxWidth()
+                                .defaults()
+                        )
+                        val barcode: MutableState<String> = remember {
+                            mutableStateOf("")
+                        }
+                        OutlinedTextField(
+                            value = barcode.value,
+                            onValueChange = { barcode.value = it },
+                            modifier = Modifier.padding(5.dp),
+                            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
+                            textStyle = LocalTextStyle.current.copy(
+                                textAlign = TextAlign.Center,
+                                textDirection = TextDirection.Ltr
+                            ),
+                            label = {
+                                Text(
+                                    text = stringResource(id = R.string.invoice_item_form_dialog_scan_barcode_hint),
+                                    style = TextStyle(fontFamily = appFont)
+                                )
+                            },
+                            trailingIcon = {
+                                IconButton(
+                                    onClick = {
+                                        if (cameraPermissionState.status.isGranted) {
+                                            barcodeScannerState = BarcodeScanState.DisplayScanning
+                                        } else {
+                                            if (cameraPermissionState.status.shouldShowRationale) {
+                                                barcodeScannerState =
+                                                    BarcodeScanState.DisplayingPermissionMessage
+                                            } else {
+                                                cameraPermissionState.launchPermissionRequest()
+                                            }
+                                        }
+                                    },
+                                ) {
+                                    Image(
+                                        painterResource(R.drawable.ic_noun_scan),
+                                        modifier = Modifier
+                                            .width(24.dp)
+                                            .height(24.dp),
+                                        colorFilter = ColorFilter.tint(Color.Black),
+                                        contentDescription = "scan"
+                                    )
+                                }
+                            }
+                        )
+                        if (cameraPermissionState.status.isGranted) {
+                            Text(text = "Scaning")
+                        }
+                        if (cameraPermissionState.status.shouldShowRationale) {
+                            Text(
+                                text = stringResource(id = R.string.invoice_item_form_dialog_camera_permission_needed),
+                                style = TextStyle(fontFamily = appFont),
+                                modifier = Modifier.defaults()
+                            )
+                        }
+                        GroupsDropdownMenuBox(
+                            inputArgs.Group?.DisplayableName ?: "",
+                            stringResource(id = R.string.invoice_item_form_dialog_group_label),
+                            groups.value!!.map {
+                                GroupInvoiceItemForm(
+                                    it.id,
+                                    it.DisplayableName,
+                                    GroupPickState.resolveStatus(it, viewModel.pickedItems.value)
+                                )
+                            }.sortedBy { it.status.position },
+                            readonly = inputArgs.Group.hasValue
+                        )
+                    }
+                }
+            }
+        })
+    }
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import farayan.commons.Commons.Rial;
-import farayan.commons.Exceptions.Rexception;
-import farayan.commons.FarayanBaseCoreActivity;
-import farayan.commons.FarayanUtility;
-import farayan.commons.QueryBuilderCore.EntityFilter;
-import farayan.commons.QueryBuilderCore.EnumFilter;
-import farayan.commons.QueryBuilderCore.TextFilter;
-import farayan.commons.QueryBuilderCore.TextMatchModes;
-import farayan.commons.UI.Core.IGenericEvent;
-import farayan.commons.UI.QuestionDialog;
-import farayan.sabad.core.OnePlace.Group.IGroupRepo;
-import farayan.sabad.core.OnePlace.GroupUnit.GroupUnitParams;
-import farayan.sabad.core.OnePlace.InvoiceItem.IInvoiceItemRepo;
-import farayan.sabad.core.OnePlace.InvoiceItem.InvoiceItemEntity;
-import farayan.sabad.core.OnePlace.Product.IProductRepo;
-import farayan.sabad.core.OnePlace.Product.ProductEntity;
-import farayan.sabad.core.OnePlace.Product.ProductParams;
-import farayan.sabad.core.OnePlace.ProductBarcode.CapturedBarcode;
-import farayan.sabad.core.OnePlace.ProductBarcode.IProductBarcodeRepo;
-import farayan.sabad.core.OnePlace.ProductBarcode.ProductBarcodeEntity;
-import farayan.sabad.core.OnePlace.ProductBarcode.ProductBarcodeParams;
-import farayan.sabad.core.OnePlace.GroupUnit.IGroupUnitRepo;
-import farayan.sabad.core.OnePlace.Unit.IUnitRepo;
-import farayan.sabad.core.OnePlace.Unit.UnitEntity;
-import farayan.sabad.R;
-import farayan.sabad.SabadConfigs;
-import farayan.sabad.SabadConstants;
-import farayan.sabad.SabadUtility;
-import farayan.sabad.core.OnePlace.Group.GroupEntity;
+    @Composable
+    private fun Camera() {
+        Text(
+            text = "CAM",
+            style = TextStyle(fontFamily = appFont),
+            modifier = Modifier.defaults()
+        )
+    }
+}
 
-public class InvoiceItemFormDialog extends InvoiceItemFormDialogParent
-{
-	private final InputArgs Args;
+fun Modifier.defaults(): Modifier {
+    return this.padding(5.dp)
+}
 
-	public static class InputArgs
-	{
-		private final InvoiceItemEntity InvoiceItem;
-		private final IGroupRepo GroupRepo;
-		private final IGroupUnitRepo GroupUnitRepo;
-		private final IProductRepo ProductRepo;
-		private final IProductBarcodeRepo ProductBarcodeRepo;
-		private final IInvoiceItemRepo InvoiceItemRepo;
-		private final IUnitRepo UnitRepo;
-		private final BeepManager BeepManager;
-		private final GroupEntity Group;
-		private final ProductEntity Product;
-		private CapturedBarcode Barcode;
-		private final IGenericEvent<InvoiceItemEntity> OnRegistered;
-		private final IGenericEvent<InvoiceItemEntity> OnRemoved;
+val appFont = FontFamily(
+    Font(R.font.vazir)
+)
 
-		public InputArgs(
-				InvoiceItemEntity invoiceItem,
-				GroupEntity group,
-				ProductEntity product,
-				CapturedBarcode barcode,
-				IGenericEvent<InvoiceItemEntity> onRegistered,
-				IGenericEvent<InvoiceItemEntity> onRemoved,
-				IGroupRepo groupRepo,
-				IGroupUnitRepo groupUnitRepo,
-				IProductRepo productRepo,
-				IProductBarcodeRepo productBarcodeRepo,
-				IInvoiceItemRepo invoiceItemRepo,
-				IUnitRepo unitRepo,
-				BeepManager beepManager
-		) {
-			InvoiceItem = invoiceItem;
-			GroupRepo = groupRepo;
-			GroupUnitRepo = groupUnitRepo;
-			ProductRepo = productRepo;
-			ProductBarcodeRepo = productBarcodeRepo;
-			InvoiceItemRepo = invoiceItemRepo;
-			UnitRepo = unitRepo;
-			BeepManager = beepManager;
-			Group = group;
-			Product = product;
-			Barcode = barcode;
-			OnRegistered = onRegistered;
-			OnRemoved = onRemoved;
-		}
-	}
+enum class BarcodeScanState {
+    None,
+    DisplayingPermissionMessage,
+    DisplayScanning,
+}
 
-	public InvoiceItemFormDialog(
-			InputArgs args,
-			@NonNull Activity context
-	) {
-		super(context);
-		Args = args;
-		init();
-	}
+enum class GroupPickState(
+    val iconColor: Color,
+    val position: Int,
+    val icon: ImageVector,
+    val style: TextStyle
+) {
+    NeededButNotPicked(
+        Color.Black, 0, Icons.Outlined.CheckCircle,
+        TextStyle(
+            fontFamily = appFont,
+            color = Color.Black,
+            fontStyle = FontStyle.Normal,
+            fontWeight = FontWeight.Bold
+        )
+    ),
+    NeededAndPicked(
+        Color.Green, 1, Icons.Filled.CheckCircle,
+        TextStyle(
+            fontFamily = appFont,
+            color = Color.hsl(196F, 0.67F, 0.45F),
+            fontStyle = FontStyle.Normal,
+            fontWeight = FontWeight.Normal
+        )
+    ),
+    PickedWithoutNeeded(
+        Color.Blue, 2, Icons.Filled.Warning,
+        TextStyle(
+            fontFamily = appFont,
+            color = Color.hsl(26F, 0.73F, 0.57F),
+            fontStyle = FontStyle.Italic,
+            fontWeight = FontWeight.Normal
+        )
+    ),
+    NotNeededNotPicked(
+        Color.Gray, 3, Icons.Outlined.Add,
+        TextStyle(
+            fontFamily = appFont,
+            color = Color.Gray,
+            fontStyle = FontStyle.Italic,
+            fontWeight = FontWeight.Normal
+        )
+    ),
+    ;
 
-	public InvoiceItemFormDialog(
-			InputArgs args,
-			@NonNull Activity context,
-			int themeResId
-	) {
-		super(context, themeResId);
-		Args = args;
-		init();
-	}
+    companion object {
+        fun resolveStatus(
+            group: GroupEntity,
+            pickedItems: List<InvoiceItemEntity>
+        ): GroupPickState {
+            return when {
+                group.Needed && group.Picked -> NeededAndPicked
+                group.Needed && !group.Picked -> NeededButNotPicked
+                !group.Needed && group.Picked -> PickedWithoutNeeded
+                !group.Needed && !group.Picked -> NotNeededNotPicked
+                else -> throw RuntimeException()
+            }
+        }
+    }
+}
 
-	public InvoiceItemFormDialog(
-			InputArgs args,
-			@NonNull Activity context,
-			boolean cancelable,
-			@Nullable OnCancelListener cancelListener
-	) {
-		super(context, cancelable, cancelListener);
-		Args = args;
-		init();
-	}
+data class GroupInvoiceItemForm(val id: Int, val text: String, val status: GroupPickState)
 
-	@SuppressLint("SetTextI18n")
-	private void init() {
-		ScanBarcodeView().setDecoderFactory(new DefaultDecoderFactory(SabadConstants.SupportedBarcodeFormats));
-		ScanBarcodeView().decodeContinuous(ScanBarcodeViewDecodeContinuousProvider());
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
+fun GroupsDropdownMenuBox(
+    selected: String,
+    label: String,
+    groups: List<GroupInvoiceItemForm>,
+    modifier: Modifier = Modifier,
+    readonly: Boolean = false,
+) {
+    var expanded by remember { mutableStateOf(false) }
+    var text by remember { mutableStateOf(TextFieldValue(selected)) }
+    val editable = !readonly
 
-		if (Args.Group == null) {
-			GroupPicker().requestFocus();
-		} else if (Args.Product == null) {
-			ProductPicker().requestFocus();
-		} else {
-			QuantityNumberEntry().requestFocus();
-		}
-
-		if (Args.Barcode != null && Args.Product != null) {
-			ProductBarcodeParams productBarcodeParams = new ProductBarcodeParams();
-			productBarcodeParams.Text = new TextFilter(Args.Barcode.getText(), TextMatchModes.Exactly);
-			productBarcodeParams.Format = new EnumFilter<>(Args.Barcode.getFormat());
-			ProductBarcodeEntity productBarcodeEntity = Args.ProductBarcodeRepo.First(productBarcodeParams);
-
-			if (productBarcodeEntity != null && productBarcodeEntity.Product.ID != Args.Product.ID) {
-				throw new Rexception(
-						null,
-						"While both barcode and product (%s) provided, barcode (%s) is registered for another product (%s)",
-						Args.Product.getID(),
-						Args.Barcode,
-						Args.Product.ID
-				);
-			}
-		}
-
-		if (Args.Group != null && Args.Product != null && Args.Product.Group.getID() != Args.Group.getID()) {
-			throw new Rexception(
-					null,
-					"While both Group and product provided, product(%s)'s Group (%s) is not equal to provided Group (%s)",
-					Args.Product.getID(),
-					Args.Product.Group.getID(),
-					Args.Group.getID()
-			);
-		}
-
-		GroupPicker().setOnEntityChangedEvent(this::GroupChanged);
-		ProductPicker().setOnEntityChangedEvent(this::ProductChanged);
-		GroupPicker().setValue(Args.GroupRepo.RefreshedNullables(Args.Group, false));
-		ProductPicker().setValue(Args.ProductRepo.RefreshedNullables(Args.Product, false));
-		BarcodeEditText().setText(FarayanUtility.CatchException(() -> Args.Barcode.getText(), x -> ""));
-
-		GroupPicker().setEnabled(Args.InvoiceItem == null);
-		if (Args.InvoiceItem != null) {
-			ProductPicker().setValue(Args.InvoiceItem.Product);
-			ProductBarcodeEntity productBarcodeEntity = Args.InvoiceItem.Product == null ? null : Args.ProductBarcodeRepo.ByProduct(Args.InvoiceItem.Product);
-			BarcodeEditText().setText(productBarcodeEntity == null ? "" : productBarcodeEntity.Text);
-			QuantityNumberEntry().setDoubleValue(Args.InvoiceItem.Quantity);
-			FeeRialEntry().setValue(new Rial(Args.InvoiceItem.Fee));
-			ProductPicker().setValue(Args.InvoiceItem.Product);
-		} else {
-			if (Args.Group != null && Args.Group.LastPurchase != null) {
-				QuantityNumberEntry().setDoubleValue(Args.Group.LastPurchase.Refreshed(Args.InvoiceItemRepo).Quantity);
-				if (Args.Group.LastPurchase.Unit != null)
-					QuantityUnitBox().setValue(Args.Group.LastPurchase.Unit.Refreshed(Args.UnitRepo));
-				FeeRialEntry().setValue(new Rial(Args.Group.LastPurchase.Fee));
-			}
-		}
-
-		StartScanButton().setOnClickListener(StartScanButtonOnClickListener());
-
-		StopScanButton().setOnClickListener(view -> StopScan());
-
-		RemoveButton().setOnClickListener(RemoveButtonOnClickListener());
-
-		RegisterButton().setOnClickListener(RegisterButtonOnClickListener());
-	}
-
-	private View.OnClickListener RegisterButtonOnClickListener() {
-		return view -> {
-
-			GroupEntity groupEntity = GroupPicker().SelectedEntity(true);
-			if (groupEntity == null) {
-				FarayanUtility.ShowToast(TheActivity, "نوع را انتخاب کنید");
-				return;
-			}
-			if (groupEntity.getID() == 0) {
-				groupEntity.Needed = true;
-				Args.GroupRepo.Save(groupEntity);
-			}
-			if (!groupEntity.Needed) {
-				groupEntity.Needed = true;
-				Args.GroupRepo.Update(groupEntity);
-			}
-			ProductEntity productEntity = ProductPicker().SelectedEntity(true);
-			if (productEntity == null) {
-				productEntity = new ProductEntity();
-				Args.ProductRepo.Save(productEntity);
-			}
-
-			productEntity.Group = groupEntity;
-			if (Args.Barcode != null) {
-				Args.ProductBarcodeRepo.EnsureBarcodeRegistered(getContext(), Args.Barcode, productEntity);
-			} else if (FarayanUtility.IsUsable(BarcodeEditText().getText())) {
-				Args.ProductBarcodeRepo.EnsureBarcodeRegistered(Objects.requireNonNull(BarcodeEditText().getText()).toString(), productEntity);
-			}
-			Args.ProductRepo.Update(productEntity);
-
-			double quantity = QuantityNumberEntry().getDoubleValue(1);
-			double fee = FeeRialEntry().getValue().TheAmount;
-			UnitEntity unitEntity = QuantityUnitBox().SelectedEntity(true);
-			if (unitEntity != null) {
-				if (unitEntity.getID() == 0) {
-					Args.UnitRepo.Save(unitEntity);
-				}
-				Args.GroupUnitRepo.EnsureRelated(groupEntity, unitEntity);
-			}
-			if (Args.InvoiceItem == null) {
-				InvoiceItemEntity invoiceItemEntity = new InvoiceItemEntity(
-						groupEntity,
-						productEntity,
-						quantity,
-						fee,
-						unitEntity
-				);
-				Args.InvoiceItemRepo.Save(invoiceItemEntity);
-				groupEntity.Item = invoiceItemEntity;
-				groupEntity.Picked = true;
-				Args.GroupRepo.Update(groupEntity);
-
-				if (SabadUtility.InvoiceItemRegisteredGuideNeeded(getContext())) {
-					FarayanUtility.ShowToastFormatted(getContext(), false, "راهنما* کالای انتخابی به سبد افزوده شد، برای پایان خرید برروی آیکن صندوق بالای صفحه کلیک کنید");
-				}
-
-				IGenericEvent.Exec(Args.OnRegistered, invoiceItemEntity);
-			} else {
-				//todo: if user changed Group?
-				Args.InvoiceItem.Group = groupEntity;
-				Args.InvoiceItem.Product = productEntity;
-				Args.InvoiceItem.Quantity = quantity;
-				Args.InvoiceItem.Fee = fee;
-				Args.InvoiceItem.Total = Math.round(quantity * fee);
-				Args.InvoiceItem.Unit = unitEntity;
-				Args.InvoiceItemRepo.Update(Args.InvoiceItem);
-
-				IGenericEvent.Exec(Args.OnRegistered, Args.InvoiceItem);
-			}
-			dismiss();
-		};
-	}
-
-	private View.OnClickListener RemoveButtonOnClickListener() {
-		return view -> {
-			GroupEntity groupEntity = GroupPicker().SelectedEntity(false);
-			if (groupEntity == null)
-				throw new Rexception(null, "");
-			if (groupEntity.Item != null) {
-				if (groupEntity.Item.getID() > 0)
-					Args.InvoiceItemRepo.Delete(groupEntity.Item);
-				groupEntity.Item = null;
-				groupEntity.Picked = false;
-				Args.GroupRepo.Update(groupEntity);
-
-				if (Args.OnRemoved != null)
-					Args.OnRemoved.Fire(groupEntity.Item);
-			}
-			dismiss();
-		};
-	}
-
-	private View.OnClickListener StartScanButtonOnClickListener() {
-		return view -> SabadUtility.BarcodeScanCameraPermission(
-				(FarayanBaseCoreActivity) TheActivity,
-				InvoiceItemFormDialog.this::StartScan,
-				false
-		);
-	}
-
-	private BarcodeCallback ScanBarcodeViewDecodeContinuousProvider() {
-		return barcodeResult -> {
-
-			ScanBarcodeView().pause();
-			FarayanUtility.ReleaseScreenOn(getWindow());
-			SabadConfigs.Notify(Args.BeepManager);
-
-			CapturedBarcode capturedBarcode = SabadUtility.CapturedBarcodeVersion(barcodeResult);
-			ProductEntity scannedProduct = Args.ProductBarcodeRepo.ByBarcode(capturedBarcode);
-			if (scannedProduct == null) {
-				Args.Barcode = capturedBarcode;
-				BarcodeEditText().setText(barcodeResult.getText());
-				StopScan();
-				return;
-			}
-
-			String groupEntered = ProductPicker().getText().toString();
-			ProductEntity pickedProduct = ProductPicker().SelectedEntity(false);
-			if (FarayanUtility.IsUsable(groupEntered)) {
-				if (pickedProduct == null) {
-					if (scannedProduct.Group.Refreshed(Args.GroupRepo).getID() == GroupPicker().SelectedEntity(false).getID()) {
-						AskFillByScannedProduct(scannedProduct, barcodeResult.getText());
-					} else {
-						if (scannedProduct.Group.Needed) {
-							AskChangeToNeededGroupAndProduct(scannedProduct, barcodeResult.getText());
-						} else {
-							AskChangeGroupAndNeededAndProduct(scannedProduct, barcodeResult.getText());
-						}
-					}
-				} else {
-					if (pickedProduct.getID() == scannedProduct.getID()) {
-						FillUnfilled(pickedProduct, barcodeResult.getText());
-						BarcodeEditText().setText(barcodeResult.getText());
-						StopScan();
-					}
-				}
-			} else {
-				FillUnfilled(scannedProduct, barcodeResult.getText());
-				StopScan();
-			}
-		};
-	}
-
-	private void StartScan() {
-		HideKeyboard();
-		ScanBarcodeView().setVisibility(View.VISIBLE);
-		ScanBarcodeView().resume();
-		FarayanUtility.KeepScreenOn(getWindow());
-		StartScanButton().setVisibility(View.GONE);
-		StopScanButton().setVisibility(View.VISIBLE);
-	}
-
-	private void HideKeyboard() {
-		InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-		imm.hideSoftInputFromWindow(getWindow().getDecorView().getRootView().getWindowToken(), 0);
-	}
-
-	private void StopScan() {
-		ScanBarcodeView().setVisibility(View.GONE);
-		ScanBarcodeView().pause();
-		FarayanUtility.ReleaseScreenOn(getWindow());
-		StartScanButton().setVisibility(View.VISIBLE);
-		StopScanButton().setVisibility(View.GONE);
-	}
-
-	private void ProductChanged(ProductEntity productEntity) {
-
-	}
-
-	private void AskChangeGroupAndNeededAndProduct(ProductEntity scannedProduct, String barcodeValue) {
-		AskChangeGroupAndProduct(
-				scannedProduct,
-				TheActivity.getString(R.string.ChangeGroupAndNeededAndProductQuestion, scannedProduct.Group.DisplayableName),
-				barcodeValue
-		);
-	}
-
-	private void ClearAndFill(ProductEntity scannedProduct, String barcodeValue) {
-		ProductPicker().setValue(scannedProduct);
-		BarcodeEditText().setText(barcodeValue);
-	}
-
-	private void AskChangeToNeededGroupAndProduct(ProductEntity scannedProduct, String barcodeValue) {
-		AskChangeGroupAndProduct(
-				scannedProduct,
-				"کالای اسکن‌شده در فهرست خرید است ولی از نوع انتخابی نیست، آیا ادامه می‌دهید؟",
-				barcodeValue
-		);
-	}
-
-	private void AskChangeGroupAndProduct(ProductEntity scannedProduct, String message, String barcodeValue) {
-		QuestionDialog question = new QuestionDialog(TheActivity);
-		question.setMessage(message);
-		question.setFirstButton("خیر، دوباره اسکن می‌کنم", view -> {
-			BarcodeEditText().setText("");
-			StartScan();
-		});
-		question.setLastButton("بله", view -> {
-			StopScan();
-			ClearAndFill(scannedProduct, barcodeValue);
-		});
-		question.show();
-	}
-
-	private void AskFillByScannedProduct(ProductEntity scannedProduct, String barcodeValue) {
-		QuestionDialog question = new QuestionDialog(TheActivity);
-		question.setMessage("نام کالای اسکن‌شده با نام درج‌شده متفاوت است، پرسشنامه با اطلاعات کالای بارکدخوانده پر شود؟");
-		question.setFirstButton("خیر", view -> {
-			BarcodeEditText().setText("");
-			StartScan();
-		});
-		question.setMiddleButton("ویرایش کالای اسکن‌شده", new View.OnClickListener()
-		{
-			@Override
-			public void onClick(View view) {
-				scannedProduct.setTitle(ProductPicker().getText().toString());
-				Args.ProductRepo.Update(scannedProduct);
-				StopScan();
-				GroupChanged(scannedProduct.Group);
-			}
-		});
-		question.setLastButton("بله", view -> {
-			StopScan();
-			ClearAndFill(scannedProduct, barcodeValue);
-		});
-		question.show();
-	}
-
-	private void GroupChanged(GroupEntity groupEntity) {
-		if (groupEntity == null) {
-			ProductPicker().Reload(Collections.emptyList());
-			QuantityUnitBox().Reload(Collections.emptyList());
-		} else {
-			ProductParams productParams = new ProductParams();
-			productParams.Purchasable = new EntityFilter<>(groupEntity);
-			productParams.QueryableName = new TextFilter(null, TextMatchModes.NotNull);
-			ProductPicker().Reload(productParams);
-
-			QuantityNumberEntry().setHint(FarayanUtility.Or(groupEntity.UnitPrefix, "وزن، حجم، تعداد یا ..."));
-			GroupUnitParams GroupUnitParams = new GroupUnitParams();
-			GroupUnitParams.Group = new EntityFilter<>(groupEntity);
-			List<UnitEntity> units = Args.GroupUnitRepo.All(GroupUnitParams).stream().map(x -> x.Unit.Refreshed(Args.UnitRepo)).collect(Collectors.toList());
-
-			QuantityUnitBox().Reload(units);
-		}
-	}
-
-	private void FillUnfilled(ProductEntity product, String barcodeValue) {
-		if (ProductPicker().SelectedEntity(false) == null)
-			ProductPicker().setValue(product);
-
-		if (FarayanUtility.IsNullOrEmpty(BarcodeEditText().getText()))
-			BarcodeEditText().setText(barcodeValue);
-
-		if (QuantityUnitBox().SelectedEntity(false) == null && product.LastPurchase != null)
-			QuantityUnitBox().setValue(product.LastPurchase.Unit);
-
-		if (FeeRialEntry().getValue().TheAmount == 0 && product.LastPurchase != null)
-			FeeRialEntry().setValue(new Rial(product.LastPurchase.Fee));
-	}
+    ExposedDropdownMenuBox(
+        expanded = editable && expanded,
+        modifier = modifier.padding(5.dp),
+        onExpandedChange = { expanded = editable && it },
+    ) {
+        OutlinedTextField(
+            value = text,
+            onValueChange = { text = it; expanded = true },
+            readOnly = readonly,
+            singleLine = true,
+            label = { Text(label, fontFamily = appFont) },
+            textStyle = TextStyle(fontFamily = appFont),
+            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = editable && expanded) },
+            modifier = Modifier.onFocusEvent { expanded = editable && it.hasFocus },
+            colors = ExposedDropdownMenuDefaults.textFieldColors(backgroundColor = if (readonly) Color.LightGray else Color.Transparent)
+        )
+        ExposedDropdownMenu(
+            expanded = editable && expanded,
+            onDismissRequest = { expanded = false },
+        ) {
+            groups.filter { text.text.isEmpty() || it.text.contains(text.text) }.forEach { group ->
+                DropdownMenuItem(
+                    onClick = {
+                        text = TextFieldValue(group.text, selection = TextRange(group.text.length))
+                        expanded = false
+                    }
+                ) {
+                    val displayable = buildAnnotatedString {
+                        appendInlineContent("prefix", "[prefix]")
+                        append(" ")
+                        append(group.text)
+                    }
+                    val ic = mapOf(
+                        Pair(
+                            "prefix",
+                            InlineTextContent(
+                                Placeholder(
+                                    width = 16.sp,
+                                    height = 16.sp,
+                                    placeholderVerticalAlign = PlaceholderVerticalAlign.Center
+                                )
+                            )
+                            {
+                                Icon(group.status.icon, "", tint = group.status.iconColor)
+                            }
+                        )
+                    )
+                    Text(
+                        displayable,
+                        inlineContent = ic,
+                        style = group.status.style
+                    )
+                }
+            }
+        }
+    }
 }
