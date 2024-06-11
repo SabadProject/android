@@ -1,0 +1,41 @@
+buildscript {
+    ext {
+        numberEntryVersion = "1.0.2-SNAPSHOT"
+        fontIconsVersion = "1.0.2"
+        kotlinVersion = '1.5.31'
+        hiltVersion = '2.28-alpha'
+        farayanCommonsVersion = '0.1-SNAPSHOT'
+        farabankVersion = '1.0.0-SNAPSHOT'
+
+        //WHY?
+        SabadExportInvoiceAction = "SabadExportInvoice"
+        SabadExportInvoiceCategory = "SabadExportInvoice"
+        SabadExportInvoiceKey = "Invoice"
+    }
+    repositories {
+        google()
+        mavenCentral()
+        gradlePluginPortal()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:7.4.1'
+        classpath "com.google.dagger:hilt-android-gradle-plugin:$hiltVersion"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
+        classpath 'com.google.gms:google-services:4.3.4'
+        classpath 'com.github.dcendents:android-maven-gradle-plugin:2.1'
+    }
+}
+
+allprojects {
+    tasks.withType(JavaCompile) {
+        options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
+    }
+
+    configurations.all {
+        resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+    }
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}

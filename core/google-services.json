@@ -1,0 +1,271 @@
+{
+  "project_info": {
+    "project_number": "144076987854",
+    "project_id": "farayan-sabad",
+    "storage_bucket": "farayan-sabad.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:144076987854:android:9398aecb7756ad0a1e9f9f",
+        "android_client_info": {
+          "package_name": "farayan.sabad"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "144076987854-7kmcrplir1h6o3ll2gvp5v4dij79c7ag.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBn4ZgeqCV5oW-6emWu39xlwl0wi6_PZng"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "144076987854-7kmcrplir1h6o3ll2gvp5v4dij79c7ag.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:144076987854:android:833a6eecefd874f71e9f9f",
+        "android_client_info": {
+          "package_name": "farayan.sabad.debug"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "144076987854-7kmcrplir1h6o3ll2gvp5v4dij79c7ag.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBn4ZgeqCV5oW-6emWu39xlwl0wi6_PZng"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "144076987854-7kmcrplir1h6o3ll2gvp5v4dij79c7ag.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:144076987854:android:427fdd4ad8f43a291e9f9f",
+        "android_client_info": {
+          "package_name": "farayan.sabad.explorer"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "144076987854-7kmcrplir1h6o3ll2gvp5v4dij79c7ag.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBn4ZgeqCV5oW-6emWu39xlwl0wi6_PZng"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "144076987854-7kmcrplir1h6o3ll2gvp5v4dij79c7ag.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:144076987854:android:206cdb6df64132d71e9f9f",
+        "android_client_info": {
+          "package_name": "farayan.sabad.explorer.debug"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "144076987854-7kmcrplir1h6o3ll2gvp5v4dij79c7ag.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBn4ZgeqCV5oW-6emWu39xlwl0wi6_PZng"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "144076987854-7kmcrplir1h6o3ll2gvp5v4dij79c7ag.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:144076987854:android:acfd3dbbffc3643b1e9f9f",
+        "android_client_info": {
+          "package_name": "farayan.sabad.explorer.stage"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "144076987854-7kmcrplir1h6o3ll2gvp5v4dij79c7ag.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBn4ZgeqCV5oW-6emWu39xlwl0wi6_PZng"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "144076987854-7kmcrplir1h6o3ll2gvp5v4dij79c7ag.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:144076987854:android:8c1400b507b2b6a31e9f9f",
+        "android_client_info": {
+          "package_name": "farayan.sabad.offline"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "144076987854-7kmcrplir1h6o3ll2gvp5v4dij79c7ag.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBn4ZgeqCV5oW-6emWu39xlwl0wi6_PZng"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "144076987854-7kmcrplir1h6o3ll2gvp5v4dij79c7ag.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:144076987854:android:c230ce297829b35c1e9f9f",
+        "android_client_info": {
+          "package_name": "farayan.sabad.offline.debug"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "144076987854-7kmcrplir1h6o3ll2gvp5v4dij79c7ag.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBn4ZgeqCV5oW-6emWu39xlwl0wi6_PZng"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "144076987854-7kmcrplir1h6o3ll2gvp5v4dij79c7ag.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:144076987854:android:50f3611c98136c401e9f9f",
+        "android_client_info": {
+          "package_name": "farayan.sabad.offline.stage"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "144076987854-7kmcrplir1h6o3ll2gvp5v4dij79c7ag.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBn4ZgeqCV5oW-6emWu39xlwl0wi6_PZng"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "144076987854-7kmcrplir1h6o3ll2gvp5v4dij79c7ag.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:144076987854:android:7c7dba0814ce317a1e9f9f",
+        "android_client_info": {
+          "package_name": "farayan.sabad.stage"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "144076987854-7kmcrplir1h6o3ll2gvp5v4dij79c7ag.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBn4ZgeqCV5oW-6emWu39xlwl0wi6_PZng"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "144076987854-7kmcrplir1h6o3ll2gvp5v4dij79c7ag.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

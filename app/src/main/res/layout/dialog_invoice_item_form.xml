@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layoutDirection="rtl"
+        android:orientation="vertical">
+
+        <TextView
+            style="@style/DialogHeader"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/InvoiceItemFormDialogTitle" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layoutDirection="rtl"
+            android:orientation="vertical"
+            android:padding="10dp">
+
+            <LinearLayout
+                android:id="@+id/TopContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:orientation="vertical">
+
+                <farayan.commons.UI.CommonTextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/SelectGroup">
+
+                    <farayan.sabad.models.Group.GroupBox
+                        android:id="@+id/GroupPicker"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:imeOptions="actionNext"
+                        android:inputType="text"
+                        android:padding="10dp" />
+                </farayan.commons.UI.CommonTextInputLayout>
+
+                <farayan.commons.UI.CommonTextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/SelectProduct">
+
+                    <farayan.sabad.models.Product.ProductBox
+                        android:id="@+id/ProductPicker"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:imeOptions="actionNext"
+                        android:inputType="text"
+                        android:padding="10dp" />
+                </farayan.commons.UI.CommonTextInputLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <farayan.commons.UI.CommonTextInputLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:hint="@string/BarcodeHint">
+
+                        <farayan.commons.UI.CommonTextInputEditText
+                            android:id="@+id/BarcodeEditText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:imeOptions="actionNext"
+                            android:inputType="number"
+                            android:layoutDirection="ltr"
+                            android:padding="10dp"
+                            android:textDirection="ltr" />
+                    </farayan.commons.UI.CommonTextInputLayout>
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/StartScanButton"
+                        style="@style/MaterialIconOnlyButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:gravity="center"
+                        android:insetLeft="0dp"
+                        android:insetTop="0dp"
+                        android:insetRight="0dp"
+                        android:insetBottom="0dp"
+                        android:padding="5dp"
+                        app:icon="@drawable/ic_noun_scan"
+                        app:iconGravity="textStart"
+                        app:iconPadding="0dp" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/StopScanButton"
+                        style="@style/MaterialIconOnlyButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:gravity="center"
+                        android:insetLeft="0dp"
+                        android:insetTop="0dp"
+                        android:insetRight="0dp"
+                        android:insetBottom="0dp"
+                        android:padding="5dp"
+                        android:visibility="gone"
+                        app:icon="@drawable/ic_baseline_stop_circle_24"
+                        app:iconGravity="textStart"
+                        app:iconPadding="0dp" />
+                </LinearLayout>
+
+                <com.journeyapps.barcodescanner.BarcodeView
+                    android:id="@+id/ScanBarcodeView"
+                    android:layout_width="match_parent"
+                    android:layout_height="250dp"
+                    android:visibility="gone" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <farayan.commons.components.NumberEntry
+                        android:id="@+id/QuantityNumberEntry"
+                        android:layout_width="0dp"
+                        app:decimalPrecision="6"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="4"
+                        android:gravity="center_horizontal"
+                        android:imeOptions="actionNext"
+                        android:inputType="numberDecimal"
+                        android:layoutDirection="ltr"
+                        android:padding="10dp"
+                        android:textDirection="ltr" />
+
+                    <farayan.sabad.models.Unit.UnitBox
+                        android:id="@+id/QuantityUnitBox"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2"
+                        android:gravity="center_horizontal"
+                        android:hint="@string/UnitHint"
+                        android:imeOptions="actionNext"
+                        android:inputType="text"
+                        android:padding="10dp"
+                        app:autoSelect="First"
+                        app:hintGravity="center_horizontal" />
+                </LinearLayout>
+
+                <farayan.commons.UI.RialEntryComponent
+                    android:id="@+id/FeeRialEntry"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    app:hint="@string/Fee"
+                    app:hintGravity="center_horizontal"
+                    app:unitGravity="left" />
+
+                <TextView
+                    android:id="@+id/FeeLastUpdateTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/TopContainer"
+                android:layout_alignParentBottom="true"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/RemoveButton"
+                    style="@style/MaterialIconOnlyButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="5dp"
+                    app:icon="@drawable/ic_baseline_delete_forever_24"
+                    app:iconGravity="textStart"
+                    android:minWidth="0dp"
+                    android:minHeight="0dp"
+                    android:padding="5dp"
+                    app:iconPadding="0dp"
+                    app:iconTint="#f00" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/RegisterButton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="5dp"
+                    android:layout_weight="1"
+                    android:text="@string/RegisterProduct"
+                    app:icon="@drawable/ic_baseline_save_24"
+                    app:iconGravity="textStart" />
+            </LinearLayout>
+
+        </RelativeLayout>
+    </LinearLayout>
+</ScrollView>

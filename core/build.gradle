@@ -1,0 +1,53 @@
+apply plugin: "com.android.library"
+apply plugin: "dagger.hilt.android.plugin"
+apply plugin: "kotlin-android"
+apply plugin: "maven-publish"
+
+android {
+    dexOptions {
+        javaMaxHeapSize "5g"
+    }
+    compileSdkVersion 30
+    buildToolsVersion "29.0.2"
+
+    defaultConfig {
+        multiDexEnabled true
+		
+        minSdkVersion 19
+        targetSdkVersion 30
+        versionCode 8
+        versionName "0.1.8"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        vectorDrawables.useSupportLibrary = true
+    }
+	
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+    //implementation "farayan.android.libs:farayan-commons:$farayanCommonsVersion"
+    implementation project(path: ':farayan-commons')
+
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
+
+    implementation "com.google.dagger:hilt-android:$hiltVersion"
+    implementation "androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha02"
+    annotationProcessor "com.google.dagger:hilt-android-compiler:$hiltVersion"
+}
+
+afterEvaluate {
+    publishing {
+        publications {
+            snapshot(MavenPublication) {
+                from components.release
+                groupId = "farayan.android.apps"
+                artifactId = "sabad-core"
+                version = project.versionName
+            }
+        }
+    }
+}

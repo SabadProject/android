@@ -1,0 +1,15 @@
+package farayan.sabad;
+
+public enum SabadPreferenceKeys
+{
+	NewGroupGuideDisplayedCount,
+	LastNewGroupGuideDisplayed,
+	NeedChangeGuideDisplayedCount,
+	LastNeedChangeGuideDisplayed,
+	PickChangeGuideDisplayedCount,
+	LastPickChangeGuideDisplayed,
+	GroupNewClickedGuideDisplayedCount,
+	LastGroupNewClickedGuideDisplayed,
+	InvoiceItemRegisteredGuideDisplayedCount,
+	LastInvoiceItemRegisteredGuideDisplayed, CheckoutGuideDisplayedCount, LastCheckoutGuideDisplayed, CheckoutDialogDisplayedCount, LastCheckoutDialogDisplayed,
+}

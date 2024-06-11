@@ -1,0 +1,283 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="0dp"
+    android:background="#d0d0d0"
+    android:fillViewport="true"
+    android:padding="10dp">
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:checkable="true"
+        android:clickable="true"
+        android:focusable="true"
+        android:paddingBottom="20dp"
+        app:strokeColor="@color/stroke_color"
+        app:strokeWidth="1dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="256dp"
+                android:layout_height="256dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_margin="10dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/ic_sabad_white_24dp"
+                app:tint="@color/bootstrap_brand_info" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/AboutTitle"
+                    android:textAppearance="?attr/textAppearanceHeadline6" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/ReleaseTextView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:textAppearance="?attr/textAppearanceBody2"
+                            android:textColor="?android:attr/textColorSecondary" />
+
+                        <TextView
+                            android:id="@+id/AppIdTextView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:textAppearance="?attr/textAppearanceBody2"
+                            android:textColor="?android:attr/textColorSecondary" />
+
+                        <TextView
+                            android:id="@+id/UpdatableTextView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:textAppearance="?attr/textAppearanceBody2"
+                            android:textColor="?android:attr/textColorSecondary"
+                            android:visibility="gone" />
+
+                        <TextView
+                            android:id="@+id/CheckFailedTextView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:text="@string/UpdateCheckFailed"
+                            android:textAppearance="?attr/textAppearanceBody2"
+                            android:textColor="?android:attr/colorError"
+                            android:visibility="gone" />
+
+                        <TextView
+                            android:id="@+id/StatusTextView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:text="@string/UpdateCheckFailed"
+                            android:textAppearance="?attr/textAppearanceBody2"
+                            android:textColor="?android:attr/colorError"
+                            android:visibility="gone" />
+
+                        <com.beardedhen.androidbootstrap.BootstrapProgressBar
+                            android:id="@+id/UpdateProgressBar"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:visibility="gone"
+                            app:animated="true"
+                            app:bootstrapBrand="primary"
+                            app:striped="true" />
+                    </LinearLayout>
+
+                    <ProgressBar
+                        android:id="@+id/CheckProgressBar"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:indeterminate="true"
+                        android:visibility="gone" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/CheckButton"
+                        style="@style/MaterialIconOnlyButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone"
+                        app:icon="@drawable/ic_baseline_refresh_24" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/UpdateButton"
+                        style="@style/MaterialIconOnlyButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone"
+                        app:icon="@drawable/ic_baseline_system_update_alt_24" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/AboutTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="@string/about_about"
+                    android:textAppearance="?attr/textAppearanceBody2"
+                    android:textColor="?android:attr/textColorSecondary" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:gravity="start"
+                android:orientation="vertical">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/ShareButton"
+                    style="?attr/borderlessButtonStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:text="@string/ShareTitle"
+                    app:icon="@drawable/ic_baseline_share_24" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:text="@string/ShareComment" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/RateAndReviewButton"
+                    style="?attr/borderlessButtonStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/RateAndReviewTitle"
+                    app:icon="@drawable/ic_noun_review_rate" />
+
+                <TextView
+                    android:id="@+id/RateAndReviewCommentTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:text="@string/RateAndReviewComment" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/FeedbackButton"
+                    style="?attr/borderlessButtonStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/FeedbackTitle"
+                    app:icon="@drawable/ic_baseline_feedback_24" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:text="@string/FeedbackComment" />
+
+                <HorizontalScrollView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <LinearLayout
+                        android:id="@+id/FeedbackLayout"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="top"
+                        android:orientation="horizontal">
+
+
+                        <farayan.commons.components.FontAwesomeBrandIcon
+                            android:id="@+id/TelegramSupportIcon"
+                            style="@style/feedbackIconStyle"
+                            android:textColor="@color/telegram"
+                            app:Brand="telegramPlane" />
+
+                        <farayan.commons.components.FontAwesomeBrandIcon
+                            android:id="@+id/TelegramSubscribeChannelIcon"
+                            style="@style/feedbackIconStyle"
+                            android:textColor="@color/telegram"
+                            app:Brand="telegram" />
+
+                        <farayan.commons.components.FontAwesomeBrandIcon
+                            android:id="@+id/TelegramBrowseChannelIcon"
+                            style="@style/feedbackIconStyle"
+                            android:textColor="@color/design_default_color_secondary_variant"
+                            app:Brand="telegram" />
+
+                        <farayan.commons.components.FontAwesomeBrandIcon
+                            android:id="@+id/TwitterIcon"
+                            style="@style/feedbackIconStyle"
+                            android:textColor="@color/twitter"
+                            app:Brand="twitter" />
+
+                        <farayan.commons.components.FontAwesomeBrandIcon
+                            android:id="@+id/FacebookIcon"
+                            style="@style/feedbackIconStyle"
+                            android:textColor="@color/facebook"
+                            app:Brand="facebook" />
+
+                        <farayan.commons.components.FontAwesomeBrandIcon
+                            android:id="@+id/InstagramIcon"
+                            style="@style/feedbackIconStyle"
+                            android:textColor="@color/Instagram5"
+                            app:Brand="instagram" />
+
+                        <farayan.commons.components.FontAwesomeBrandIcon
+                            android:id="@+id/WhatsAppSupportIcon"
+                            style="@style/feedbackIconStyle"
+                            android:textColor="@color/whatsApp"
+                            app:Brand="whatsapp" />
+
+                        <farayan.commons.components.FontAwesomeSolidIcon
+                            android:id="@+id/WebsiteIcon"
+                            style="@style/feedbackIconStyle"
+                            android:textColor="@color/twitter"
+                            app:SolidIcon="windowMaximize" />
+
+                        <farayan.commons.components.FontAwesomeRegularIcon
+                            android:id="@+id/EmailIcon"
+                            style="@style/feedbackIconStyle"
+                            android:textColor="@color/twitter"
+                            app:RegularIcon="windowMaximize" />
+                    </LinearLayout>
+                </HorizontalScrollView>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/ParticipateButton"
+                    style="?attr/borderlessButtonStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/ParticipateTitle"
+                    app:icon="@drawable/ic_noun_community" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="50dp"
+                    android:text="@string/ParticipateComment" />
+            </LinearLayout>
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+</ScrollView>

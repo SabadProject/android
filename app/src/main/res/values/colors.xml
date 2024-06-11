@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#F77F00</color>
+    <color name="colorPrimaryDark">#F77F00</color>
+    <color name="colorAccent">#F77F00</color>
+    <color name="light_blue_600">#FF039BE5</color>
+    <color name="light_blue_900">#FF01579B</color>
+    <color name="light_blue_A200">#FF40C4FF</color>
+    <color name="light_blue_A400">#FF00B0FF</color>
+    <color name="black_overlay">#66000000</color>
+    <color name="twitter">#55acee</color>
+    <color name="telegram">#0088cc</color>
+    <color name="whatsApp">#189d0e</color>
+    <color name="facebook">#3b5998</color>
+    <color name="Instagram0">#3b5998</color>
+    <color name="Instagram1">#405de6</color>
+    <color name="Instagram2">#833ab4</color>
+    <color name="Instagram3">#c13584</color>
+    <color name="Instagram4">#e1306c</color>
+    <color name="Instagram5">#fd1d1d</color>
+    <color name="Instagram6">#f56040</color>
+    <color name="Instagram7">#f77737</color>
+    <color name="Instagram8">#fcaf45</color>
+    <color name="Instagram9">#ffdc80</color>
+</resources>

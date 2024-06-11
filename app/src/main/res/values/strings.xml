@@ -1,0 +1,81 @@
+<resources>
+    <string name="app_name">🛒Sabad</string>
+    <string name="home_title">سبد</string>
+    <string name="InsertProductName">نام کالا را درج کنید</string>
+    <string name="Insert">درج</string>
+    <string name="EditProduct">ویرایش</string>
+    <string name="ListProducts">فهرست</string>
+    <string name="Checkout">پایان خرید</string>
+    <string name="Scan">پویش</string>
+    <string name="ListInvoices">فهرست خریدها</string>
+    <string name="ContinuePurchase">ادامه‌ی خرید</string>
+    <string name="NameNeeded">نام را درج کنید</string>
+    <string name="NewGroupGuide">راهنما* نیازمندی جدید درج شد، برای ویرایش یا حذف، می‌توانید انگشت خود را برروی نیازمندی نگه‌داشته یا هم‌اکنون دکمه‌ی ویرایش را بزنید. برای اطلاعات بیشتر اینجا را کلیک کنید</string>
+    <string name="CategoryUsedName">این دسته‌بندی قبلا درج شده</string>
+    <string name="CategoryQuickQueryHint">بخشی از نام کالا</string>
+    <string name="Edit">ویرایش</string>
+    <string name="GooglePlay">گوگل‌پلی</string>
+    <string name="InvoiceSummary" formatted="false">تعداد اقلام انتخابی: %s قلم، %s عدد\nتعداد اقلام باقیمانده: %s قلم\nمبلغ کل: %s ریال</string>
+    <string name="SelectGroup">نوع کالا را انتخاب کنید</string>
+    <string name="SelectProduct">درج یا انتخاب برند</string>
+    <string name="InvoiceItemFormDialogTitle">جزئیات کالا</string>
+    <string name="Fee">فی هر واحد</string>
+    <string name="FeeLastUpdate" formatted="false">قیمت در تاریخ %s</string>
+    <string name="ChangeGroupAndNeededAndProductQuestion" formatted="false">%s در فهرست خرید نیست. آیا کالای اسکن‌شده به فهرست خرید افزوده شود؟</string>
+    <string name="RegisterProduct">افزودن</string>
+    <string name="PurchaseSummaryPickedItems" formatted="false">%s قلم %s عدد</string>
+    <string name="PurchaseSummaryRemainedItems" formatted="false">%s قلم</string>
+    <string name="SubtotalTextView" formatted="false">%s</string>
+    <string name="BarcodeHint">بارکد</string>
+    <string name="GroupEditHeader">ویرایش</string>
+    <string name="PurchasableNameEntryHint">نام خریدنی را درج کنید</string>
+    <string name="PurchasableRemoved" formatted="false">خریدنی با نام «%s» حذف شد</string>
+    <string name="RemoteGroupGuide">برای حذف دکمه‌ی روبرو را نگه دارید</string>
+    <string name="CheckoutPurchaseNeededGroupsCount" formatted="false">%s مورد</string>
+    <string name="CheckoutPurchasePickedGroupsCount" formatted="false">%s مورد</string>
+    <string name="CheckoutPurchaseRemainedGroupsCount" formatted="false">%s مورد</string>
+    <string name="CheckoutPurchaseNoGroupsRemained">همه‌ی خریدنی‌ها را برداشته‌اید</string>
+    <string name="UnitHint">واحد شمارش</string>
+    <string name="CheckoutHeader">پایان خرید</string>
+    <string name="PurchasableCount">تعداد خریدنی‌ها</string>
+    <string name="PickedCount">تعداد برداشته‌شده</string>
+    <string name="RemainedCount">تعداد مانده</string>
+    <string name="Total">جمع مبلغ</string>
+    <string name="FinishPurchase">پایان</string>
+    <string name="InvoiceItemsCountSum" formatted="false">%s قلم</string>
+    <string name="InvoiceItemsQuantitySum" formatted="false">%s کالا</string>
+    <string name="InvoiceItemsPriceSum" formatted="false">مبلغ: %s</string>
+    <string name="InvoicesFragmentTitle">فهرست صورتحساب‌ها</string>
+    <string name="InvoiceLine1WithSeller" formatted="false">%s از %s</string>
+    <string name="InvoiceLine1WithoutSeller" formatted="false">خرید %s</string>
+    <string name="DeleteInvoice">حذف صورت‌حساب</string>
+    <string name="InvoiceLine2" formatted="false">%s قلم، %s کالا، به مبلغ %s</string>
+    <string name="InvoiceFragmentTitle">جزئیات صورت‌حساب</string>
+    <string name="GroupStatusPicked">برداشته</string>
+    <string name="GroupStatusNeeded">نیازمندی</string>
+    <string name="GroupStatusNone">موجود</string>
+    <string name="AboutSabadMenu">درباره‌ی 🛒سبد</string>
+    <string name="AboutSabadTitle">درباره‌ی 🛒سبد</string>
+    <string name="about_about">
+        <![CDATA[
+        اپ فهرست خرید  🛒سبد، به شما برای خرید ساده و آسان همه‌ی نیازمندی‌های‌تان یاری می‌رساند.\n\n
+         هدف سبد، سادگی در تهیه‌ی فهرست خرید، سرعت در انتخاب کالاها و آگاهی از صورتحساب قبل از رسیدن به صندوق فروشگاه است
+        ]]>
+    </string>
+    <string name="ReleaseComment">ویرایش %s</string>
+    <string name="ShareTitle">همرسانی</string>
+    <string name="FeedbackTitle">بازخورد</string>
+    <string name="ParticipateTitle">مشارکت</string>
+    <string name="RateAndReviewTitle">امتیاز و بررسی</string>
+    <string name="ShareComment">در میان‌گذاری «سبد» با دوستان و آشنایان</string>
+    <string name="FeedbackComment">ارسال نظر، انتقاد و پیشنهاد</string>
+    <string name="ParticipateComment">کمک به «سبد» و افزودن اطلاعات کالاهای بازار</string>
+    <string name="RateAndReviewComment">ثبت ستاره و نظر درباره‌ی «سبد» در %s</string>
+    <string name="AboutTitle">درباره‌ی سبد</string>
+    <string name="UpdatableComment">"آخرین ویرایش: %s "</string>
+    <string name="UpdateCheckFailed">امکان بررسی به‌روزرسانی نیست</string>
+    <string name="fa_twitter">\uF081</string>
+    <string name="icon_eye_closed">&#xf070;</string>
+    <string name="default_notification_channel_id">push-notifications-channel</string>
+    <string name="FaraBank">فرابانک</string>
+</resources>

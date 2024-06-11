@@ -1,0 +1,29 @@
+pluginManagement {
+    repositories {
+        google()
+        mavenCentral()
+        gradlePluginPortal()
+    }
+}
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google()
+        mavenCentral()
+        maven { url 'https://www.jitpack.io' }
+    }
+}
+
+rootProject.name='Sabad'
+
+include ':sabad-app'
+project(':sabad-app').projectDir = new File(settingsDir, 'app')
+
+include ':sabad-core'
+project(':sabad-core').projectDir = new File(settingsDir, 'core')
+
+include ':farayan-commons'
+project(':farayan-commons').projectDir = new File(settingsDir, '../../libs/android/commons/farayan-commons')
+
+include ':farabank-core'
+project(':farabank-core').projectDir = new File(settingsDir, '../../FaraBank/Android/core')
