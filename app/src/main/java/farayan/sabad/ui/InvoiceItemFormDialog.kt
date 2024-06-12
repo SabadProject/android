@@ -33,7 +33,6 @@ import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.CheckCircle
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -64,6 +63,7 @@ import androidx.compose.ui.text.style.TextDirection
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.setViewTreeLifecycleOwner
 import androidx.lifecycle.setViewTreeViewModelStoreOwner
 import androidx.savedstate.setViewTreeSavedStateRegistryOwner
@@ -71,7 +71,12 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import com.google.accompanist.permissions.shouldShowRationale
+import com.journeyapps.barcodescanner.BarcodeView
+import com.journeyapps.barcodescanner.DefaultDecoderFactory
+import farayan.commons.FarayanUtility
 import farayan.sabad.R
+import farayan.sabad.SabadConfigs
+import farayan.sabad.SabadConstants
 import farayan.sabad.core.OnePlace.Group.GroupEntity
 import farayan.sabad.core.OnePlace.InvoiceItem.InvoiceItemEntity
 import farayan.sabad.ui.Core.SabadBaseDialog
@@ -80,7 +85,7 @@ import farayan.sabad.vms.InvoiceItemFormViewModel
 
 @OptIn(ExperimentalPermissionsApi::class)
 class InvoiceItemFormDialog(
-    private val inputArgs: InputArgs,
+    private val inputArgs: InvoiceItemFormInputArgs,
     context: AppCompatActivity,
     cancelable: Boolean,
     cancelListener: DialogInterface.OnCancelListener?,
@@ -103,13 +108,12 @@ class InvoiceItemFormDialog(
             setViewTreeViewModelStoreOwner(context)
             setContent {
                 val groups = viewModel.groups.collectAsState()
-                var barcodeScannerState by remember { mutableStateOf(BarcodeScanState.None) }
+                var barcodeValue by remember { mutableStateOf("") }
+                var barcodeScannerState by remember { mutableStateOf(false) }
                 val cameraPermissionState = rememberPermissionState(
                     Manifest.permission.CAMERA
                 ) {
                     Log.i("Permission", "resulted")
-                    barcodeScannerState =
-                        if (it) BarcodeScanState.DisplayScanning else BarcodeScanState.DisplayingPermissionMessage
                 }
 
                 CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
@@ -122,12 +126,9 @@ class InvoiceItemFormDialog(
                                 .fillMaxWidth()
                                 .defaults()
                         )
-                        val barcode: MutableState<String> = remember {
-                            mutableStateOf("")
-                        }
                         OutlinedTextField(
-                            value = barcode.value,
-                            onValueChange = { barcode.value = it },
+                            value = barcodeValue,
+                            onValueChange = { barcodeValue = it },
                             modifier = Modifier.padding(5.dp),
                             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
                             textStyle = LocalTextStyle.current.copy(
@@ -143,13 +144,9 @@ class InvoiceItemFormDialog(
                             trailingIcon = {
                                 IconButton(
                                     onClick = {
-                                        if (cameraPermissionState.status.isGranted) {
-                                            barcodeScannerState = BarcodeScanState.DisplayScanning
-                                        } else {
-                                            if (cameraPermissionState.status.shouldShowRationale) {
-                                                barcodeScannerState =
-                                                    BarcodeScanState.DisplayingPermissionMessage
-                                            } else {
+                                        barcodeScannerState = true
+                                        if (!cameraPermissionState.status.isGranted) {
+                                            if (!cameraPermissionState.status.shouldShowRationale) {
                                                 cameraPermissionState.launchPermissionRequest()
                                             }
                                         }
@@ -166,18 +163,40 @@ class InvoiceItemFormDialog(
                                 }
                             }
                         )
-                        if (cameraPermissionState.status.isGranted) {
-                            Text(text = "Scaning")
-                        }
-                        if (cameraPermissionState.status.shouldShowRationale) {
-                            Text(
-                                text = stringResource(id = R.string.invoice_item_form_dialog_camera_permission_needed),
-                                style = TextStyle(fontFamily = appFont),
-                                modifier = Modifier.defaults()
-                            )
+                        if (barcodeScannerState) {
+                            if (cameraPermissionState.status.isGranted) {
+                                AndroidView(
+                                    modifier = Modifier
+                                        .defaults()
+                                        .fillMaxWidth()
+                                        .height(80.dp),
+                                    factory = { ctx ->
+                                        BarcodeView(ctx).apply {
+                                            resume()
+                                            setDecoderFactory(
+                                                DefaultDecoderFactory(
+                                                    SabadConstants.SupportedBarcodeFormats
+                                                )
+                                            )
+                                            decodeContinuous {
+                                                pause()
+                                                FarayanUtility.ReleaseScreenOn(window)
+                                                SabadConfigs.Notify(inputArgs.beepManager)
+                                                barcodeValue=it.text
+                                            }
+                                        }
+                                    }
+                                )
+                            } else {
+                                Text(
+                                    text = stringResource(id = R.string.invoice_item_form_dialog_camera_permission_needed),
+                                    style = TextStyle(fontFamily = appFont),
+                                    modifier = Modifier.defaults()
+                                )
+                            }
                         }
                         GroupsDropdownMenuBox(
-                            inputArgs.Group?.DisplayableName ?: "",
+                            inputArgs.group?.DisplayableName ?: "",
                             stringResource(id = R.string.invoice_item_form_dialog_group_label),
                             groups.value!!.map {
                                 GroupInvoiceItemForm(
@@ -186,21 +205,12 @@ class InvoiceItemFormDialog(
                                     GroupPickState.resolveStatus(it, viewModel.pickedItems.value)
                                 )
                             }.sortedBy { it.status.position },
-                            readonly = inputArgs.Group.hasValue
+                            readonly = inputArgs.group.hasValue
                         )
                     }
                 }
             }
         })
-    }
-
-    @Composable
-    private fun Camera() {
-        Text(
-            text = "CAM",
-            style = TextStyle(fontFamily = appFont),
-            modifier = Modifier.defaults()
-        )
     }
 }
 
@@ -211,12 +221,6 @@ fun Modifier.defaults(): Modifier {
 val appFont = FontFamily(
     Font(R.font.vazir)
 )
-
-enum class BarcodeScanState {
-    None,
-    DisplayingPermissionMessage,
-    DisplayScanning,
-}
 
 enum class GroupPickState(
     val iconColor: Color,

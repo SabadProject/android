@@ -3,11 +3,11 @@ package farayan.sabad.services;
 import dagger.Module;
 import dagger.Provides;
 import dagger.hilt.InstallIn;
-import dagger.hilt.android.components.ApplicationComponent;
+import dagger.hilt.components.SingletonComponent;
 import farayan.sabad.contracts.IVendorContract;
-import farayan.sabad.services.CafeBazaarVendor;
 
-@InstallIn(ApplicationComponent.class)
+/** @noinspection unused*/
+@InstallIn(SingletonComponent.class)
 @Module
 public class UpdateModule
 {

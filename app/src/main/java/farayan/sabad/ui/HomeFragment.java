@@ -1,7 +1,6 @@
 package farayan.sabad.ui;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -14,16 +13,16 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
+
 import com.google.zxing.client.android.BeepManager;
 
 import java.util.Objects;
 
 import javax.inject.Inject;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.ViewModelProvider;
 
 import dagger.hilt.android.AndroidEntryPoint;
 import farayan.commons.Commons.RecyclerViewOrientations;
@@ -34,12 +33,18 @@ import farayan.commons.QueryBuilderCore.SortConfig;
 import farayan.commons.QueryBuilderCore.SortDirections;
 import farayan.commons.QueryBuilderCore.TextFilter;
 import farayan.commons.QueryBuilderCore.TextMatchModes;
+import farayan.sabad.R;
+import farayan.sabad.SabadConstants;
+import farayan.sabad.SabadUtility;
 import farayan.sabad.constants.SabadFragmentEvents;
-import farayan.sabad.models.Group.GroupRecyclerAdapter;
 import farayan.sabad.core.OnePlace.CategoryGroup.ICategoryGroupRepo;
 import farayan.sabad.core.OnePlace.Group.GroupEntity;
 import farayan.sabad.core.OnePlace.Group.GroupParams;
+import farayan.sabad.core.OnePlace.Group.GroupSchema;
+import farayan.sabad.core.OnePlace.Group.GroupUniqueNameNeededException;
 import farayan.sabad.core.OnePlace.Group.IGroupRepo;
+import farayan.sabad.core.OnePlace.Group.NewGroupNameNeededException;
+import farayan.sabad.core.OnePlace.GroupUnit.IGroupUnitRepo;
 import farayan.sabad.core.OnePlace.Invoice.IInvoiceRepo;
 import farayan.sabad.core.OnePlace.InvoiceItem.IInvoiceItemRepo;
 import farayan.sabad.core.OnePlace.Product.IProductRepo;
@@ -47,14 +52,8 @@ import farayan.sabad.core.OnePlace.ProductBarcode.IProductBarcodeRepo;
 import farayan.sabad.core.OnePlace.Store.IStoreRepo;
 import farayan.sabad.core.OnePlace.StoreCategory.IStoreCategoryRepo;
 import farayan.sabad.core.OnePlace.StoreGroup.IStoreGroupRepo;
-import farayan.sabad.core.OnePlace.Group.GroupSchema;
-import farayan.sabad.core.OnePlace.Group.GroupUniqueNameNeededException;
-import farayan.sabad.core.OnePlace.Group.NewGroupNameNeededException;
-import farayan.sabad.core.OnePlace.GroupUnit.IGroupUnitRepo;
 import farayan.sabad.core.OnePlace.Unit.IUnitRepo;
-import farayan.sabad.R;
-import farayan.sabad.SabadConstants;
-import farayan.sabad.SabadUtility;
+import farayan.sabad.models.Group.GroupRecyclerAdapter;
 import farayan.sabad.vms.InvoiceItemFormViewModel;
 
 
@@ -268,7 +267,7 @@ public class HomeFragment extends HomeFragmentParent
 
 		if (!groupEntity.Picked) {
 			InvoiceItemFormDialog dialog = new InvoiceItemFormDialog(
-					new InputArgs(
+					new InvoiceItemFormInputArgs(
 							groupEntity.Item,
 							groupEntity,
 							null,
@@ -383,7 +382,7 @@ public class HomeFragment extends HomeFragmentParent
 				},
 				component -> {
 					InvoiceItemFormDialog dialog = new InvoiceItemFormDialog(
-							new InputArgs(
+							new InvoiceItemFormInputArgs(
 									component.getEntity().Item,
 									component.getEntity(),
 									null,

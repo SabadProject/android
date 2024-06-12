@@ -1,4 +1,4 @@
-package farayan.sabad.Services
+package farayan.sabad.services
 
 import android.app.Activity
 import android.content.Context
@@ -6,11 +6,11 @@ import android.content.Intent
 import android.net.Uri
 import farayan.commons.FarayanUtility
 import farayan.commons.UI.Core.IGenericEvent
-import farayan.sabad.Contracts.IVendorContract
-import farayan.sabad.Contracts.VendorUpdateProgress
-import farayan.sabad.Contracts.VendorUpdateStates
-import farayan.sabad.Contracts.VendorUpdatesPriorities
 import farayan.sabad.R
+import farayan.sabad.contracts.IVendorContract
+import farayan.sabad.contracts.VendorUpdateProgress
+import farayan.sabad.contracts.VendorUpdateStates
+import farayan.sabad.contracts.VendorUpdatesPriorities
 
 class CafeBazaarVendor : IVendorContract {
     override val nameResID: Int get() = R.string.cafeBazaar
@@ -23,7 +23,7 @@ class CafeBazaarVendor : IVendorContract {
             onCheckFinished: IGenericEvent<IVendorContract.LatestVersion>,
             onCheckFailed: IGenericEvent<Exception>
     ) {
-        UpdateCheckerService.connection = UpdateCheckerService(onCheckFinished, onCheckFailed);
+        UpdateCheckerService.connection = UpdateCheckerService(onCheckFinished, onCheckFailed)
         val intent = Intent("com.farsitel.bazaar.service.UpdateCheckService.BIND")
         intent.setPackage("com.farsitel.bazaar")
         context.bindService(intent, UpdateCheckerService.connection, Context.BIND_AUTO_CREATE)
@@ -34,7 +34,7 @@ class CafeBazaarVendor : IVendorContract {
     }
 
     override fun installUpdate(activity: Activity, updateType: IVendorContract.UpdateTypes, minPriority: VendorUpdatesPriorities, updateActivityResultCode: Int, skipDaysCount: Int, onProgress: IGenericEvent<VendorUpdateProgress>?, onStatus: IGenericEvent<VendorUpdateStates>?, failed: IGenericEvent<Exception>?) {
-        startBazaarIntent(activity, Intent.ACTION_VIEW);
+        startBazaarIntent(activity, Intent.ACTION_VIEW)
     }
 
     private fun startBazaarIntent(activity: Activity, action: String) {
