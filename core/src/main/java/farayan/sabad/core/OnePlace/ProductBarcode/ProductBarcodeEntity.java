@@ -3,7 +3,7 @@ package farayan.sabad.core.OnePlace.ProductBarcode;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
-import farayan.sabad.core.OnePlace.Product.ProductEntity;
+import farayan.sabad.core.OnePlace.product.ProductEntity;
 import farayan.sabad.core.base.SabadEntityBase;
 
 @DatabaseTable(tableName = ProductBarcodeSchema.ProductBarcodes)

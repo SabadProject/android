@@ -5,7 +5,7 @@ import farayan.commons.QueryBuilderCore.ensured
 import farayan.sabad.core.OnePlace.Group.GroupEntity
 import farayan.sabad.core.OnePlace.InvoiceItem.InvoiceItemEntity
 import farayan.sabad.core.OnePlace.InvoiceItem.InvoiceItemPortable
-import farayan.sabad.core.OnePlace.Product.ProductEntity
+import farayan.sabad.core.OnePlace.product.ProductEntity
 import farayan.sabad.core.OnePlace.Store.StoreEntity
 import farayan.sabad.core.OnePlace.Unit.UnitEntity
 import farayan.sabad.core.base.SabadPortableBase

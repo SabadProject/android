@@ -7,7 +7,7 @@ import farayan.commons.Exceptions.Rexception
 import farayan.commons.PersianCalendar
 import farayan.commons.QueryBuilderCore.*
 import farayan.sabad.SabadTheApp
-import farayan.sabad.core.OnePlace.Product.ProductEntity
+import farayan.sabad.core.OnePlace.product.ProductEntity
 import farayan.sabad.core.OnePlace.ProductBarcode.*
 import java.io.File
 import java.io.FileOutputStream
@@ -21,7 +21,7 @@ class ProductBarcodeRepo : IProductBarcodeRepo {
     }
 
     override fun NewParams(): BaseParams<ProductBarcodeEntity> {
-        return ProductBarcodeParams();
+        return ProductBarcodeParams()
     }
 
     override fun ByProduct(product: ProductEntity): ProductBarcodeEntity? {
@@ -99,7 +99,15 @@ class ProductBarcodeRepo : IProductBarcodeRepo {
         val params = ProductBarcodeParams()
         params.Text = TextFilter(barcodeResult.text, TextMatchModes.Exactly)
         params.Format = EnumFilter(barcodeResult.format)
-        val entity = First(params);
+        val entity = First(params)
         return entity?.Product
+    }
+
+    override fun byBarcode(barcodeResult: CapturedBarcode): List<ProductEntity> {
+        val params = ProductBarcodeParams()
+        params.Text = TextFilter(barcodeResult.text, TextMatchModes.Exactly)
+        params.Format = EnumFilter(barcodeResult.format)
+        val entities = All(params)
+        return entities?.map { it.Product } ?: listOf()
     }
 }

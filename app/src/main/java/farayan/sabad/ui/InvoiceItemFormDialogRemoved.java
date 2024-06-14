@@ -31,9 +31,8 @@ import farayan.sabad.core.OnePlace.Group.IGroupRepo;
 import farayan.sabad.core.OnePlace.GroupUnit.GroupUnitParams;
 import farayan.sabad.core.OnePlace.InvoiceItem.IInvoiceItemRepo;
 import farayan.sabad.core.OnePlace.InvoiceItem.InvoiceItemEntity;
-import farayan.sabad.core.OnePlace.Product.IProductRepo;
-import farayan.sabad.core.OnePlace.Product.ProductEntity;
-import farayan.sabad.core.OnePlace.Product.ProductParams;
+import farayan.sabad.core.OnePlace.product.ProductEntity;
+import farayan.sabad.core.OnePlace.product.ProductParams;
 import farayan.sabad.core.OnePlace.ProductBarcode.CapturedBarcode;
 import farayan.sabad.core.OnePlace.ProductBarcode.IProductBarcodeRepo;
 import farayan.sabad.core.OnePlace.ProductBarcode.ProductBarcodeEntity;
@@ -46,6 +45,7 @@ import farayan.sabad.SabadConfigs;
 import farayan.sabad.SabadConstants;
 import farayan.sabad.SabadUtility;
 import farayan.sabad.core.OnePlace.Group.GroupEntity;
+import farayan.sabad.core.model.product.IProductRepo;
 
 public class InvoiceItemFormDialogRemoved extends InvoiceItemFormDialogParent
 {

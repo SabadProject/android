@@ -1,4 +1,4 @@
-package farayan.sabad.core.OnePlace.Product;
+package farayan.sabad.core.OnePlace.product;
 
 import org.apache.commons.lang3.ArrayUtils;
 

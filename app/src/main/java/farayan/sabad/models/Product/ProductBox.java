@@ -14,9 +14,9 @@ import farayan.commons.QueryBuilderCore.TextFilter;
 import farayan.commons.QueryBuilderCore.TextMatchModes;
 import farayan.commons.UI.Core.FilterableEntityAdapter;
 import farayan.commons.UI.EntityAutoCompleteBox;
-import farayan.sabad.core.OnePlace.Product.IProductRepo;
-import farayan.sabad.core.OnePlace.Product.ProductEntity;
-import farayan.sabad.core.OnePlace.Product.ProductParams;
+import farayan.sabad.core.OnePlace.product.ProductEntity;
+import farayan.sabad.core.OnePlace.product.ProductParams;
+import farayan.sabad.core.model.product.IProductRepo;
 
 @AndroidEntryPoint
 public class ProductBox extends EntityAutoCompleteBox<ProductEntity>

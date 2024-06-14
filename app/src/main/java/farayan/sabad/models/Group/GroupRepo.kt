@@ -9,8 +9,8 @@ import farayan.sabad.core.OnePlace.GroupUnit.GroupUnitParams
 import farayan.sabad.core.OnePlace.GroupUnit.IGroupUnitRepo
 import farayan.sabad.core.OnePlace.InvoiceItem.IInvoiceItemRepo
 import farayan.sabad.core.OnePlace.InvoiceItem.InvoiceItemParams
-import farayan.sabad.core.OnePlace.Product.IProductRepo
-import farayan.sabad.core.OnePlace.Product.ProductParams
+import farayan.sabad.core.OnePlace.product.ProductParams
+import farayan.sabad.core.model.product.IProductRepo
 
 class GroupRepo : IGroupRepo {
     override fun New(name: String, description: String?, icon: String?, undelete: Boolean): GroupEntity {
@@ -86,7 +86,7 @@ class GroupRepo : IGroupRepo {
     }
 
     override fun NewParams(): BaseParams<GroupEntity> {
-        return GroupParams();
+        return GroupParams()
     }
 
     private fun Hide(Group: GroupEntity) {

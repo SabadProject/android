@@ -7,7 +7,7 @@ import java.util.Collection;
 import farayan.commons.UI.Core.IEntityView;
 import farayan.commons.UI.Core.FilterableEntityAdapter;
 import farayan.sabad.ui.ProductBoxItemComponent;
-import farayan.sabad.core.OnePlace.Product.ProductEntity;
+import farayan.sabad.core.OnePlace.product.ProductEntity;
 
 public class ProductBoxAdapter extends FilterableEntityAdapter<ProductEntity>
 {

@@ -16,11 +16,11 @@ import farayan.sabad.SabadUtility;
 import farayan.sabad.core.OnePlace.Group.IGroupRepo;
 import farayan.sabad.core.OnePlace.GroupUnit.IGroupUnitRepo;
 import farayan.sabad.core.OnePlace.InvoiceItem.IInvoiceItemRepo;
-import farayan.sabad.core.OnePlace.Product.IProductRepo;
-import farayan.sabad.core.OnePlace.Product.ProductEntity;
+import farayan.sabad.core.OnePlace.product.ProductEntity;
 import farayan.sabad.core.OnePlace.ProductBarcode.CapturedBarcode;
 import farayan.sabad.core.OnePlace.ProductBarcode.IProductBarcodeRepo;
 import farayan.sabad.core.OnePlace.Unit.IUnitRepo;
+import farayan.sabad.core.model.product.IProductRepo;
 import farayan.sabad.vms.InvoiceItemFormViewModel;
 
 @AndroidEntryPoint

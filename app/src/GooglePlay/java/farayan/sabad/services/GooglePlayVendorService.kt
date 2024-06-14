@@ -1,6 +1,6 @@
-package farayan.sabad.Services
+package farayan.sabad.services
 
-import farayan.sabad.R;
+import farayan.sabad.R
 import android.app.Activity
 import android.content.Context
 import com.google.android.play.core.appupdate.AppUpdateInfo
@@ -17,11 +17,10 @@ import com.google.android.play.core.tasks.Task
 import farayan.commons.Exceptions.Rexception
 import farayan.commons.FarayanUtility
 import farayan.commons.UI.Core.IGenericEvent
-import farayan.sabad.Contracts.IVendorContract
-import farayan.sabad.Contracts.VendorUpdateProgress
-import farayan.sabad.Contracts.VendorUpdateStates
-import farayan.sabad.Contracts.VendorUpdatesPriorities
-import farayan.sabad.UI.AboutActivity
+import farayan.sabad.contracts.IVendorContract
+import farayan.sabad.contracts.VendorUpdateProgress
+import farayan.sabad.contracts.VendorUpdateStates
+import farayan.sabad.contracts.VendorUpdatesPriorities
 import java.lang.Exception
 
 class GooglePlayVendorService : IVendorContract {
@@ -33,31 +32,31 @@ class GooglePlayVendorService : IVendorContract {
         val appUpdateInfoTask = appUpdateManager.appUpdateInfo
         appUpdateInfoTask.addOnFailureListener { exception -> onCheckFailed.Fire(exception) }
         appUpdateInfoTask.addOnSuccessListener { appUpdateInfo ->
-            availableVersion = appUpdateInfo;
-            val versionCode = appUpdateInfo.availableVersionCode().toLong();
-            val versionName = appUpdateInfo.availableVersionCode().toString();
-            val latest = IVendorContract.LatestVersion(versionCode, versionName);
-            onCheckFinished.Fire(latest);
+            availableVersion = appUpdateInfo
+            val versionCode = appUpdateInfo.availableVersionCode().toLong()
+            val versionName = appUpdateInfo.availableVersionCode().toString()
+            val latest = IVendorContract.LatestVersion(versionCode, versionName)
+            onCheckFinished.Fire(latest)
         }
     }
 
     override fun installUpdate(
-            activity: Activity,
-            updateType: IVendorContract.UpdateTypes,
-            minPriority: VendorUpdatesPriorities,
-            updateActivityResultCode: Int,
-            skipDaysCount: Int,
-            onProgress: IGenericEvent<VendorUpdateProgress>?,
-            onStatus: IGenericEvent<VendorUpdateStates>?,
-            failed: IGenericEvent<Exception>?
+        activity: Activity,
+        updateType: IVendorContract.UpdateTypes,
+        minPriority: VendorUpdatesPriorities,
+        updateActivityResultCode: Int,
+        skipDaysCount: Int,
+        onProgress: IGenericEvent<VendorUpdateProgress>?,
+        onStatus: IGenericEvent<VendorUpdateStates>?,
+        failed: IGenericEvent<Exception>?
     ) {
-        val updated = availableVersion.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE;
+        val updated = availableVersion.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE
         if (!updated)
             return
         val updateTypeValue = getUpdateTypeValue(updateType)
         if (!availableVersion.isUpdateTypeAllowed(updateTypeValue))
             return
-        val skippedDaysCount = this.availableVersion.clientVersionStalenessDays() ?: 0;
+        val skippedDaysCount = this.availableVersion.clientVersionStalenessDays() ?: 0
         if (skippedDaysCount < skipDaysCount)
             return
         if (availableVersion.updatePriority() < minPriority.Code)
@@ -90,10 +89,10 @@ class GooglePlayVendorService : IVendorContract {
     }
 
     override val nameResID: Int
-        get() = R.string.googlePlayVendor;
+        get() = R.string.googlePlayVendor
 
     override fun shareUrl(): String {
-        return "https://play.google.com/store/apps/details?id=${FarayanUtility.GetPackageName()}";
+        return "https://play.google.com/store/apps/details?id=${FarayanUtility.GetPackageName()}"
     }
 
     private fun translateStatus(installStatus: Int): VendorUpdateStates {
@@ -112,10 +111,10 @@ class GooglePlayVendorService : IVendorContract {
 
     private fun getUpdateTypeValue(updateType: IVendorContract.UpdateTypes): Int {
         when (updateType) {
-            IVendorContract.UpdateTypes.FlexibleUpdate -> AppUpdateType.FLEXIBLE;
-            IVendorContract.UpdateTypes.ImmediateUpdate -> AppUpdateType.IMMEDIATE;
+            IVendorContract.UpdateTypes.FlexibleUpdate -> AppUpdateType.FLEXIBLE
+            IVendorContract.UpdateTypes.ImmediateUpdate -> AppUpdateType.IMMEDIATE
         }
-        throw Rexception(null, "");
+        throw Rexception(null, "")
     }
 
     override fun rate(activity: Activity) {

@@ -6,7 +6,7 @@ import farayan.commons.QueryBuilderCore.ComparableFilter;
 import farayan.commons.QueryBuilderCore.EntityFilter;
 import farayan.commons.QueryBuilderCore.PropertyFilter;
 import farayan.sabad.core.OnePlace.Invoice.InvoiceEntity;
-import farayan.sabad.core.OnePlace.Product.ProductEntity;
+import farayan.sabad.core.OnePlace.product.ProductEntity;
 import farayan.sabad.core.OnePlace.Group.GroupEntity;
 import farayan.sabad.core.base.SabadParamsBase;
 

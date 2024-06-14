@@ -3,7 +3,7 @@ package farayan.sabad.core.FaraBank;
 import java.util.List;
 
 import farayan.sabad.core.OnePlace.Invoice.InvoicePortable;
-import farayan.sabad.core.OnePlace.Product.ProductPortable;
+import farayan.sabad.core.OnePlace.product.ProductPortable;
 import farayan.sabad.core.OnePlace.Store.StorePortable;
 import farayan.sabad.core.OnePlace.Unit.UnitPortable;
 

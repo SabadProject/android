@@ -108,13 +108,20 @@ class InvoiceItemFormDialog(
             setViewTreeViewModelStoreOwner(context)
             setContent {
                 val groups = viewModel.groups.collectAsState()
-                var barcodeValue by remember { mutableStateOf("") }
+                var groupValue = viewModel.group.collectAsState()
+                val groupFixed = viewModel.groupFixed.collectAsState()
+
+                val productFixed = viewModel.productFixed.collectAsState()
+
+                var barcodeValue = viewModel.productBarcode.collectAsState()
                 var barcodeScannerState by remember { mutableStateOf(false) }
                 val cameraPermissionState = rememberPermissionState(
                     Manifest.permission.CAMERA
                 ) {
                     Log.i("Permission", "resulted")
                 }
+                var nameValue by remember { mutableStateOf("") }
+                var photoValue by remember { mutableStateOf("") }
 
                 CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
                     Column(modifier = Modifier.fillMaxSize()) {
@@ -127,8 +134,8 @@ class InvoiceItemFormDialog(
                                 .defaults()
                         )
                         OutlinedTextField(
-                            value = barcodeValue,
-                            onValueChange = { barcodeValue = it },
+                            value = barcodeValue.value,
+                            onValueChange = { viewModel.barcodeChangedManually(it) },
                             modifier = Modifier.padding(5.dp),
                             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
                             textStyle = LocalTextStyle.current.copy(
@@ -169,7 +176,7 @@ class InvoiceItemFormDialog(
                                     modifier = Modifier
                                         .defaults()
                                         .fillMaxWidth()
-                                        .height(80.dp),
+                                        .height(120.dp),
                                     factory = { ctx ->
                                         BarcodeView(ctx).apply {
                                             resume()
@@ -182,7 +189,7 @@ class InvoiceItemFormDialog(
                                                 pause()
                                                 FarayanUtility.ReleaseScreenOn(window)
                                                 SabadConfigs.Notify(inputArgs.beepManager)
-                                                barcodeValue=it.text
+                                                viewModel.barcodeScanned(it)
                                             }
                                         }
                                     }
@@ -196,7 +203,7 @@ class InvoiceItemFormDialog(
                             }
                         }
                         GroupsDropdownMenuBox(
-                            inputArgs.group?.DisplayableName ?: "",
+                            groupValue.value?.DisplayableName ?: "",
                             stringResource(id = R.string.invoice_item_form_dialog_group_label),
                             groups.value!!.map {
                                 GroupInvoiceItemForm(
@@ -205,7 +212,14 @@ class InvoiceItemFormDialog(
                                     GroupPickState.resolveStatus(it, viewModel.pickedItems.value)
                                 )
                             }.sortedBy { it.status.position },
-                            readonly = inputArgs.group.hasValue
+                            readonly = groupFixed.value
+                        )
+                        OutlinedTextField(
+                            value = nameValue,
+                            onValueChange = {},
+                            modifier = Modifier.defaults(),
+                            textStyle = TextStyle(fontFamily = appFont),
+                            readOnly = productFixed.value,
                         )
                     }
                 }

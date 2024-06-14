@@ -4,7 +4,7 @@ import farayan.commons.QueryBuilderCore.IRepo
 import farayan.commons.QueryBuilderCore.ensured
 import farayan.sabad.core.OnePlace.Group.GroupEntity
 import farayan.sabad.core.OnePlace.Invoice.InvoiceEntity
-import farayan.sabad.core.OnePlace.Product.ProductEntity
+import farayan.sabad.core.OnePlace.product.ProductEntity
 import farayan.sabad.core.OnePlace.Unit.UnitEntity
 import farayan.sabad.core.base.SabadPortableBase
 

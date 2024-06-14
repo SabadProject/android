@@ -7,7 +7,7 @@ import farayan.commons.QueryBuilderCore.EntityFilter;
 import farayan.commons.QueryBuilderCore.EnumFilter;
 import farayan.commons.QueryBuilderCore.PropertyFilter;
 import farayan.commons.QueryBuilderCore.TextFilter;
-import farayan.sabad.core.OnePlace.Product.ProductEntity;
+import farayan.sabad.core.OnePlace.product.ProductEntity;
 import farayan.sabad.core.base.SabadParamsBase;
 
 public class ProductBarcodeParams extends SabadParamsBase<ProductBarcodeEntity>

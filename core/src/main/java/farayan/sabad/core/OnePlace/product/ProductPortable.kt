@@ -1,4 +1,4 @@
-package farayan.sabad.core.OnePlace.Product
+package farayan.sabad.core.OnePlace.product
 
 import farayan.commons.FarayanUtility
 import farayan.sabad.core.OnePlace.Group.GroupEntity

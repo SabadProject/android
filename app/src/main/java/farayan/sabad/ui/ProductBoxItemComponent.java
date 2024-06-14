@@ -5,7 +5,7 @@ import android.util.AttributeSet;
 
 import androidx.annotation.Nullable;
 import farayan.commons.UI.Core.IEntityView;
-import farayan.sabad.core.OnePlace.Product.ProductEntity;
+import farayan.sabad.core.OnePlace.product.ProductEntity;
 
 public class ProductBoxItemComponent extends ProductBoxItemComponentParent implements IEntityView<ProductEntity>
 {

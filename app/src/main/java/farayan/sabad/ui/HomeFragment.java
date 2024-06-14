@@ -47,12 +47,12 @@ import farayan.sabad.core.OnePlace.Group.NewGroupNameNeededException;
 import farayan.sabad.core.OnePlace.GroupUnit.IGroupUnitRepo;
 import farayan.sabad.core.OnePlace.Invoice.IInvoiceRepo;
 import farayan.sabad.core.OnePlace.InvoiceItem.IInvoiceItemRepo;
-import farayan.sabad.core.OnePlace.Product.IProductRepo;
 import farayan.sabad.core.OnePlace.ProductBarcode.IProductBarcodeRepo;
 import farayan.sabad.core.OnePlace.Store.IStoreRepo;
 import farayan.sabad.core.OnePlace.StoreCategory.IStoreCategoryRepo;
 import farayan.sabad.core.OnePlace.StoreGroup.IStoreGroupRepo;
 import farayan.sabad.core.OnePlace.Unit.IUnitRepo;
+import farayan.sabad.core.model.product.IProductRepo;
 import farayan.sabad.models.Group.GroupRecyclerAdapter;
 import farayan.sabad.vms.InvoiceItemFormViewModel;
 

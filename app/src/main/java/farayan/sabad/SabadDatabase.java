@@ -41,7 +41,7 @@ import farayan.sabad.core.OnePlace.GroupUnit.GroupUnitEntity;
 import farayan.sabad.core.OnePlace.Invoice.InvoiceEntity;
 import farayan.sabad.core.OnePlace.InvoiceItem.InvoiceItemEntity;
 import farayan.sabad.core.OnePlace.NeedChange.NeedChangeEntity;
-import farayan.sabad.core.OnePlace.Product.ProductEntity;
+import farayan.sabad.core.OnePlace.product.ProductEntity;
 import farayan.sabad.core.OnePlace.ProductBarcode.ProductBarcodeEntity;
 import farayan.sabad.core.OnePlace.Store.StoreEntity;
 import farayan.sabad.core.OnePlace.StoreCategory.StoreCategoryEntity;
