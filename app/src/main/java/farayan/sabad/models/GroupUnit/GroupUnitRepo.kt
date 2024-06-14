@@ -27,6 +27,6 @@ class GroupUnitRepo : IGroupUnitRepo {
     }
 
     override fun NewParams(): BaseParams<GroupUnitEntity> {
-        return GroupUnitParams();
+        return GroupUnitParams()
     }
 }

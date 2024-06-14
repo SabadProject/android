@@ -13,6 +13,6 @@ class CategoryRepo : ICategoryRepo {
     }
 
     override fun NewParams(): BaseParams<CategoryEntity> {
-        return CategoryParams();
+        return CategoryParams()
     }
 }

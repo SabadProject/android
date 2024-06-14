@@ -16,7 +16,7 @@ class StoreGroupRepo : IStoreGroupRepo {
     }
 
     override fun NewParams(): BaseParams<StoreGroupEntity> {
-        return StoreGroupParams();
+        return StoreGroupParams()
     }
 
     override fun EnsureRelated(Group: GroupEntity, store: StoreEntity): StoreGroupEntity {

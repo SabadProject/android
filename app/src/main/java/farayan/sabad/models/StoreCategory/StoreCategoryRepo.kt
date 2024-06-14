@@ -16,7 +16,7 @@ class StoreCategoryRepo : IStoreCategoryRepo {
     }
 
     override fun NewParams(): BaseParams<StoreCategoryEntity> {
-        return StoreCategoryParams();
+        return StoreCategoryParams()
     }
 
     override fun EnsureRelated(store: StoreEntity, category: CategoryEntity): StoreCategoryEntity {

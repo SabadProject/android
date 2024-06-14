@@ -13,7 +13,7 @@ class InvoiceRepo : IInvoiceRepo {
     }
 
     override fun NewParams(): BaseParams<InvoiceEntity> {
-        return InvoiceParams();
+        return InvoiceParams()
     }
 
     override fun Hide(invoiceEntity: InvoiceEntity) {

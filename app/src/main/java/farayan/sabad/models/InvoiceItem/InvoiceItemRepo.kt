@@ -17,7 +17,7 @@ class InvoiceItemRepo : IInvoiceItemRepo {
     }
 
     override fun NewParams(): BaseParams<InvoiceItemEntity> {
-        return InvoiceItemParams();
+        return InvoiceItemParams()
     }
 
     override fun DeleteAllItemsWithoutInvoice() {
