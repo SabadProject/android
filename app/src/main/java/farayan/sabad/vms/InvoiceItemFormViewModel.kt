@@ -1,9 +1,11 @@
 package farayan.sabad.vms
 
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Star
 import androidx.lifecycle.ViewModel
 import com.journeyapps.barcodescanner.BarcodeResult
 import dagger.hilt.android.lifecycle.HiltViewModel
-import farayan.commons.FarayanUtility
+import farayan.commons.queryable
 import farayan.sabad.core.OnePlace.Group.GroupEntity
 import farayan.sabad.core.OnePlace.Group.IGroupRepo
 import farayan.sabad.core.OnePlace.InvoiceItem.IInvoiceItemRepo
@@ -26,7 +28,6 @@ class InvoiceItemFormViewModel @Inject constructor(
     private val itemRepo: IInvoiceItemRepo,
 ) : ViewModel() {
     fun barcodeScanned(br: BarcodeResult) {
-        productBarcode.value = br.text
         val products = productBarcodeRepo.byBarcode(
             CapturedBarcode(
                 br.text,
@@ -36,14 +37,115 @@ class InvoiceItemFormViewModel @Inject constructor(
                 br.resultPoints.map { BarcodePoint(it.x, it.y) }.toTypedArray()
             )
         )
-        if (products.isEmpty())
+        if (products.isEmpty()) {
+            productBarcode.value = br.text
             return
-        if (productName.value.isEmpty())
+        }
+        if (product.fixed().hasValue) {
+            if (!products.contains(product.fixed())) {
+                question.value = Question(
+                    Questions.ScannedProductIsNotFixedProduct,
+                    "Scanned barcode belongs to another product",
+                    Icons.Filled.Star,
+                    listOf(
+                        QuestionButton("Clear", "clear"),
+                        QuestionButton("Add to product barcodes", "add-product-barcode"),
+                    ),
+                    listOf()
+                )
+            }
             return
-        val queryableProductName = FarayanUtility.Queryable(productName.value)
-        val foundProduct = products.firstOrNull() { it.QueryableName.equals(queryableProductName) }
-        if (foundProduct.hasValue)
-            return
+        }
+        if (group.fixed().hasValue) {
+            val fixedGroupProducts = products.filter { it.Group == group.value }
+            if (fixedGroupProducts.isEmpty()) {
+                question.value = Question(
+                    Questions.NoScannedProductBelongsToFixedGroup,
+                    "while there are ${products.size} products with scanned barcode, none of them are in group ${group.fixed()!!.DisplayableName}. Please decide if you want to add new product or scan another product in group ${group.fixed()!!.DisplayableName}",
+                    Icons.Filled.Star,
+                    listOf(
+                        QuestionButton("Clear", "clear"),
+                        QuestionButton("Add new product", "add-product"),
+                    ),
+                    listOf()
+                )
+                return
+            }
+            if (fixedGroupProducts.size == 1) {
+                val theProduct = fixedGroupProducts.first()
+                if (productName.value.isNotBlank() && productName.value.queryable().contentEquals(theProduct.QueryableName)) {
+                    question.value = Question(
+                        Questions.ScannedProductWithinFixedGroupDoesNotMatchFilledForm,
+                        "One product found in group ${group.fixed()!!.DisplayableName}, but the name does not match what you entered",
+                        Icons.Filled.Star,
+                        listOf(
+                            QuestionButton("Select scanned product", "clear"),
+                            QuestionButton("Create new product", "create-product"),
+                        ),
+                        listOf()
+                    )
+                    return
+                }
+            }
+            if (fixedGroupProducts.size > 1) {
+                if (productName.value.isNotBlank()) {
+                    val queryableName = productName.value.queryable()
+                    val firstOrNull = fixedGroupProducts.firstOrNull { queryableName.contentEquals(it.QueryableName, true) }
+                    if (firstOrNull == null) {
+                        question.value = Question(
+                            Questions.ScannedProductWithinFixedGroupDoesNotMatchFilledForm,
+                            "Multiple products within fixed group found with scanned barcode, but none of them match the filled form.",
+                            Icons.Filled.Star,
+                            listOf(
+                                QuestionButton("Continue with selected product from above list", "clear"),
+                                QuestionButton("Create new product", "create-product"),
+                                QuestionButton("Clear barcode", "create-product"),
+                            ),
+                            fixedGroupProducts.map { QuestionOption(it.DisplayableName, it.id.toString()) }
+                        )
+                        return
+                    }
+                }
+            }
+        } else {
+            if (products.size == 1) {
+                val theProduct = products.first()
+                if (productName.value.isNotBlank() && !productName.value.queryable().contentEquals(theProduct.QueryableName)) {
+                    question.value = Question(
+                        Questions.ScannedProductExistsWithDifferentName,
+                        "One product found with scanned barcode, but its name is different with filled.",
+                        Icons.Filled.Star,
+                        listOf(
+                            QuestionButton("Select product", "clear"),
+                            QuestionButton("Create new product", "create-product"),
+                            QuestionButton("Clear barcode", "create-product"),
+                        ),
+                        listOf()
+                    )
+                    return
+                }
+            }
+            if (products.size > 1) {
+                if (productName.value.isNotBlank()) {
+                    val queryableName = productName.value.queryable()
+                    val firstOrNull = products.firstOrNull { queryableName.contentEquals(it.QueryableName, true) }
+                    if (firstOrNull == null) {
+                        question.value = Question(
+                            Questions.ScannedProductDoesNotMatchFilledForm,
+                            "Multiple products with scanned barcode, but none of them match the filled form.",
+                            Icons.Filled.Star,
+                            listOf(
+                                QuestionButton("Continue with selected product from above list", "clear"),
+                                QuestionButton("Create new product", "create-product"),
+                                QuestionButton("Clear barcode", "create-product"),
+                            ),
+                            products.map { QuestionOption(it.DisplayableName, it.id.toString()) }
+                        )
+                        return
+                    }
+                }
+            }
+        }
     }
 
     fun init(
@@ -52,10 +154,8 @@ class InvoiceItemFormViewModel @Inject constructor(
         selectedProduct: ProductEntity? = null,
         fixedSelectedProduct: Boolean = false,
     ) {
-        group.value = selectedGroup
-        groupFixed.value = fixedSelectedGroup
-        product.value = selectedProduct
-        productFixed.value = fixedSelectedProduct
+        group.value = Fixable(selectedGroup, fixedSelectedGroup)
+        product.value = Fixable(selectedProduct, fixedSelectedProduct)
     }
 
     fun barcodeChangedManually(barcodeValue: String) {
@@ -64,10 +164,8 @@ class InvoiceItemFormViewModel @Inject constructor(
 
     val groups = MutableStateFlow(groupRepo.All(groupRepo.NewParams()))
     val pickedItems = MutableStateFlow(itemRepo.pickings())
-    val group = MutableStateFlow<GroupEntity?>(null)
-    val groupFixed = MutableStateFlow<Boolean>(false)
-    val product = MutableStateFlow<ProductEntity?>(null)
-    val productFixed = MutableStateFlow(false)
+    val group = MutableStateFlow(Fixable<GroupEntity>())
+    val product = MutableStateFlow(Fixable<ProductEntity>())
     val productBarcode = MutableStateFlow("")
     val productName = MutableStateFlow("")
     val productPhoto = MutableStateFlow("")
@@ -75,4 +173,24 @@ class InvoiceItemFormViewModel @Inject constructor(
     val itemUnit = MutableStateFlow("")
     val itemPriceAmount = MutableStateFlow(BigDecimal.ZERO)
     val itemPriceCurrency = MutableStateFlow("")
+
+    val question = MutableStateFlow<Question?>(null)
 }
+
+data class Fixable<T>(val value: T? = null, val fixed: Boolean = false)
+
+enum class Questions {
+    ScannedProductIsNotFixedProduct,
+    NoScannedProductBelongsToFixedGroup,
+    ScannedProductWithinFixedGroupDoesNotMatchFilledForm,
+    ScannedProductExistsWithDifferentName,
+    ScannedProductDoesNotMatchFilledForm
+}
+
+data class Question(val question: Questions, val message: String, val icon: Any, val buttons: List<QuestionButton>, val options: List<QuestionOption>)
+
+data class QuestionButton(val label: String, val tag: String)
+data class QuestionOption(val label: String, val tag: String)
+
+fun <T> MutableStateFlow<Fixable<T>>.fixed(): T? =
+    if (this.value.fixed && this.value.hasValue) this.value.value else null
