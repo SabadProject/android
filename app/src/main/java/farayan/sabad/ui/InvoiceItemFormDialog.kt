@@ -14,6 +14,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.text.InlineTextContent
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.appendInlineContent
@@ -31,6 +33,9 @@ import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.CheckCircle
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
@@ -83,7 +88,7 @@ import farayan.sabad.ui.Core.SabadBaseDialog
 import farayan.sabad.utility.hasValue
 import farayan.sabad.vms.InvoiceItemFormViewModel
 
-@OptIn(ExperimentalPermissionsApi::class)
+@OptIn(ExperimentalPermissionsApi::class, ExperimentalMaterial3Api::class)
 class InvoiceItemFormDialog(
     private val inputArgs: InvoiceItemFormInputArgs,
     context: AppCompatActivity,
@@ -108,19 +113,18 @@ class InvoiceItemFormDialog(
             setViewTreeViewModelStoreOwner(context)
             setContent {
                 val groups = viewModel.groups.collectAsState()
-                var groupValue = viewModel.group.collectAsState()
-                val groupFixed = viewModel.groupFixed.collectAsState()
+                val groupValue = viewModel.group.collectAsState()
+                val product = viewModel.product.collectAsState()
+                val question = viewModel.question.collectAsState()
 
-                val productFixed = viewModel.productFixed.collectAsState()
-
-                var barcodeValue = viewModel.productBarcode.collectAsState()
+                val barcodeValue = viewModel.productBarcode.collectAsState()
                 var barcodeScannerState by remember { mutableStateOf(false) }
                 val cameraPermissionState = rememberPermissionState(
                     Manifest.permission.CAMERA
                 ) {
                     Log.i("Permission", "resulted")
                 }
-                var nameValue by remember { mutableStateOf("") }
+                val nameValue by remember { mutableStateOf("") }
                 var photoValue by remember { mutableStateOf("") }
 
                 CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
@@ -203,7 +207,7 @@ class InvoiceItemFormDialog(
                             }
                         }
                         GroupsDropdownMenuBox(
-                            groupValue.value?.DisplayableName ?: "",
+                            groupValue.value.value?.DisplayableName ?: "",
                             stringResource(id = R.string.invoice_item_form_dialog_group_label),
                             groups.value!!.map {
                                 GroupInvoiceItemForm(
@@ -212,15 +216,37 @@ class InvoiceItemFormDialog(
                                     GroupPickState.resolveStatus(it, viewModel.pickedItems.value)
                                 )
                             }.sortedBy { it.status.position },
-                            readonly = groupFixed.value
+                            readonly = groupValue.value.fixed
                         )
                         OutlinedTextField(
                             value = nameValue,
                             onValueChange = {},
                             modifier = Modifier.defaults(),
                             textStyle = TextStyle(fontFamily = appFont),
-                            readOnly = productFixed.value,
+                            readOnly = product.value.fixed,
                         )
+                        if (question.value.hasValue) {
+                            androidx.compose.material3.AlertDialog(
+                                onDismissRequest = {
+                                    // Dismiss the dialog when the user clicks outside the dialog or on the back
+                                    // button. If you want to disable that functionality, simply use an empty
+                                    // onDismissRequest.
+                                    //question = null
+                                }
+                            ) {
+                                Surface(
+                                    modifier = Modifier
+                                        .wrapContentWidth()
+                                        .wrapContentHeight(),
+                                    shape = MaterialTheme.shapes.large
+                                ) {
+                                    Column(modifier = Modifier.padding(16.dp)) {
+
+                                        //... AlertDialog content
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }
