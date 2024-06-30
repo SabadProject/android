@@ -266,6 +266,7 @@ public class HomeFragment extends HomeFragmentParent
 		}
 
 		if (!groupEntity.Picked) {
+			invoiceItemFormViewModel.init(groupEntity,true,null,false);
 			InvoiceItemFormDialog dialog = new InvoiceItemFormDialog(
 					new InvoiceItemFormInputArgs(
 							groupEntity.Item,
@@ -381,6 +382,7 @@ public class HomeFragment extends HomeFragmentParent
 					AutoCheckout();
 				},
 				component -> {
+					invoiceItemFormViewModel.init(component.getEntity(),true,null,false);
 					InvoiceItemFormDialog dialog = new InvoiceItemFormDialog(
 							new InvoiceItemFormInputArgs(
 									component.getEntity().Item,

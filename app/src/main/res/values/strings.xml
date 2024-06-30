@@ -83,4 +83,5 @@
     <string name="invoice_item_form_dialog_group_label">کالاگروه مد نظر</string>
     <string name="invoice_item_form_dialog_camera_permission_needed">برای استفاده از اسکنر، لازم است به «سبد» اجازه‌ی دسترسی به دوربین را بدهید</string>
     <string name="invoice_item_form_dialog_camera_permission_needed_unrational">بدون دلیل</string>
+    <string name="invoice_item_form_dialog_name_placeholder">نام</string>
 </resources>

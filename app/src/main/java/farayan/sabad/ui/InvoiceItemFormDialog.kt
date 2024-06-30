@@ -220,13 +220,14 @@ class InvoiceItemFormDialog(
                         )
                         OutlinedTextField(
                             value = nameValue,
+                            placeholder = { Text(text = stringResource(id = R.string.invoice_item_form_dialog_name_placeholder))},
                             onValueChange = {},
                             modifier = Modifier.defaults(),
                             textStyle = TextStyle(fontFamily = appFont),
                             readOnly = product.value.fixed,
                         )
                         if (question.value.hasValue) {
-                            androidx.compose.material3.AlertDialog(
+                            androidx.compose.material3.BasicAlertDialog(
                                 onDismissRequest = {
                                     // Dismiss the dialog when the user clicks outside the dialog or on the back
                                     // button. If you want to disable that functionality, simply use an empty
