@@ -6,4 +6,5 @@ import farayan.sabad.core.OnePlace.Unit.UnitEntity
 
 interface IGroupUnitRepo : IRepo<GroupUnitEntity> {
     fun EnsureRelated(Group: GroupEntity, unit: UnitEntity): GroupUnitEntity
+    fun groupUnits(group: GroupEntity): List<GroupUnitEntity>
 }
