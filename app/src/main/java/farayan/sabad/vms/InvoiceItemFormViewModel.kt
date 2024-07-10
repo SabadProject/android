@@ -200,6 +200,10 @@ class InvoiceItemFormViewModel @Inject constructor(
         productPhotos.value += it.toString()
     }
 
+    fun photoRemoved(photo: String) {
+        productPhotos.value -= photo
+    }
+
     val groups = MutableStateFlow(groupRepo.All(groupRepo.NewParams()))
     val pickedItems = MutableStateFlow(itemRepo.pickings())
     val group = MutableStateFlow(Fixable<GroupEntity>())

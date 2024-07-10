@@ -16,7 +16,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.Button
-import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AddCircle
+import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -26,6 +28,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.unit.dp
@@ -111,7 +114,7 @@ fun CameraCapture(
                 }
             }
         ) {
-            Text("Click!")
+            Icon(imageVector = Icons.Filled.AddCircle, contentDescription = "", tint = Color.White)
         }
         LaunchedEffect(previewUseCase) {
             val cameraProvider = context.getCameraProvider()
@@ -131,7 +134,7 @@ fun CameraCapture(
 suspend fun ImageCapture.takePicture(executor: Executor): File {
     val photoFile = withContext(Dispatchers.IO) {
         kotlin.runCatching {
-            File.createTempFile("image", "jpg")
+            File.createTempFile("image", ".jpg")
         }.getOrElse { ex ->
             Log.e("TakePicture", "Failed to create temporary file", ex)
             File("/dev/null")

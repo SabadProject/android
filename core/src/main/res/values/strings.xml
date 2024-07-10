@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="currency_name_rial">﷼</string>
+    <string name="currency_name_1tuman">تومان</string>
+    <string name="currency_name_htuman">ه‌ت</string>
+    <string name="currency_name_mtuman">م‌ت</string>
+    <string name="currency_name_euro">€</string>
+    <string name="currency_name_dollar">$</string>
+</resources>

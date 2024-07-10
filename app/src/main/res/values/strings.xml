@@ -85,4 +85,7 @@
     <string name="invoice_item_form_dialog_camera_permission_needed_unrational">بدون دلیل</string>
     <string name="invoice_item_form_dialog_name_placeholder">نام</string>
     <string name="invoice_item_form_dialog_quantity_placeholder">مقدار یا تعداد</string>
+    <string name="invoice_item_form_dialog_price_amount_placeholder">مبلغ</string>
+    <string name="invoice_item_form_dialog_price_amount_label">مبلغ</string>
+    <string name="invoice_item_form_dialog_price_currency_label">ارز</string>
 </resources>

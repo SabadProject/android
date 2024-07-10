@@ -1,6 +1,7 @@
 package farayan.sabad.ui
 
 import android.Manifest
+import android.content.Context
 import android.content.DialogInterface
 import android.util.Log
 import android.view.Gravity
@@ -8,7 +9,7 @@ import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -20,9 +21,11 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.InlineTextContent
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.appendInlineContent
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ExposedDropdownMenuBox
@@ -33,7 +36,6 @@ import androidx.compose.material.LocalTextStyle
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material.icons.outlined.Add
@@ -56,6 +58,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -93,6 +96,7 @@ import farayan.sabad.SabadConstants
 import farayan.sabad.core.OnePlace.Group.GroupEntity
 import farayan.sabad.core.OnePlace.InvoiceItem.InvoiceItemEntity
 import farayan.sabad.core.OnePlace.Unit.UnitEntity
+import farayan.sabad.core.commons.Currency
 import farayan.sabad.ui.Core.SabadBaseDialog
 import farayan.sabad.ui.components.CameraCapture
 import farayan.sabad.utility.hasValue
@@ -141,10 +145,16 @@ class InvoiceItemFormDialog(
                 }
                 val nameValue by remember { mutableStateOf("") }
                 var quantityValue: BigDecimal? by remember { mutableStateOf(BigDecimal.ONE) }
-                var photos = viewModel.productPhotos.collectAsState()
+                var priceValue: BigDecimal? by remember { mutableStateOf(BigDecimal.ZERO) }
+                var priceCurrency: Currency by remember { mutableStateOf(Currency.Rial) }
+                val photos = viewModel.productPhotos.collectAsState()
 
                 CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
-                    Column(modifier = Modifier.fillMaxSize()) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .verticalScroll(rememberScrollState())
+                    ) {
                         Text(
                             text = stringResource(id = R.string.invoice_item_form_dialog_title),
                             style = TextStyle(color = Color.White, fontFamily = appFont),
@@ -286,29 +296,31 @@ class InvoiceItemFormDialog(
                             )
                         }
 
-                        Row(modifier = Modifier.defaults()) {
-                            Button(onClick = { productPhotography = true }) {
-                                Icon(imageVector = Icons.Filled.Add, contentDescription = "Add")
-                            }
-                            LazyRow(
-                                modifier = Modifier
-                                    .width(0.dp)
-                                    .weight(1.0f)
-                            ) {
-                                items(photos.value) {
-                                    InvoiceItemProduct(it)
-                                }
+                        LazyRow(
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            items(photos.value) { photo ->
+                                InvoiceItemProduct(photo, onRemove = { viewModel.photoRemoved(it) })
                             }
                         }
-                        if (productPhotography) {
-                            if (cameraPermissionState.status.isGranted) {
-                                CameraCapture(
+
+                        if (cameraPermissionState.status.isGranted) {
+                            CameraCapture(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(240.dp)
+                                    .defaults(),
+                                onImageFile = { viewModel.photoTaken(it) }
+                            )
+                        } else {
+                            if (!productPhotography) {
+                                Image(
+                                    painter = painterResource(id = R.drawable.camera_placeholder),
+                                    contentDescription = "camera",
                                     modifier = Modifier
-                                        .border(2.dp, Color.Cyan)
+                                        .clickable { productPhotography = true }
                                         .fillMaxWidth()
-                                        .height(240.dp)
-                                        .defaults(),
-                                    onImageFile = { viewModel.photoTaken(it) }
+                                        .defaults()
                                 )
                             } else {
                                 if (cameraPermissionState.status.shouldShowRationale) {
@@ -316,8 +328,45 @@ class InvoiceItemFormDialog(
                                     Button(onClick = { /*TODO*/ }) {
                                         Text(text = "request for permission")
                                     }
+                                } else {
+                                    cameraPermissionState.launchPermissionRequest()
                                 }
                             }
+                        }
+                        Row(verticalAlignment = Alignment.Bottom) {
+                            OutlinedTextField(
+                                value = quantityValue?.toPlainString() ?: "",
+                                label = {
+                                    Text(
+                                        text = stringResource(id = R.string.invoice_item_form_dialog_price_amount_label),
+                                        style = TextStyle(fontFamily = appFont)
+                                    )
+                                },
+                                placeholder = {
+                                    Text(
+                                        text = stringResource(id = R.string.invoice_item_form_dialog_price_amount_placeholder),
+                                        style = TextStyle(fontFamily = appFont)
+                                    )
+                                },
+                                onValueChange = { quantityValue = parseBigDecimal(it) },
+                                modifier = Modifier
+                                    .defaults()
+                                    .align(Alignment.CenterVertically)
+                                    .padding(top = 6.dp)
+                                    .weight(0.6f, true),
+                                textStyle = TextStyle(
+                                    fontFamily = appFont,
+                                    textAlign = TextAlign.Center
+                                ),
+                            )
+                            CurrenciesDropdownMenuBox(
+                                selected = priceCurrency,
+                                context = LocalContext.current,
+                                modifier = Modifier
+                                    .defaults()
+                                    .padding(top = 0.dp)
+                                    .weight(0.4f, true),
+                            )
                         }
 
                         if (question.value.hasValue) {
@@ -550,6 +599,73 @@ fun UnitsDropdownMenuBox(
                     ) {
                         Text(
                             groupUnit.DisplayableName,
+                            style = TextStyle(fontFamily = appFont)
+                        )
+                    }
+                }
+        }
+    }
+}
+
+
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
+fun CurrenciesDropdownMenuBox(
+    selected: Currency,
+    context: Context,
+    modifier: Modifier = Modifier,
+    readonly: Boolean = false,
+) {
+
+    fun Currency.textual(): String {
+        return context.getString(this.resourceId)
+    }
+
+    var expanded by remember { mutableStateOf(false) }
+    var text by remember { mutableStateOf(TextFieldValue(selected.textual())) }
+    val editable = !readonly
+
+    ExposedDropdownMenuBox(
+        expanded = editable && expanded,
+        modifier = modifier,
+        onExpandedChange = { expanded = editable && it },
+    ) {
+        OutlinedTextField(
+            value = text,
+            onValueChange = { text = it; expanded = true },
+            readOnly = readonly,
+            singleLine = true,
+            label = {
+                Text(
+                    stringResource(id = R.string.invoice_item_form_dialog_price_currency_label),
+                    fontFamily = appFont,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(20.dp)
+                )
+            },
+            textStyle = TextStyle(fontFamily = appFont),
+            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = editable && expanded) },
+            modifier = Modifier.onFocusEvent { expanded = editable && it.hasFocus },
+            colors = ExposedDropdownMenuDefaults.textFieldColors(backgroundColor = if (readonly) Color.LightGray else Color.Transparent)
+        )
+        ExposedDropdownMenu(
+            expanded = editable && expanded,
+            onDismissRequest = { expanded = false },
+        ) {
+            Currency.values().filter { text.text.isEmpty() || it.textual().contains(text.text) }
+                .forEach { currency ->
+                    DropdownMenuItem(
+                        onClick = {
+                            text = TextFieldValue(
+                                currency.textual(),
+                                selection = TextRange(currency.textual().length)
+                            )
+                            expanded = false
+                        }
+                    ) {
+                        Text(
+                            currency.textual(),
                             style = TextStyle(fontFamily = appFont)
                         )
                     }
