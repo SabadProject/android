@@ -145,8 +145,8 @@ class InvoiceItemFormDialog(
                 }
                 val nameValue by remember { mutableStateOf("") }
                 var quantityValue: BigDecimal? by remember { mutableStateOf(BigDecimal.ONE) }
-                var priceValue: BigDecimal? by remember { mutableStateOf(BigDecimal.ZERO) }
-                var priceCurrency: Currency by remember { mutableStateOf(Currency.Rial) }
+                var priceAmount: BigDecimal? by remember { mutableStateOf<BigDecimal?>(null) }
+                val priceCurrency: Currency? by remember { mutableStateOf<Currency?>(null) }
                 val photos = viewModel.productPhotos.collectAsState()
 
                 CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
@@ -334,33 +334,16 @@ class InvoiceItemFormDialog(
                             }
                         }
                         Row(verticalAlignment = Alignment.Bottom) {
-                            OutlinedTextField(
-                                value = quantityValue?.toPlainString() ?: "",
-                                label = {
-                                    Text(
-                                        text = stringResource(id = R.string.invoice_item_form_dialog_price_amount_label),
-                                        style = TextStyle(fontFamily = appFont)
-                                    )
-                                },
-                                placeholder = {
-                                    Text(
-                                        text = stringResource(id = R.string.invoice_item_form_dialog_price_amount_placeholder),
-                                        style = TextStyle(fontFamily = appFont)
-                                    )
-                                },
-                                onValueChange = { quantityValue = parseBigDecimal(it) },
+                            NumberEntry(
+                                priceAmount, priceCurrency ?: Currency.Rial,
                                 modifier = Modifier
-                                    .defaults()
                                     .align(Alignment.CenterVertically)
-                                    .padding(top = 6.dp)
-                                    .weight(0.6f, true),
-                                textStyle = TextStyle(
-                                    fontFamily = appFont,
-                                    textAlign = TextAlign.Center
-                                ),
-                            )
+                                    .weight(0.6f, true)
+                            ) {
+
+                            }
                             CurrenciesDropdownMenuBox(
-                                selected = priceCurrency,
+                                selected = priceCurrency ?: Currency.Rial,
                                 context = LocalContext.current,
                                 modifier = Modifier
                                     .defaults()
@@ -395,14 +378,6 @@ class InvoiceItemFormDialog(
                 }
             }
         })
-    }
-
-    private fun parseBigDecimal(value: String): BigDecimal? {
-        return try {
-            BigDecimal(value)
-        } catch (e: Exception) {
-            null
-        }
     }
 }
 
@@ -672,4 +647,110 @@ fun CurrenciesDropdownMenuBox(
                 }
         }
     }
+}
+
+@Composable
+fun NumberEntry(
+    number: BigDecimal?,
+    currency: Currency,
+    modifier: Modifier = Modifier,
+    onValueChanged: (BigDecimal?) -> Unit = { }
+) {
+    var value: BigDecimal? by remember {
+        mutableStateOf<BigDecimal?>(number)
+    }
+    var suffixedWithDecimalPoint by remember { mutableStateOf(false) }
+    OutlinedTextField(
+        value = value?.displayable(currency, suffixedWithDecimalPoint)
+            ?: TextFieldValue(),
+        label = {
+            Text(
+                text = stringResource(id = R.string.invoice_item_form_dialog_price_amount_label),
+                style = TextStyle(fontFamily = appFont)
+            )
+        },
+        placeholder = {
+            Text(
+                text = stringResource(id = R.string.invoice_item_form_dialog_price_amount_placeholder),
+                style = TextStyle(fontFamily = appFont)
+            )
+        },
+        onValueChange = { rawPrice ->
+            val rawText = rawPrice.text
+            value = parseBigDecimal(rawText)
+            suffixedWithDecimalPoint = rawText.indexOfFirst { it == '.' } == rawText.length - 1
+            Log.i(
+                "number",
+                "$rawText is ${if (suffixedWithDecimalPoint) "" else "NOT"} suffixedWithDecimalPoint "
+            )
+        },
+        modifier = modifier
+            .defaults()
+            .padding(top = 6.dp),
+        textStyle = TextStyle(
+            fontFamily = appFont,
+            textAlign = TextAlign.Center,
+            textDirection = TextDirection.Ltr
+        ),
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
+    )
+}
+
+
+private fun parseBigDecimal(value: String): BigDecimal? {
+    Log.i("number", "value: $value")
+    return try {
+        val sb = StringBuilder()
+        var decimalPointAdded = false
+        for (c in value) {
+            if (c in '0'..'9') {
+                sb.append(c)
+                continue
+            }
+            if (c == '.' && !decimalPointAdded) {
+                sb.append('.')
+                decimalPointAdded = true
+                continue
+            }
+        }
+        val bigDecimal = BigDecimal(sb.toString())
+        Log.i("number", "parsed value of $value is $bigDecimal")
+        bigDecimal
+    } catch (e: Exception) {
+        Log.i("number", "unable to parse value of $value")
+        null
+    }
+}
+
+
+fun decimalPointPosition(value: String): Int {
+    return value.indexOfFirst { c -> c == '.' }
+}
+
+fun BigDecimal.displayable(
+    currency: Currency,
+    suffixedWithDecimalPoint: Boolean,
+): TextFieldValue {
+    val toString = this.toString()
+    Log.i("number", "toString: $toString")
+    val decimalPointPos = decimalPointPosition(toString)
+    Log.i("number", "decimalPointPos: $decimalPointPos")
+    val precision = if (decimalPointPos >= 0) toString.length - decimalPointPos - 1 else 0
+    Log.i("number", "precision: $precision")
+    val format = "%,.${precision}f"
+    Log.i("number", "format: $format")
+    val text = String.format(format, this).let { if (suffixedWithDecimalPoint) "$it." else it }
+    Log.i("number", "text: $text")
+    return TextFieldValue(text, selection = TextRange(text.length))
+}
+
+private fun String.countFromEnd(c: Char): Int {
+    var count = 0
+    for (index in length - 1 downTo 0) {
+        if (this[index] == c)
+            count++
+        else
+            return count
+    }
+    return count
 }

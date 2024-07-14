@@ -17,6 +17,8 @@ import farayan.sabad.core.OnePlace.ProductBarcode.CapturedBarcode
 import farayan.sabad.core.OnePlace.ProductBarcode.IProductBarcodeRepo
 import farayan.sabad.core.OnePlace.Unit.IUnitRepo
 import farayan.sabad.core.OnePlace.product.ProductEntity
+import farayan.sabad.core.commons.Currency
+import farayan.sabad.core.commons.Money
 import farayan.sabad.core.model.product.IProductRepo
 import farayan.sabad.utility.hasValue
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -210,6 +212,7 @@ class InvoiceItemFormViewModel @Inject constructor(
     val product = MutableStateFlow(Fixable<ProductEntity>())
     val productBarcode = MutableStateFlow("")
     val productName = MutableStateFlow("")
+    val productPrice = MutableStateFlow<Money?>(Money(BigDecimal.ZERO, Currency.Rial))
     val productPhotos = MutableStateFlow(listOf<String>())
     val itemQuantity = MutableStateFlow(0.0)
     val itemUnit = MutableStateFlow("")
