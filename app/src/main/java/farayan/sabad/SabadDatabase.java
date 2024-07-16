@@ -36,7 +36,7 @@ import farayan.sabad.core.OnePlace.Store.StoreEntity;
 import farayan.sabad.core.OnePlace.StoreCategory.StoreCategoryEntity;
 import farayan.sabad.core.OnePlace.StoreGroup.StoreGroupEntity;
 import farayan.sabad.core.OnePlace.Unit.UnitEntity;
-import farayan.sabad.core.OnePlace.product.ProductEntity;
+import farayan.sabad.core.model.product.ProductEntity;
 import farayan.sabad.models.Category.CategoryRepo;
 import farayan.sabad.models.CategoryGroup.CategoryGroupRepo;
 import farayan.sabad.models.Group.GroupRepo;

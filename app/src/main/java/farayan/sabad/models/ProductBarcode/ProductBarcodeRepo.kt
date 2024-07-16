@@ -5,14 +5,24 @@ import android.graphics.Bitmap
 import com.j256.ormlite.dao.RuntimeExceptionDao
 import farayan.commons.Exceptions.Rexception
 import farayan.commons.PersianCalendar
-import farayan.commons.QueryBuilderCore.*
+import farayan.commons.QueryBuilderCore.BaseParams
+import farayan.commons.QueryBuilderCore.EntityFilter
+import farayan.commons.QueryBuilderCore.EnumFilter
+import farayan.commons.QueryBuilderCore.PropertyValueConditionModes
+import farayan.commons.QueryBuilderCore.RelationalOperators
+import farayan.commons.QueryBuilderCore.TextFilter
+import farayan.commons.QueryBuilderCore.TextMatchModes
 import farayan.sabad.SabadTheApp
-import farayan.sabad.core.OnePlace.product.ProductEntity
-import farayan.sabad.core.OnePlace.ProductBarcode.*
+import farayan.sabad.core.OnePlace.ProductBarcode.BarcodePoint
+import farayan.sabad.core.OnePlace.ProductBarcode.CapturedBarcode
+import farayan.sabad.core.OnePlace.ProductBarcode.IProductBarcodeRepo
+import farayan.sabad.core.OnePlace.ProductBarcode.ProductBarcodeEntity
+import farayan.sabad.core.OnePlace.ProductBarcode.ProductBarcodeParams
+import farayan.sabad.core.model.product.ProductEntity
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
-import java.util.*
+import java.util.Arrays
 import java.util.stream.Collectors
 
 class ProductBarcodeRepo : IProductBarcodeRepo {
@@ -30,7 +40,11 @@ class ProductBarcodeRepo : IProductBarcodeRepo {
         return First(params)
     }
 
-    override fun EnsureBarcodeRegistered(context: Context, barcodeResult: CapturedBarcode, productEntity: ProductEntity): ProductBarcodeEntity {
+    override fun EnsureBarcodeRegistered(
+        context: Context,
+        barcodeResult: CapturedBarcode,
+        productEntity: ProductEntity
+    ): ProductBarcodeEntity {
         val params = ProductBarcodeParams()
         params.Product = EntityFilter(productEntity)
         params.Text = TextFilter(barcodeResult.text, TextMatchModes.Exactly)
@@ -43,50 +57,66 @@ class ProductBarcodeRepo : IProductBarcodeRepo {
         return entity
     }
 
-    private fun New(context: Context, barcodeResult: CapturedBarcode, product: ProductEntity): ProductBarcodeEntity {
+    private fun New(
+        context: Context,
+        barcodeResult: CapturedBarcode,
+        product: ProductEntity
+    ): ProductBarcodeEntity {
         val entity = ProductBarcodeEntity()
         entity.Text = barcodeResult.text
         entity.Format = barcodeResult.format
         entity.Product = product
         val now = PersianCalendar(System.currentTimeMillis())
         val path = String.format(
-                "/Barcodes/%s/%s/%s/",
-                now.persianYear,
-                now.persianMonthIndexFrom1,
-                now.persianDay
+            "/Barcodes/%s/%s/%s/",
+            now.persianYear,
+            now.persianMonthIndexFrom1,
+            now.persianDay
         )
         val folder = context.getExternalFilesDir(path)
         val fileName = String.format(
-                "%s-%s",
-                barcodeResult.format,
-                barcodeResult.text
+            "%s-%s",
+            barcodeResult.format,
+            barcodeResult.text
         )
         return try {
             if (!folder!!.exists()) folder.mkdirs()
             var file = File("$folder$fileName.jpg")
             if (file.exists()) {
-                file = File(folder.toString() + fileName + "-" + PersianCalendar().getPersianDateTimeConcatenated("") + ".jpg")
+                file = File(
+                    folder.toString() + fileName + "-" + PersianCalendar().getPersianDateTimeConcatenated(
+                        ""
+                    ) + ".jpg"
+                )
             }
             file.createNewFile()
             val fileOutputStream = FileOutputStream(file)
-            val compress = barcodeResult.bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fileOutputStream)
+            val compress =
+                barcodeResult.bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fileOutputStream)
             entity.BitmapFile = folder.toString() + fileName
             entity.BitmapScaleFactor = barcodeResult.bitmapScaleFactor
             entity.BitmapResultPoints = Arrays
-                    .stream(barcodeResult.resultPoints)
-                    .map { point: BarcodePoint -> point.x.toString() + ":" + point.y.toString() }
-                    .collect(Collectors.joining(","))
+                .stream(barcodeResult.resultPoints)
+                .map { point: BarcodePoint -> point.x.toString() + ":" + point.y.toString() }
+                .collect(Collectors.joining(","))
             entity
         } catch (e: IOException) {
             throw Rexception(e, "Unable to persist image of barcode")
         }
     }
 
-    override fun EnsureBarcodeRegistered(barcode: String, productEntity: ProductEntity): ProductBarcodeEntity {
+    override fun EnsureBarcodeRegistered(
+        barcode: String,
+        productEntity: ProductEntity
+    ): ProductBarcodeEntity {
         val params = ProductBarcodeParams()
         params.Product = EntityFilter(productEntity)
         params.Text = TextFilter(barcode, TextMatchModes.Exactly)
-        params.Format = EnumFilter(null, PropertyValueConditionModes.ProvidedValueOrNull, RelationalOperators.IsNull)
+        params.Format = EnumFilter(
+            null,
+            PropertyValueConditionModes.ProvidedValueOrNull,
+            RelationalOperators.IsNull
+        )
         var entity = First(params)
         if (entity == null) {
             entity = ProductBarcodeEntity(barcode, productEntity)

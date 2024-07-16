@@ -3,9 +3,9 @@ package farayan.sabad.models.Product
 import com.j256.ormlite.dao.RuntimeExceptionDao
 import farayan.commons.QueryBuilderCore.BaseParams
 import farayan.sabad.SabadTheApp
-import farayan.sabad.core.OnePlace.product.ProductEntity
-import farayan.sabad.core.OnePlace.product.ProductParams
 import farayan.sabad.core.model.product.IProductRepo
+import farayan.sabad.core.model.product.ProductEntity
+import farayan.sabad.core.model.product.ProductParams
 
 class ProductRepo : IProductRepo {
     override fun byBarcode(barcode: String): List<ProductEntity> {
