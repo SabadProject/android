@@ -43,10 +43,10 @@ import farayan.sabad.core.OnePlace.ProductBarcode.IProductBarcodeRepo;
 import farayan.sabad.core.OnePlace.ProductBarcode.ProductBarcodeEntity;
 import farayan.sabad.core.OnePlace.ProductBarcode.ProductBarcodeParams;
 import farayan.sabad.core.OnePlace.Unit.IUnitRepo;
-import farayan.sabad.core.OnePlace.Unit.UnitEntity;
 import farayan.sabad.core.model.product.IProductRepo;
 import farayan.sabad.core.model.product.ProductEntity;
 import farayan.sabad.core.model.product.ProductParams;
+import farayan.sabad.core.model.unit.UnitEntity;
 
 public class InvoiceItemFormDialogRemoved extends InvoiceItemFormDialogParent {
     private final InputArgs Args;
@@ -190,7 +190,7 @@ public class InvoiceItemFormDialogRemoved extends InvoiceItemFormDialogParent {
                 if (unitEntity.getID() == 0) {
                     Args.UnitRepo.Save(unitEntity);
                 }
-                Args.GroupUnitRepo.EnsureRelated(groupEntity, unitEntity);
+                Args.GroupUnitRepo.ensureRelated(groupEntity, unitEntity);
             }
             if (Args.InvoiceItem == null) {
                 InvoiceItemEntity invoiceItemEntity = new InvoiceItemEntity(

@@ -6,4 +6,8 @@
     <string name="currency_name_mtuman">م‌ت</string>
     <string name="currency_name_euro">€</string>
     <string name="currency_name_dollar">$</string>
+    <string name="unit_variation_g_name">گرم</string>
+    <string name="unit_variation_kg_name">کیلوگرم</string>
+    <string name="unit_variation_ml_name">میلی‌لیتر</string>
+    <string name="unit_variation_l_name">لیتر</string>
 </resources>

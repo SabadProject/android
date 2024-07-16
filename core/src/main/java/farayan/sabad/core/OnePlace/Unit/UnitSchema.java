@@ -1,10 +1,10 @@
 package farayan.sabad.core.OnePlace.Unit;
 
-public interface UnitSchema
-{
-	String Units = "Units";
-	String DisplayableName = "DisplayableName";
-	String QueryableName = "QueryableName";
-	String Category = "Category";
-	String Coefficient = "Coefficient";
+public interface UnitSchema {
+    String Units = "units";
+    String DisplayableName = "displayableName";
+    String QueryableName = "queryableName";
+    String Category = "category";
+    String Type = "type";
+    String Variation = "variation";
 }

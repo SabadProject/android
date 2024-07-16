@@ -6,9 +6,9 @@ import farayan.sabad.core.OnePlace.Group.GroupEntity
 import farayan.sabad.core.OnePlace.InvoiceItem.InvoiceItemEntity
 import farayan.sabad.core.OnePlace.InvoiceItem.InvoiceItemPortable
 import farayan.sabad.core.OnePlace.Store.StoreEntity
-import farayan.sabad.core.OnePlace.Unit.UnitEntity
 import farayan.sabad.core.base.SabadPortableBase
 import farayan.sabad.core.model.product.ProductEntity
+import farayan.sabad.core.model.unit.UnitEntity
 import org.jetbrains.annotations.NotNull
 
 class InvoicePortable(

@@ -5,9 +5,9 @@ import com.j256.ormlite.table.DatabaseTable;
 
 import farayan.sabad.core.OnePlace.Group.GroupEntity;
 import farayan.sabad.core.OnePlace.Invoice.InvoiceEntity;
-import farayan.sabad.core.OnePlace.Unit.UnitEntity;
 import farayan.sabad.core.base.SabadEntityBase;
 import farayan.sabad.core.model.product.ProductEntity;
+import farayan.sabad.core.model.unit.UnitEntity;
 
 
 @DatabaseTable(tableName = InvoiceItemSchema.InvoiceItems)
