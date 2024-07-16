@@ -30,8 +30,5 @@ public class SabadApp extends SabadTheApp
 				.enableWebKitInspector(Stetho.defaultInspectorModulesProvider(getApplicationContext()))
 				.build()
 		);
-
-		DebugGhostBridge mDebugGhostBridge = new DebugGhostBridge(this, SabadDatabase.Name, SabadDatabase.Version);
-		mDebugGhostBridge.startDebugGhost();
 	}
 }

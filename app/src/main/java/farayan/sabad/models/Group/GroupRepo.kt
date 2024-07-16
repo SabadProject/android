@@ -2,18 +2,35 @@ package farayan.sabad.models.Group
 
 import com.j256.ormlite.dao.RuntimeExceptionDao
 import farayan.commons.FarayanUtility
-import farayan.commons.QueryBuilderCore.*
+import farayan.commons.QueryBuilderCore.BaseParams
+import farayan.commons.QueryBuilderCore.ComparableFilter
+import farayan.commons.QueryBuilderCore.EmptyParamReturns
+import farayan.commons.QueryBuilderCore.EntityFilter
+import farayan.commons.QueryBuilderCore.RelationalOperators
+import farayan.commons.QueryBuilderCore.TextFilter
+import farayan.commons.QueryBuilderCore.TextMatchModes
 import farayan.sabad.SabadTheApp
-import farayan.sabad.core.OnePlace.Group.*
+import farayan.sabad.core.OnePlace.Group.DuplicatedNameRexception
+import farayan.sabad.core.OnePlace.Group.EmptyNameRexception
+import farayan.sabad.core.OnePlace.Group.GroupEntity
+import farayan.sabad.core.OnePlace.Group.GroupParams
+import farayan.sabad.core.OnePlace.Group.GroupUniqueNameNeededException
+import farayan.sabad.core.OnePlace.Group.IGroupRepo
+import farayan.sabad.core.OnePlace.Group.NewGroupNameNeededException
 import farayan.sabad.core.OnePlace.GroupUnit.GroupUnitParams
 import farayan.sabad.core.OnePlace.GroupUnit.IGroupUnitRepo
 import farayan.sabad.core.OnePlace.InvoiceItem.IInvoiceItemRepo
 import farayan.sabad.core.OnePlace.InvoiceItem.InvoiceItemParams
-import farayan.sabad.core.OnePlace.Product.IProductRepo
-import farayan.sabad.core.OnePlace.Product.ProductParams
+import farayan.sabad.core.model.product.IProductRepo
+import farayan.sabad.core.model.product.ProductParams
 
 class GroupRepo : IGroupRepo {
-    override fun New(name: String, description: String?, icon: String?, undelete: Boolean): GroupEntity {
+    override fun New(
+        name: String,
+        description: String?,
+        icon: String?,
+        undelete: Boolean
+    ): GroupEntity {
         if (FarayanUtility.IsNullOrEmpty(name)) throw NewGroupNameNeededException()
         val groupEntity = FirstByName(name)
         if (groupEntity != null && groupEntity.Deleted && undelete) {
@@ -40,7 +57,8 @@ class GroupRepo : IGroupRepo {
     override fun Rename(Group: GroupEntity, name: String) {
         if (FarayanUtility.IsNullOrEmpty(name)) throw EmptyNameRexception()
         val groupParams = GroupParams()
-        groupParams.QueryableName = TextFilter(FarayanUtility.Queryable(name), TextMatchModes.Exactly)
+        groupParams.QueryableName =
+            TextFilter(FarayanUtility.Queryable(name), TextMatchModes.Exactly)
         groupParams.ID = ComparableFilter(Group.ID, RelationalOperators.NotEqual)
         groupParams.Deleted = ComparableFilter(false)
         val count = Count(groupParams)
@@ -49,7 +67,12 @@ class GroupRepo : IGroupRepo {
         Update(Group)
     }
 
-    override fun Remove(invoiceItemRepo: IInvoiceItemRepo, productRepo: IProductRepo, GroupUnitRepo: IGroupUnitRepo, Group: GroupEntity) {
+    override fun Remove(
+        invoiceItemRepo: IInvoiceItemRepo,
+        productRepo: IProductRepo,
+        GroupUnitRepo: IGroupUnitRepo,
+        Group: GroupEntity
+    ) {
         val invoiceItemParams = InvoiceItemParams()
         invoiceItemParams.Purchasable = EntityFilter(Group)
         if (invoiceItemRepo.Count(invoiceItemParams) > 0) {
@@ -86,7 +109,7 @@ class GroupRepo : IGroupRepo {
     }
 
     override fun NewParams(): BaseParams<GroupEntity> {
-        return GroupParams();
+        return GroupParams()
     }
 
     private fun Hide(Group: GroupEntity) {

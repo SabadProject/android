@@ -4,11 +4,11 @@ package farayan.sabad.services;
 import dagger.Module;
 import dagger.Provides;
 import dagger.hilt.InstallIn;
-import dagger.hilt.android.components.ApplicationComponent;
+import dagger.hilt.components.SingletonComponent;
 import farayan.sabad.contracts.IVendorContract;
 
-@InstallIn(ApplicationComponent.class)
 @Module
+@InstallIn(SingletonComponent.class)
 public class ProviderModule
 {
 	@Provides

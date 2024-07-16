@@ -13,6 +13,6 @@ class UnitRepo : IUnitRepo {
     }
 
     override fun NewParams(): BaseParams<UnitEntity> {
-        return UnitParams();
+        return UnitParams()
     }
 }

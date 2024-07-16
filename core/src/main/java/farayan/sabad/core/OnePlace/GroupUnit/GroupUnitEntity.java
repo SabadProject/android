@@ -19,8 +19,8 @@ public class GroupUnitEntity extends SabadEntityBase<GroupUnitEntity>
 	public GroupUnitEntity() {
 	}
 
-	public GroupUnitEntity(GroupEntity Group, UnitEntity unit) {
-		Group = Group;
+	public GroupUnitEntity(GroupEntity group, UnitEntity unit) {
+		Group = group;
 		Unit = unit;
 	}
 

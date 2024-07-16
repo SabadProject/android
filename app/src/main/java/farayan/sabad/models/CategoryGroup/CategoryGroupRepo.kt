@@ -17,7 +17,7 @@ class CategoryGroupRepo : ICategoryGroupRepo {
     }
 
     override fun NewParams(): BaseParams<CategoryGroupEntity> {
-        return CategoryGroupParams();
+        return CategoryGroupParams()
     }
 
     override fun EnsureRelated(Group: GroupEntity, category: CategoryEntity): CategoryGroupEntity {

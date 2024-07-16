@@ -14,7 +14,7 @@ class NeedChangeRepo : INeedChangeRepo {
     }
 
     override fun NewParams(): BaseParams<NeedChangeEntity> {
-        return NeedChangeParams();
+        return NeedChangeParams()
     }
 
     override fun RegisterChange(Group: GroupEntity, value: Boolean) {

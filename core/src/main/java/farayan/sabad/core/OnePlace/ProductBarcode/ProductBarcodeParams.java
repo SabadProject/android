@@ -7,24 +7,23 @@ import farayan.commons.QueryBuilderCore.EntityFilter;
 import farayan.commons.QueryBuilderCore.EnumFilter;
 import farayan.commons.QueryBuilderCore.PropertyFilter;
 import farayan.commons.QueryBuilderCore.TextFilter;
-import farayan.sabad.core.OnePlace.Product.ProductEntity;
 import farayan.sabad.core.base.SabadParamsBase;
+import farayan.sabad.core.model.product.ProductEntity;
 
-public class ProductBarcodeParams extends SabadParamsBase<ProductBarcodeEntity>
-{
-	public TextFilter Text;
+public class ProductBarcodeParams extends SabadParamsBase<ProductBarcodeEntity> {
+    public TextFilter Text;
 
-	public EnumFilter<BarcodeFormats> Format;
+    public EnumFilter<BarcodeFormats> Format;
 
-	public EntityFilter<ProductEntity> Product;
+    public EntityFilter<ProductEntity> Product;
 
-	@Override
-	public PropertyFilter[] Filters() {
-		return ArrayUtils.addAll(
-				super.Filters(),
-				new PropertyFilter(ProductBarcodeSchema.Text, () -> Text),
-				new PropertyFilter(ProductBarcodeSchema.Format, () -> Format),
-				new PropertyFilter(ProductBarcodeSchema.Product, () -> Product)
-		);
-	}
+    @Override
+    public PropertyFilter[] Filters() {
+        return ArrayUtils.addAll(
+                super.Filters(),
+                new PropertyFilter(ProductBarcodeSchema.Text, () -> Text),
+                new PropertyFilter(ProductBarcodeSchema.Format, () -> Format),
+                new PropertyFilter(ProductBarcodeSchema.Product, () -> Product)
+        );
+    }
 }

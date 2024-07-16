@@ -42,7 +42,7 @@ interface IVendorContract {
     }
 
     fun shareUrl(): String {
-        return "market://details?id=${FarayanUtility.GetPackageName()}";
+        return "market://details?id=${FarayanUtility.GetPackageName()}"
     }
     fun rate(activity: Activity) {
 

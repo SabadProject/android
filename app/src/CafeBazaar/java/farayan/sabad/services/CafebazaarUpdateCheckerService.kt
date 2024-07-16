@@ -1,28 +1,27 @@
-package farayan.sabad.Services
+package farayan.sabad.services
 
 import android.content.ComponentName
 import android.content.Context
-import android.content.Intent
 import android.content.ServiceConnection
 import android.os.IBinder
 import com.farsitel.bazaar.IUpdateCheckService
 import farayan.commons.FarayanUtility
 import farayan.commons.UI.Core.IGenericEvent
-import farayan.sabad.Contracts.IVendorContract
+import farayan.sabad.contracts.IVendorContract
 
 
 class UpdateCheckerService(
-        private val onCheckFinished: IGenericEvent<IVendorContract.LatestVersion>,
-        private val onCheckFailed: IGenericEvent<java.lang.Exception>
+    private val onCheckFinished: IGenericEvent<IVendorContract.LatestVersion>,
+    private val onCheckFailed: IGenericEvent<java.lang.Exception>
 ) : ServiceConnection {
-    private var cafeBazaarUpdateService: IUpdateCheckService? = null;
+    private var cafeBazaarUpdateService: IUpdateCheckService? = null
 
     override fun onServiceConnected(name: ComponentName?, boundService: IBinder?) {
         cafeBazaarUpdateService = IUpdateCheckService.Stub.asInterface(boundService)
         if (cafeBazaarUpdateService == null)
-            return;
+            return
         try {
-            val availableVersionCode: Long = cafeBazaarUpdateService!!.getVersionCode(FarayanUtility.GetPackageName());
+            val availableVersionCode: Long = cafeBazaarUpdateService!!.getVersionCode(FarayanUtility.GetPackageName())
             val installedVersionCode: Long = FarayanUtility.GetPackageVersion()
 
             if (installedVersionCode < availableVersionCode) {
@@ -31,7 +30,7 @@ class UpdateCheckerService(
                 onCheckFinished.Fire(null)
             }
         } catch (e: Exception) {
-            onCheckFailed.Fire(e);
+            onCheckFailed.Fire(e)
         }
     }
 

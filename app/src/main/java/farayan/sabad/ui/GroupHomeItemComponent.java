@@ -19,8 +19,8 @@ import farayan.sabad.core.OnePlace.Group.IGroupRepo;
 import farayan.sabad.core.OnePlace.GroupUnit.IGroupUnitRepo;
 import farayan.sabad.core.OnePlace.InvoiceItem.IInvoiceItemRepo;
 import farayan.sabad.core.OnePlace.NeedChange.INeedChangeRepo;
-import farayan.sabad.core.OnePlace.Product.IProductRepo;
 import farayan.sabad.core.OnePlace.Unit.IUnitRepo;
+import farayan.sabad.core.model.product.IProductRepo;
 
 @AndroidEntryPoint
 public class GroupHomeItemComponent extends GroupHomeItemComponentParent implements IEntityView<GroupEntity>

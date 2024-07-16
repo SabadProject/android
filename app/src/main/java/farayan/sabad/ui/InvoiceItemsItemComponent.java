@@ -12,8 +12,8 @@ import farayan.commons.FarayanUtility;
 import farayan.commons.UI.Core.IEntityView;
 import farayan.sabad.core.OnePlace.Group.IGroupRepo;
 import farayan.sabad.core.OnePlace.InvoiceItem.InvoiceItemEntity;
-import farayan.sabad.core.OnePlace.Product.IProductRepo;
 import farayan.sabad.core.OnePlace.Unit.IUnitRepo;
+import farayan.sabad.core.model.product.IProductRepo;
 
 @AndroidEntryPoint
 public class InvoiceItemsItemComponent extends InvoiceItemsItemComponentParent implements IEntityView<InvoiceItemEntity>

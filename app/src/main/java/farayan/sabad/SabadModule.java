@@ -3,7 +3,8 @@ package farayan.sabad;
 import dagger.Module;
 import dagger.Provides;
 import dagger.hilt.InstallIn;
-import dagger.hilt.android.components.ApplicationComponent;
+import dagger.hilt.components.SingletonComponent;
+import farayan.sabad.core.model.product.IProductRepo;
 import farayan.sabad.models.Category.CategoryRepo;
 import farayan.sabad.models.CategoryGroup.CategoryGroupRepo;
 import farayan.sabad.models.Invoice.InvoiceRepo;
@@ -24,7 +25,6 @@ import farayan.sabad.core.OnePlace.GroupUnit.IGroupUnitRepo;
 import farayan.sabad.core.OnePlace.Invoice.IInvoiceRepo;
 import farayan.sabad.core.OnePlace.InvoiceItem.IInvoiceItemRepo;
 import farayan.sabad.core.OnePlace.NeedChange.INeedChangeRepo;
-import farayan.sabad.core.OnePlace.Product.IProductRepo;
 import farayan.sabad.core.OnePlace.ProductBarcode.IProductBarcodeRepo;
 import farayan.sabad.core.OnePlace.Store.IStoreRepo;
 import farayan.sabad.core.OnePlace.StoreCategory.IStoreCategoryRepo;
@@ -32,7 +32,7 @@ import farayan.sabad.core.OnePlace.StoreGroup.IStoreGroupRepo;
 import farayan.sabad.core.OnePlace.Unit.IUnitRepo;
 
 @Module
-@InstallIn(ApplicationComponent.class)
+@InstallIn(SingletonComponent.class)
 public class SabadModule
 {
 	@Provides

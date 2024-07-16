@@ -17,7 +17,7 @@ import farayan.sabad.core.OnePlace.Group.GroupEntity;
 import farayan.sabad.core.OnePlace.Group.IGroupRepo;
 import farayan.sabad.core.OnePlace.GroupUnit.IGroupUnitRepo;
 import farayan.sabad.core.OnePlace.InvoiceItem.IInvoiceItemRepo;
-import farayan.sabad.core.OnePlace.Product.IProductRepo;
+import farayan.sabad.core.model.product.IProductRepo;
 
 public class GroupFormDialog extends GroupFormDialogParent
 {

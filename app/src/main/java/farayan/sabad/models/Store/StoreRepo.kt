@@ -13,6 +13,6 @@ class StoreRepo : IStoreRepo {
     }
 
     override fun NewParams(): BaseParams<StoreEntity> {
-        return StoreParams();
+        return StoreParams()
     }
 }
