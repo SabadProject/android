@@ -1,8 +1,6 @@
 package farayan.sabad.ui.components
 
 import android.util.Log
-import androidx.compose.ui.text.TextRange
-import androidx.compose.ui.text.input.TextFieldValue
 import java.math.BigDecimal
 
 
@@ -10,15 +8,20 @@ fun decimalPointPosition(value: String): Int {
     return value.indexOfFirst { c -> c == '.' }
 }
 
-fun BigDecimal.displayable(
+fun BigDecimal?.displayable(
     suffixedWithDecimalPoint: Boolean,
-): TextFieldValue {
+): String {
+    if (this == null) {
+        if (suffixedWithDecimalPoint)
+            return "."
+        return ""
+    }
     val toString = this.toString()
     val decimalPointPos = decimalPointPosition(toString)
     val precision = if (decimalPointPos >= 0) toString.length - decimalPointPos - 1 else 0
     val format = "%,.${precision}f"
     val text = String.format(format, this).let { if (suffixedWithDecimalPoint) "$it." else it }
-    return TextFieldValue(text, selection = TextRange(text.length))
+    return text
 }
 
 fun parseBigDecimal(value: String): BigDecimal? {

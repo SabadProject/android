@@ -336,13 +336,23 @@ class InvoiceItemFormDialog(
                                 Row {
                                     val mainUnitName =
                                         stringResource(id = unitVariation!!.mainUnitNameResId)
-                                    val equivalentText = referencePrice(priceAmount!!, unitAmount!!, unitVariation.coefficient)
-                                        .displayable(false).text
-                                    val currency = priceCurrency?.resourceId?.let { stringResource(id = it) } ?: ""
-                                    val text = stringResource(id = R.string.invoice_item_form_dialog_reference_price_template, mainUnitName, equivalentText, currency)
+                                    val message: String
+                                    if (unitAmount!! <= BigDecimal.ZERO) {
+                                        message = if (quantityUnit?.variation.hasValue) {
+                                            stringResource(id = R.string.invoice_item_form_dialog_reference_quantity_unit_unacceptable)
+                                        } else {
+                                            stringResource(id = R.string.invoice_item_form_dialog_reference_package_unit_unacceptable)
+                                        }
+                                    } else {
+                                        val equivalentText = referencePrice(priceAmount!!, unitAmount, unitVariation.coefficient)
+                                            .displayable(false)
+                                        val currency = priceCurrency?.resourceId?.let { stringResource(id = it) } ?: ""
+                                        message = stringResource(id = R.string.invoice_item_form_dialog_reference_price_template, mainUnitName, equivalentText, currency)
+                                    }
+
                                     Text(
                                         modifier = Modifier.defaults(),
-                                        text = text,
+                                        text = message,
                                         style = TextStyle(fontFamily = appFont)
                                     )
                                 }
