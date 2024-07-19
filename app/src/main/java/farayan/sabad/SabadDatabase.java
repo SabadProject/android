@@ -72,10 +72,10 @@ public class SabadDatabase extends OrmLiteSqliteOpenHelper {
                     getRuntimeExceptionDao(UnitEntity.class)
             );
 
-            UnitEntity bottle = new UnitEntity("بطری", "", null);
             UnitEntity kg = new UnitEntity("کیلوگرم", "", UnitVariations.kg);
             UnitEntity g = new UnitEntity("گرم", "", UnitVariations.g);
             UnitEntity litre = new UnitEntity("لیتر", "", UnitVariations.l);
+            UnitEntity bottle = new UnitEntity("بطری", "", null);
             UnitEntity can = new UnitEntity("قوطی", "", null);
             UnitEntity pack = new UnitEntity("بسته", "", null);
 
