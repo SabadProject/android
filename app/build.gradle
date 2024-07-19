@@ -6,6 +6,9 @@ apply plugin: "kotlin-kapt"
 apply plugin: "com.google.dagger.hilt.android"
 
 android {
+    lint {
+        baseline = file("lint-baseline.xml")
+    }
     dexOptions {
         javaMaxHeapSize "5g"
     }
@@ -15,7 +18,7 @@ android {
 
     signingConfigs {
         FarayanKey {
-            if (!project.hasProperty('SABAD_KEY_STORE_FILE_PATH') || !project.hasProperty('SABAD_KEY_STORE_FILE_PASS')  || !project.hasProperty('SABAD_KEY_STORE_ALIAS_NAME') || !project.hasProperty('SABAD_KEY_STORE_ALIAS_PASS') ) {
+            if (!project.hasProperty('SABAD_KEY_STORE_FILE_PATH') || !project.hasProperty('SABAD_KEY_STORE_FILE_PASS') || !project.hasProperty('SABAD_KEY_STORE_ALIAS_NAME') || !project.hasProperty('SABAD_KEY_STORE_ALIAS_PASS')) {
                 throw new GradleException("Please define singing properties in ~/.gradle/gradle.properties like below:\n" +
                         "SABAD_KEY_STORE_FILE_PATH=/path/to/key/store/file\n" +
                         "SABAD_KEY_STORE_FILE_PASS=key-store-password\n" +

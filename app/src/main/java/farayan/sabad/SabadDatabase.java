@@ -23,7 +23,6 @@ import farayan.commons.QueryBuilderCore.BaseParams;
 import farayan.commons.QueryBuilderCore.ComparableFilter;
 import farayan.commons.QueryBuilderCore.IRepo;
 import farayan.commons.QueryBuilderCore.RelationalOperators;
-import farayan.commons.Utilities.DatabaseUtility;
 import farayan.sabad.core.OnePlace.Category.CategoryEntity;
 import farayan.sabad.core.OnePlace.CategoryGroup.CategoryGroupEntity;
 import farayan.sabad.core.OnePlace.Group.GroupEntity;
@@ -35,26 +34,14 @@ import farayan.sabad.core.OnePlace.ProductBarcode.ProductBarcodeEntity;
 import farayan.sabad.core.OnePlace.Store.StoreEntity;
 import farayan.sabad.core.OnePlace.StoreCategory.StoreCategoryEntity;
 import farayan.sabad.core.OnePlace.StoreGroup.StoreGroupEntity;
-import farayan.sabad.core.OnePlace.Unit.UnitEntity;
+import farayan.sabad.core.commons.UnitVariations;
 import farayan.sabad.core.model.product.ProductEntity;
-import farayan.sabad.models.Category.CategoryRepo;
-import farayan.sabad.models.CategoryGroup.CategoryGroupRepo;
-import farayan.sabad.models.Group.GroupRepo;
-import farayan.sabad.models.GroupUnit.GroupUnitRepo;
-import farayan.sabad.models.Invoice.InvoiceRepo;
-import farayan.sabad.models.InvoiceItem.InvoiceItemRepo;
-import farayan.sabad.models.NeedChange.NeedChangeRepo;
-import farayan.sabad.models.Product.ProductRepo;
-import farayan.sabad.models.ProductBarcode.ProductBarcodeRepo;
-import farayan.sabad.models.Store.StoreRepo;
-import farayan.sabad.models.StoreCategory.StoreCategoryRepo;
-import farayan.sabad.models.StoreGroup.StoreGroupRepo;
-import farayan.sabad.models.Unit.UnitRepo;
+import farayan.sabad.core.model.unit.UnitEntity;
 
 
 public class SabadDatabase extends OrmLiteSqliteOpenHelper {
     public static final String Name = "Sabad";
-    public static final int Version = 5;
+    public static final int Version = 1;
 
     public SabadDatabase(Context context) {
         super(context, Name, null, Version);
@@ -85,12 +72,12 @@ public class SabadDatabase extends OrmLiteSqliteOpenHelper {
                     getRuntimeExceptionDao(UnitEntity.class)
             );
 
-            UnitEntity bottle = new UnitEntity("بطری", "", 1);
-            UnitEntity kg = new UnitEntity("کیلوگرم", "", 1000);
-            UnitEntity g = new UnitEntity("گرم", "", 1);
-            UnitEntity litre = new UnitEntity("لیتر", "", 1000);
-            UnitEntity can = new UnitEntity("قوطی", "", 1);
-            UnitEntity pack = new UnitEntity("بسته", "", 1);
+            UnitEntity kg = new UnitEntity("کیلوگرم", "", UnitVariations.kg);
+            UnitEntity g = new UnitEntity("گرم", "", UnitVariations.g);
+            UnitEntity litre = new UnitEntity("لیتر", "", UnitVariations.l);
+            UnitEntity bottle = new UnitEntity("بطری", "", null);
+            UnitEntity can = new UnitEntity("قوطی", "", null);
+            UnitEntity pack = new UnitEntity("بسته", "", null);
 
             CategoryEntity grocery = new CategoryEntity("خواروبار");
             CategoryEntity cucumbers = new CategoryEntity("صیفی‌جات");
@@ -486,66 +473,6 @@ public class SabadDatabase extends OrmLiteSqliteOpenHelper {
     }
 
     private void upgrade(SQLiteDatabase database, ConnectionSource cs, int oldVersion, int newVersion) throws SQLException {
-        if (oldVersion == 1) {
-            DatabaseUtility.addColumn(database, "Invoices", "Deleted");
-            DatabaseUtility.addColumn(database, "Invoices", "Instant");
-            DatabaseUtility.addColumn(database, "Invoices", "ItemsCountSum");
-            DatabaseUtility.addColumn(database, "Invoices", "ItemsPriceSum");
-            DatabaseUtility.addColumn(database, "Invoices", "ItemsQuantitySum");
-            DatabaseUtility.addColumn(database, "Invoices", "Seller");
-
-            DatabaseUtility.addColumn(database, "Groups", "UniqueKey");
-            DatabaseUtility.addColumn(database, "Groups", "Category");
-
-            TableUtils.createTable(cs, CategoryEntity.class);
-            TableUtils.createTable(cs, NeedChangeEntity.class);
-            TableUtils.createTable(cs, StoreCategoryEntity.class);
-            TableUtils.createTable(cs, StoreGroupEntity.class);
-            TableUtils.createTable(cs, StoreEntity.class);
-            TableUtils.createTable(cs, CategoryGroupEntity.class);
-            oldVersion++;
-        }
-
-        if (oldVersion == 2) {
-            String[] cols = new String[]{"AlwaysID", "GlobalID", "PendingSync", "LastSynced"};
-            DatabaseUtility.addColumns(database, "Categories", cols);
-            DatabaseUtility.addColumns(database, "CategoryGroups", cols);
-            DatabaseUtility.addColumns(database, "Groups", cols);
-            DatabaseUtility.addColumns(database, "GroupUnits", cols);
-            DatabaseUtility.addColumns(database, "Invoices", cols);
-            DatabaseUtility.addColumns(database, "InvoiceItems", cols);
-            DatabaseUtility.addColumns(database, "NeedChanges", cols);
-            DatabaseUtility.addColumns(database, "Products", cols);
-            DatabaseUtility.addColumns(database, "ProductBarcodes", cols);
-            DatabaseUtility.addColumns(database, "Stores", cols);
-            DatabaseUtility.addColumns(database, "StoreCategories", cols);
-            DatabaseUtility.addColumns(database, "Units", cols);
-            oldVersion++;
-        }
-
-        if (oldVersion == 3) {
-            String[] cols = new String[]{"AlwaysID", "GlobalID", "PendingSync", "LastSynced"};
-            DatabaseUtility.addColumns(database, "StoreGroups", cols);
-            oldVersion++;
-        }
-
-        if (oldVersion == 4) {
-            ensureAlwaysIDs(new CategoryRepo());
-            ensureAlwaysIDs(new CategoryGroupRepo());
-            ensureAlwaysIDs(new GroupRepo());
-            ensureAlwaysIDs(new GroupUnitRepo());
-            ensureAlwaysIDs(new InvoiceRepo());
-            ensureAlwaysIDs(new InvoiceItemRepo());
-            ensureAlwaysIDs(new NeedChangeRepo());
-            ensureAlwaysIDs(new ProductRepo());
-            ensureAlwaysIDs(new ProductBarcodeRepo());
-            ensureAlwaysIDs(new StoreRepo());
-            ensureAlwaysIDs(new StoreCategoryRepo());
-            ensureAlwaysIDs(new StoreGroupRepo());
-            ensureAlwaysIDs(new UnitRepo());
-
-            oldVersion++;
-        }
 
         Log.i("Database", String.format("Upgraded from %s to %s", oldVersion, newVersion));
     }

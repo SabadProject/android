@@ -4,9 +4,9 @@ import farayan.commons.QueryBuilderCore.IRepo
 import farayan.commons.QueryBuilderCore.ensured
 import farayan.sabad.core.OnePlace.Group.GroupEntity
 import farayan.sabad.core.OnePlace.Invoice.InvoiceEntity
-import farayan.sabad.core.OnePlace.Unit.UnitEntity
 import farayan.sabad.core.base.SabadPortableBase
 import farayan.sabad.core.model.product.ProductEntity
+import farayan.sabad.core.model.unit.UnitEntity
 
 class InvoiceItemPortable(
     entity: InvoiceItemEntity,
@@ -34,6 +34,6 @@ class InvoiceItemPortable(
         item.Total,
         SabadPortableBase(item.Invoice.ensured(invoiceRepo)),
         SabadPortableBase(item.Group.ensured(groupRepo)),
-        item.Unit?.let { SabadPortableBase(item.Unit.ensured(unitRepo)) },
+        item.Unit.let { SabadPortableBase(item.Unit.ensured(unitRepo)) },
     )
 }
