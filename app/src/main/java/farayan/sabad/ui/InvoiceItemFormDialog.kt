@@ -290,6 +290,25 @@ class InvoiceItemFormDialog(
                                     .weight(0.5f, true),
                             )
                         }
+                        if (quantityUnit.hasValue && quantityUnit!!.variation == null) {
+                            Row {
+                                NumberEntry(
+                                    number = packageMeasurementValue,
+                                    label = stringResource(id = R.string.invoice_item_form_dialog_reference_price_measurable_value, quantityUnit?.displayableName ?: ""),
+                                    onValueChanged = { packageMeasurementValue = it },
+                                    modifier = Modifier.weight(0.6f)
+                                )
+                                UnitVariationDropdownBox(
+                                    selected = packageMeasurementUnit,
+                                    onValueChanged = { packageMeasurementUnit = it },
+                                    modifier = Modifier
+                                        .defaults()
+                                        .padding(top = 6.dp)
+                                        .weight(0.4f)
+                                )
+                            }
+                        }
+
                         Row(verticalAlignment = Alignment.Bottom) {
                             NumberEntry(
                                 number = priceAmount,
@@ -309,54 +328,33 @@ class InvoiceItemFormDialog(
                                     .weight(0.4f, true),
                             )
                         }
-                        if (quantityUnit.hasValue && quantityValue.hasValue && priceAmount.hasValue) {
-                            if (quantityUnit!!.variation == null) {
-                                Row {
-                                    NumberEntry(
-                                        number = packageMeasurementValue,
-                                        label = stringResource(id = R.string.invoice_item_form_dialog_reference_price_measurable_value, quantityUnit?.displayableName ?: ""),
-                                        onValueChanged = { packageMeasurementValue = it },
-                                        modifier = Modifier.weight(0.6f)
-                                    )
-                                    UnitVariationDropdownBox(
-                                        selected = packageMeasurementUnit,
-                                        onValueChanged = { packageMeasurementUnit = it },
-                                        modifier = Modifier
-                                            .defaults()
-                                            .padding(top = 6.dp)
-                                            .weight(0.4f)
-                                    )
+
+                        val unitVariation = quantityUnit?.variation ?: packageMeasurementUnit
+                        val unitAmount = if (quantityUnit?.variation.hasValue) quantityValue else packageMeasurementValue
+
+                        if (unitVariation.hasValue && unitAmount.hasValue && priceAmount.hasValue) {
+                            val mainUnitName = stringResource(id = unitVariation!!.mainUnitNameResId)
+                            val message: String
+                            if (unitAmount!! <= BigDecimal.ZERO) {
+                                message = if (quantityUnit?.variation.hasValue) {
+                                    stringResource(id = R.string.invoice_item_form_dialog_reference_quantity_unit_unacceptable)
+                                } else {
+                                    stringResource(id = R.string.invoice_item_form_dialog_reference_package_unit_unacceptable)
                                 }
+                            } else {
+                                val equivalentText = referencePrice(priceAmount!!, unitAmount, unitVariation.coefficient)
+                                    .displayable(false)
+                                val currency = priceCurrency?.resourceId?.let { stringResource(id = it) } ?: ""
+                                message = stringResource(id = R.string.invoice_item_form_dialog_reference_price_template, mainUnitName, equivalentText, currency)
                             }
-
-                            val unitVariation = quantityUnit?.variation ?: packageMeasurementUnit
-                            val unitAmount = if (quantityUnit?.variation.hasValue) quantityValue else packageMeasurementValue
-
-                            if (unitVariation.hasValue && unitAmount.hasValue) {
-                                Row {
-                                    val mainUnitName =
-                                        stringResource(id = unitVariation!!.mainUnitNameResId)
-                                    val message: String
-                                    if (unitAmount!! <= BigDecimal.ZERO) {
-                                        message = if (quantityUnit?.variation.hasValue) {
-                                            stringResource(id = R.string.invoice_item_form_dialog_reference_quantity_unit_unacceptable)
-                                        } else {
-                                            stringResource(id = R.string.invoice_item_form_dialog_reference_package_unit_unacceptable)
-                                        }
-                                    } else {
-                                        val equivalentText = referencePrice(priceAmount!!, unitAmount, unitVariation.coefficient)
-                                            .displayable(false)
-                                        val currency = priceCurrency?.resourceId?.let { stringResource(id = it) } ?: ""
-                                        message = stringResource(id = R.string.invoice_item_form_dialog_reference_price_template, mainUnitName, equivalentText, currency)
-                                    }
-
-                                    Text(
-                                        modifier = Modifier.defaults(),
-                                        text = message,
-                                        style = TextStyle(fontFamily = appFont)
-                                    )
-                                }
-                            }
+                            Text(
+                                modifier = Modifier
+                                    .defaults()
+                                    .fillMaxWidth(),
+                                text = message,
+                                style = TextStyle(fontFamily = appFont),
+                                textAlign = TextAlign.Center
+                            )
                         }
 
                         LazyRow(
