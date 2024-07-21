@@ -58,409 +58,402 @@ import farayan.sabad.vms.InvoiceItemFormViewModel;
 
 
 @AndroidEntryPoint
-public class HomeFragment extends HomeFragmentParent
-{
-	private InvoiceItemFormViewModel invoiceItemFormViewModel ;//= new ViewModelProvider(requireActivity()).get(InvoiceItemFormViewModel.class);
-	private final View.OnClickListener EditButtonOnClickListener = new View.OnClickListener()
-	{
-		@Override
-		public void onClick(View view) {
-			String name = Objects.requireNonNull(QueryEditText().getText()).toString();
-			if (FarayanUtility.IsNullOrEmpty(name))
-				return;
-			GroupParams groupParams = new GroupParams();
-			groupParams.QueryableName = new TextFilter(FarayanUtility.Queryable(name));
-			GroupEntity groupEntity = TheGroupRepo.First(groupParams);
-			if (groupEntity == null) {
-				return;
-			}
-			GroupFormDialog dialog = new GroupFormDialog(
-					new GroupFormDialog.Input(
-							groupEntity,
-							TheGroupRepo,
-							TheInvoiceItemRepo,
-							TheProductRepo,
-							TheGroupUnitRepo,
-							x -> Reload(),
-							x -> Reload()
-					),
-					requireActivity()
-			);
-			dialog.show();
-		}
-	};
-	private boolean reloaded;
+public class HomeFragment extends HomeFragmentParent {
+    Handler handler = new Handler();
+    private InvoiceItemFormViewModel invoiceItemFormViewModel;//= new ViewModelProvider(requireActivity()).get(InvoiceItemFormViewModel.class);
+    private boolean reloaded;
+    private IStoreCategoryRepo TheStoreCategoryRepo;
+    private IStoreGroupRepo TheStoreGroupRepo;
+    private ICategoryGroupRepo TheCategoryGroupRepo;
+    private IGroupRepo TheGroupRepo;
+    private IStoreRepo TheStoreRepo;
+    private IInvoiceRepo TheInvoiceRepo;
+    private IInvoiceItemRepo TheInvoiceItemRepo;
+    private IGroupUnitRepo TheGroupUnitRepo;
+    private IProductRepo TheProductRepo;
+    private IProductBarcodeRepo TheProductBarcodeRepo;
+    private IUnitRepo TheUnitRepo;
+    private final View.OnClickListener EditButtonOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            String name = Objects.requireNonNull(QueryEditText().getText()).toString();
+            if (FarayanUtility.IsNullOrEmpty(name))
+                return;
+            GroupParams groupParams = new GroupParams();
+            groupParams.QueryableName = new TextFilter(FarayanUtility.Queryable(name));
+            GroupEntity groupEntity = TheGroupRepo.First(groupParams);
+            if (groupEntity == null) {
+                return;
+            }
+            GroupFormDialog dialog = new GroupFormDialog(
+                    new GroupFormDialog.Input(
+                            groupEntity,
+                            TheGroupRepo,
+                            TheInvoiceItemRepo,
+                            TheProductRepo,
+                            TheGroupUnitRepo,
+                            x -> Reload(),
+                            x -> Reload()
+                    ),
+                    requireActivity()
+            );
+            dialog.show();
+        }
+    };
+    private final TextView.OnEditorActionListener QueryEditTextOnEditorActionListener = (v, actionId, event) -> {
+        if (FarayanUtility.IsNullOrEmpty(QueryEditText().getText()))
+            return false;
+        String query = Objects.requireNonNull(QueryEditText().getText()).toString();
+        if (actionId != EditorInfo.IME_ACTION_DONE)
+            return false;
+        if (Persist(false))
+            return true;
 
-	@Inject
-	public void Inject(
-			IStoreCategoryRepo storeCategoryRepo,
-			IStoreGroupRepo storeGroupRepo,
-			ICategoryGroupRepo categoryGroupRepo,
-			IGroupRepo GroupRepo,
-			IStoreRepo storeRepo,
-			IInvoiceRepo invoiceRepo,
-			IInvoiceItemRepo invoiceItemRepo,
-			IGroupUnitRepo GroupUnitRepo,
-			IProductRepo productRepo,
-			IProductBarcodeRepo productBarcodeRepo,
-			IUnitRepo unitRepo
-	) {
-		TheStoreCategoryRepo = storeCategoryRepo;
-		TheStoreGroupRepo = storeGroupRepo;
-		TheCategoryGroupRepo = categoryGroupRepo;
-		TheGroupRepo = GroupRepo;
-		TheStoreRepo = storeRepo;
-		TheInvoiceRepo = invoiceRepo;
-		TheInvoiceItemRepo = invoiceItemRepo;
-		TheGroupUnitRepo = GroupUnitRepo;
-		TheProductRepo = productRepo;
-		TheProductBarcodeRepo = productBarcodeRepo;
-		TheUnitRepo = unitRepo;
-		init();
-	}
+        GroupEntity groupEntity = TheGroupRepo.FirstByName(query);
 
-	private IStoreCategoryRepo TheStoreCategoryRepo;
-	private IStoreGroupRepo TheStoreGroupRepo;
-	private ICategoryGroupRepo TheCategoryGroupRepo;
-	private IGroupRepo TheGroupRepo;
-	private IStoreRepo TheStoreRepo;
-	private IInvoiceRepo TheInvoiceRepo;
-	private IInvoiceItemRepo TheInvoiceItemRepo;
-	private IGroupUnitRepo TheGroupUnitRepo;
-	private IProductRepo TheProductRepo;
-	private IProductBarcodeRepo TheProductBarcodeRepo;
-	private IUnitRepo TheUnitRepo;
+        if (QueryEditText().getSelectionStart() != 0 || QueryEditText().getSelectionEnd() != query.length()) {
+            String message = groupEntity.Needed ? "«%s» هم‌اکنون در  فهرست خرید است، برای ثبت کالای برداشته‌شده، یکبار دیگر اینتر صفحه‌کلید را بزنید" : "«%s» هم‌اکنون موجود است، برای افزودن به فهرست خرید، یکبار دیگر اینتر صفحه‌کلید را بزنید";
+            FarayanUtility.ShowToastFormatted(
+                    getActivity(),
+                    message,
+                    query
+            );
+            QueryEditText().selectAll();
+            return true;
+        }
+        if (!groupEntity.Needed) {
+            FarayanUtility.ShowToastFormatted(
+                    getActivity(),
+                    "«%s» به فهرست خرید افزوده شد، برای ثبت کالای برداشته‌شده، یکبار دیگر اینتر صفحه‌کلید را بزنید",
+                    query
+            );
 
-	@Override
-	public int TitleID() {
-		return R.string.home_title;
-	}
+            groupEntity.Needed = true;
+            TheGroupRepo.Update(groupEntity);
+            Reload();
+            return true;
+        }
 
-	@SuppressLint("NonConstantResourceId")
-	@Override
-	public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-		switch (item.getItemId()) {
-			case R.id.ScanMenu:
-				StartScan();
-				break;
-			case R.id.CheckoutMenu:
-				TryCheckout();
-				break;
-			case R.id.DisplayInvoicesMenu:
-				HostActivity.OnFragmentCalled(null, SabadFragmentEvents.DisplayInvoices);
-				break;
-		}
-		return super.onOptionsItemSelected(item);
-	}
+        if (!groupEntity.Picked) {
+            invoiceItemFormViewModel.init(groupEntity, true, null, false);
+            InvoiceItemFormDialog dialog = new InvoiceItemFormDialog(
+                    new InvoiceItemFormInputArgs(
+                            groupEntity.Item,
+                            groupEntity,
+                            null,
+                            null,
+                            invoiceItemEntity -> Reload(),
+                            invoiceItemEntity -> Reload(),
+                            TheGroupRepo,
+                            TheGroupUnitRepo,
+                            TheProductRepo,
+                            TheProductBarcodeRepo,
+                            TheInvoiceItemRepo,
+                            TheUnitRepo,
+                            new BeepManager(requireActivity())
+                    ),
+                    (AppCompatActivity) requireActivity(),
+                    true,
+                    null,
+                    invoiceItemFormViewModel
+            );
+            dialog.show();
+            dialog.maximize();
+            return true;
+        }
+        return false;
+    };
+    private final Runnable ReloadCallback = () -> Reload(Objects.requireNonNull(QueryEditText().getText()).toString());
+    private final TextWatcher QueryTextChangedListener = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
-	public enum Requests
-	{
-		Scan(1);
+        }
 
-		public final int ID;
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            handler.removeCallbacks(ReloadCallback);
+            handler.postDelayed(ReloadCallback, 500);
+        }
 
-		Requests(int id) {
-			ID = id;
-		}
-	}
+        @Override
+        public void afterTextChanged(Editable s) {
+            QueryLayout().setError(null);
+        }
+    };
+    private final View.OnClickListener RegisterButtonOnClickListener = v -> Persist(true);
 
-	private void StartScan() {
-		SabadUtility.BarcodeScanCameraPermission(
-				HostActivity,
-				() -> {
-					Intent intent = new Intent(getActivity(), ScanActivity.class);
-					startActivityForResult(intent, Requests.Scan.ID);
-				},
-				false
-		);
-	}
+    @Inject
+    public void Inject(
+            IStoreCategoryRepo storeCategoryRepo,
+            IStoreGroupRepo storeGroupRepo,
+            ICategoryGroupRepo categoryGroupRepo,
+            IGroupRepo GroupRepo,
+            IStoreRepo storeRepo,
+            IInvoiceRepo invoiceRepo,
+            IInvoiceItemRepo invoiceItemRepo,
+            IGroupUnitRepo GroupUnitRepo,
+            IProductRepo productRepo,
+            IProductBarcodeRepo productBarcodeRepo,
+            IUnitRepo unitRepo
+    ) {
+        TheStoreCategoryRepo = storeCategoryRepo;
+        TheStoreGroupRepo = storeGroupRepo;
+        TheCategoryGroupRepo = categoryGroupRepo;
+        TheGroupRepo = GroupRepo;
+        TheStoreRepo = storeRepo;
+        TheInvoiceRepo = invoiceRepo;
+        TheInvoiceItemRepo = invoiceItemRepo;
+        TheGroupUnitRepo = GroupUnitRepo;
+        TheProductRepo = productRepo;
+        TheProductBarcodeRepo = productBarcodeRepo;
+        TheUnitRepo = unitRepo;
+        init();
+    }
 
-	private void TryCheckout() {
+    @Override
+    public int TitleID() {
+        return R.string.home_title;
+    }
 
-		GroupParams remainedGroupsParams = new GroupParams();
-		remainedGroupsParams.Needed = new ComparableFilter<>(true);
-		remainedGroupsParams.Picked = new ComparableFilter<>(true);
-		remainedGroupsParams.Deleted = new ComparableFilter<>(false);
-		long pickedCount = TheGroupRepo.Count(remainedGroupsParams);
+    @SuppressLint("NonConstantResourceId")
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.ScanMenu:
+                StartScan();
+                break;
+            case R.id.CheckoutMenu:
+                TryCheckout();
+                break;
+            case R.id.DisplayInvoicesMenu:
+                HostActivity.OnFragmentCalled(null, SabadFragmentEvents.DisplayInvoices);
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
-		if (pickedCount == 0) {
-			FarayanUtility.ShowToastFormatted(getActivity(), "برای ثبت صورتحساب و صندوق، دستکم یکی از نیازمندی‌ها را بردارید");
-			return;
-		}
+    private void StartScan() {
+        SabadUtility.BarcodeScanCameraPermission(
+                HostActivity,
+                () -> {
+                    Intent intent = new Intent(getActivity(), ScanActivity.class);
+                    startActivityForResult(intent, Requests.Scan.ID);
+                },
+                false
+        );
+    }
 
-		DisplayCheckout();
-	}
+    private void TryCheckout() {
 
-	private void AutoCheckout() {
-		GroupParams neededGroupsParams = new GroupParams();
-		neededGroupsParams.Needed = new ComparableFilter<>(true);
-		long neededCount = TheGroupRepo.Count(neededGroupsParams);
+        GroupParams remainedGroupsParams = new GroupParams();
+        remainedGroupsParams.Needed = new ComparableFilter<>(true);
+        remainedGroupsParams.Picked = new ComparableFilter<>(true);
+        remainedGroupsParams.Deleted = new ComparableFilter<>(false);
+        long pickedCount = TheGroupRepo.Count(remainedGroupsParams);
 
-		GroupParams remainedGroupsParams = new GroupParams();
-		remainedGroupsParams.Needed = new ComparableFilter<>(true);
-		remainedGroupsParams.Picked = new ComparableFilter<>(false);
-		long remainedCount = TheGroupRepo.Count(remainedGroupsParams);
+        if (pickedCount == 0) {
+            FarayanUtility.ShowToastFormatted(getActivity(), "برای ثبت صورتحساب و صندوق، دستکم یکی از نیازمندی‌ها را بردارید");
+            return;
+        }
 
-		if (neededCount > 0 && remainedCount == 0) {
-			if (SabadUtility.DisplayCheckoutDialogAutomatically(getActivity())) {
-				if (SabadUtility.CheckoutGuideNeeded(getActivity()))
-					FarayanUtility.ShowToastFormatted(getActivity(), false, "چون تمام کالاهای فهرست خرید (روشن) را برداشنه‌اید، می‌توانید پایان خرید را بزنید");
-				handler.postDelayed(this::DisplayCheckout, 5000);
-			}
-		}
-	}
+        DisplayCheckout();
+    }
 
-	private void DisplayCheckout() {
-		CheckoutPurchaseDialog dialog = new CheckoutPurchaseDialog(
-				new CheckoutPurchaseDialog.Input(
-						TheStoreCategoryRepo,
-						TheStoreGroupRepo,
-						TheCategoryGroupRepo,
-						TheGroupRepo,
-						TheStoreRepo,
-						TheInvoiceRepo,
-						TheInvoiceItemRepo,
-						invoiceEntity -> {
-							Reload();
-							HostActivity.OnFragmentCalled(null, SabadFragmentEvents.DisplayInvoices);
-						}
-				),
-				HostActivity
-		);
+    private void AutoCheckout() {
+        GroupParams neededGroupsParams = new GroupParams();
+        neededGroupsParams.Needed = new ComparableFilter<>(true);
+        long neededCount = TheGroupRepo.Count(neededGroupsParams);
 
-		dialog.show();
-	}
+        GroupParams remainedGroupsParams = new GroupParams();
+        remainedGroupsParams.Needed = new ComparableFilter<>(true);
+        remainedGroupsParams.Picked = new ComparableFilter<>(false);
+        long remainedCount = TheGroupRepo.Count(remainedGroupsParams);
 
-	private final TextView.OnEditorActionListener QueryEditTextOnEditorActionListener = (v, actionId, event) -> {
-		if (FarayanUtility.IsNullOrEmpty(QueryEditText().getText()))
-			return false;
-		String query = Objects.requireNonNull(QueryEditText().getText()).toString();
-		if (actionId != EditorInfo.IME_ACTION_DONE)
-			return false;
-		if (Persist(false))
-			return true;
+        if (neededCount > 0 && remainedCount == 0) {
+            if (SabadUtility.DisplayCheckoutDialogAutomatically(getActivity())) {
+                if (SabadUtility.CheckoutGuideNeeded(getActivity()))
+                    FarayanUtility.ShowToastFormatted(getActivity(), false, "چون تمام کالاهای فهرست خرید (روشن) را برداشنه‌اید، می‌توانید پایان خرید را بزنید");
+                handler.postDelayed(this::DisplayCheckout, 5000);
+            }
+        }
+    }
 
-		GroupEntity groupEntity = TheGroupRepo.FirstByName(query);
+    private void DisplayCheckout() {
+        CheckoutPurchaseDialog dialog = new CheckoutPurchaseDialog(
+                new CheckoutPurchaseDialog.Input(
+                        TheStoreCategoryRepo,
+                        TheStoreGroupRepo,
+                        TheCategoryGroupRepo,
+                        TheGroupRepo,
+                        TheStoreRepo,
+                        TheInvoiceRepo,
+                        TheInvoiceItemRepo,
+                        invoiceEntity -> {
+                            Reload();
+                            HostActivity.OnFragmentCalled(null, SabadFragmentEvents.DisplayInvoices);
+                        }
+                ),
+                HostActivity
+        );
 
-		if (QueryEditText().getSelectionStart() != 0 || QueryEditText().getSelectionEnd() != query.length()) {
-			String message = groupEntity.Needed ? "«%s» هم‌اکنون در  فهرست خرید است، برای ثبت کالای برداشته‌شده، یکبار دیگر اینتر صفحه‌کلید را بزنید" : "«%s» هم‌اکنون موجود است، برای افزودن به فهرست خرید، یکبار دیگر اینتر صفحه‌کلید را بزنید";
-			FarayanUtility.ShowToastFormatted(
-					getActivity(),
-					message,
-					query
-			);
-			QueryEditText().selectAll();
-			return true;
-		}
-		if (!groupEntity.Needed) {
-			FarayanUtility.ShowToastFormatted(
-					getActivity(),
-					"«%s» به فهرست خرید افزوده شد، برای ثبت کالای برداشته‌شده، یکبار دیگر اینتر صفحه‌کلید را بزنید",
-					query
-			);
+        dialog.show();
+    }
 
-			groupEntity.Needed = true;
-			TheGroupRepo.Update(groupEntity);
-			Reload();
-			return true;
-		}
+    private boolean Persist(boolean toast) {
+        try {
+            String name = Objects.requireNonNull(QueryEditText().getText()).toString();
+            TheGroupRepo.New(name, null, null, true);
+            Reload(name);
+            QueryLayout().setError(null);
+            if (SabadUtility.NewGroupGuideNeeded(getActivity()))
+                FarayanUtility.ShowToastFormatted(getActivity(), false, getString(R.string.NewGroupGuide));
+            return true;
+        } catch (NewGroupNameNeededException e) {
+            QueryLayout().setError(getString(R.string.NameNeeded));
+            if (toast)
+                FarayanUtility.ShowToast(getActivity(), getString(R.string.NameNeeded));
+        } catch (GroupUniqueNameNeededException e) {
+            QueryLayout().setError(getString(R.string.CategoryUsedName));
+            if (toast)
+                FarayanUtility.ShowToast(getActivity(), getString(R.string.CategoryUsedName));
+        }
+        return false;
+    }
 
-		if (!groupEntity.Picked) {
-			invoiceItemFormViewModel.init(groupEntity,true,null,false);
-			InvoiceItemFormDialog dialog = new InvoiceItemFormDialog(
-					new InvoiceItemFormInputArgs(
-							groupEntity.Item,
-							groupEntity,
-							null,
-							null,
-							invoiceItemEntity -> Reload(),
-							invoiceItemEntity -> Reload(),
-							TheGroupRepo,
-							TheGroupUnitRepo,
-							TheProductRepo,
-							TheProductBarcodeRepo,
-							TheInvoiceItemRepo,
-							TheUnitRepo,
-							new BeepManager(requireActivity())
-					),
-					(AppCompatActivity) requireActivity(),
-					true,
-					null,
-					invoiceItemFormViewModel
-			);
-			dialog.show();
-			return true;
-		}
-		return false;
-	};
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        inflater.inflate(R.menu.home_menu, menu);
+    }
 
-	private final Runnable ReloadCallback = () -> Reload(Objects.requireNonNull(QueryEditText().getText()).toString());
-	private final TextWatcher QueryTextChangedListener = new TextWatcher()
-	{
-		@Override
-		public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+    protected void InitializeLayout() {
+        FarayanUtility.prepareRecyclerView(
+                GroupsRecyclerView(),
+                RecyclerViewOrientations.Vertical,
+                null,
+                true,
+                true
+        );
+        init();
+        QueryEditText().addTextChangedListener(QueryTextChangedListener);
+        EditButton().setOnClickListener(EditButtonOnClickListener);
+        RegisterButton().setOnClickListener(RegisterButtonOnClickListener);
+        QueryEditText().setOnEditorActionListener(QueryEditTextOnEditorActionListener);
+    }
 
-		}
+    private void Reload(String query) {
+        query = FarayanUtility.Queryable(query);
+        GroupParams groupParams = new GroupParams();
+        groupParams.Deleted = new ComparableFilter<>(false);
+        groupParams.QueryableName = new TextFilter(query);
+        groupParams.Sorts.add(new SortConfig(GroupSchema.Needed, SortDirections.Descending));
+        groupParams.Sorts.add(new SortConfig(GroupSchema.Picked, SortDirections.Ascending));
+        groupParams.Sorts.add(new SortConfig(GroupSchema.Category, SortDirections.Ascending));
+        groupParams.Sorts.add(new SortConfig(GroupSchema.PurchasedCount, SortDirections.Descending));
+        groupParams.Sorts.add(new SortConfig(GroupSchema.Importance, SortDirections.Descending));
 
-		@Override
-		public void onTextChanged(CharSequence s, int start, int before, int count) {
-			handler.removeCallbacks(ReloadCallback);
-			handler.postDelayed(ReloadCallback, 500);
-		}
+        GroupRecyclerAdapter theAdapter = new GroupRecyclerAdapter(
+                getActivity(),
+                TheGroupRepo.All(groupParams),
+                GroupEntity -> {
+                    PurchaseSummary().ReloadSummary(SabadConstants.TheCoefficient);
+                    AutoCheckout();
+                },
+                GroupEntity -> {
+                    PurchaseSummary().ReloadSummary(SabadConstants.TheCoefficient);
+                    AutoCheckout();
+                },
+                component -> {
+                    invoiceItemFormViewModel.init(component.getEntity(), true, null, false);
+                    InvoiceItemFormDialog dialog = new InvoiceItemFormDialog(
+                            new InvoiceItemFormInputArgs(
+                                    component.getEntity().Item,
+                                    component.getEntity(),
+                                    null,
+                                    null,
+                                    invoiceItemEntity -> {
+                                        component.DisplayEntity(component.getEntity().RefreshForced(TheGroupRepo));
+                                        PurchaseSummary().ReloadSummary(SabadConstants.TheCoefficient);
+                                        AutoCheckout();
+                                    },
+                                    invoiceItemEntity -> {
+                                        component.DisplayEntity(component.getEntity().RefreshForced(TheGroupRepo));
+                                        PurchaseSummary().ReloadSummary(SabadConstants.TheCoefficient);
+                                    },
+                                    TheGroupRepo,
+                                    TheGroupUnitRepo,
+                                    TheProductRepo,
+                                    TheProductBarcodeRepo,
+                                    TheInvoiceItemRepo,
+                                    TheUnitRepo,
+                                    new BeepManager(requireActivity())
+                            ),
+                            (AppCompatActivity) requireActivity(),
+                            true,
+                            null,
+                            invoiceItemFormViewModel
+                    );
+                    dialog.show();
+                    dialog.maximize();
+                },
+                GroupEntity -> Reload(),
+                Rial.Coefficients.Rial
+        );
+        GroupsRecyclerView().setAdapter(theAdapter);
 
-		@Override
-		public void afterTextChanged(Editable s) {
-			QueryLayout().setError(null);
-		}
-	};
-	private final View.OnClickListener RegisterButtonOnClickListener = v -> Persist(true);
+        groupParams.QueryableName = new TextFilter(query, TextMatchModes.Exactly);
+        boolean found = TheGroupRepo.Count(groupParams) == 1;
+        RegisterButton().setVisibility(found ? View.GONE : View.VISIBLE);
+        EditButton().setVisibility(found ? View.VISIBLE : View.GONE);
+        RegisterButton().setEnabled(FarayanUtility.IsUsable(query));
+        PurchaseSummary().ReloadSummary(SabadConstants.TheCoefficient);
+    }
 
-	private boolean Persist(boolean toast) {
-		try {
-			String name = Objects.requireNonNull(QueryEditText().getText()).toString();
-			TheGroupRepo.New(name, null, null, true);
-			Reload(name);
-			QueryLayout().setError(null);
-			if (SabadUtility.NewGroupGuideNeeded(getActivity()))
-				FarayanUtility.ShowToastFormatted(getActivity(), false, getString(R.string.NewGroupGuide));
-			return true;
-		} catch (NewGroupNameNeededException e) {
-			QueryLayout().setError(getString(R.string.NameNeeded));
-			if (toast)
-				FarayanUtility.ShowToast(getActivity(), getString(R.string.NameNeeded));
-		} catch (GroupUniqueNameNeededException e) {
-			QueryLayout().setError(getString(R.string.CategoryUsedName));
-			if (toast)
-				FarayanUtility.ShowToast(getActivity(), getString(R.string.CategoryUsedName));
-		}
-		return false;
-	}
+    private void init() {
+        if (reloaded)
+            return;
+        if (TheGroupRepo == null)
+            return;
+        if (QueryEditText() == null)
+            return;
+        Reload(Objects.requireNonNull(QueryEditText().getText()).toString());
+        reloaded = true;
+    }
 
-	@Override
-	public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-		inflater.inflate(R.menu.home_menu, menu);
-	}
+    private void Reload() {
+        Reload(Objects.requireNonNull(QueryEditText().getText()).toString());
+    }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (requestCode == Requests.Scan.ID && resultCode == SabadConstants.DataChangedResultCode) {
+            Reload();
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
+    }
 
-	Handler handler = new Handler();
+    @Override
+    public boolean HandleBackPressed() {
+        if (FarayanUtility.IsUsable(QueryEditText().getText())) {
+            QueryEditText().setText("");
+            return true;
+        }
+        return super.HandleBackPressed();
+    }
 
-	protected void InitializeLayout() {
-		FarayanUtility.prepareRecyclerView(
-				GroupsRecyclerView(),
-				RecyclerViewOrientations.Vertical,
-				null,
-				true,
-				true
-		);
-		init();
-		QueryEditText().addTextChangedListener(QueryTextChangedListener);
-		EditButton().setOnClickListener(EditButtonOnClickListener);
-		RegisterButton().setOnClickListener(RegisterButtonOnClickListener);
-		QueryEditText().setOnEditorActionListener(QueryEditTextOnEditorActionListener);
-	}
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        invoiceItemFormViewModel = new ViewModelProvider(requireActivity()).get(InvoiceItemFormViewModel.class);
+    }
 
-	private void Reload(String query) {
-		query = FarayanUtility.Queryable(query);
-		GroupParams groupParams = new GroupParams();
-		groupParams.Deleted = new ComparableFilter<>(false);
-		groupParams.QueryableName = new TextFilter(query);
-		groupParams.Sorts.add(new SortConfig(GroupSchema.Needed, SortDirections.Descending));
-		groupParams.Sorts.add(new SortConfig(GroupSchema.Picked, SortDirections.Ascending));
-		groupParams.Sorts.add(new SortConfig(GroupSchema.Category, SortDirections.Ascending));
-		groupParams.Sorts.add(new SortConfig(GroupSchema.PurchasedCount, SortDirections.Descending));
-		groupParams.Sorts.add(new SortConfig(GroupSchema.Importance, SortDirections.Descending));
+    public enum Requests {
+        Scan(1);
 
-		GroupRecyclerAdapter theAdapter = new GroupRecyclerAdapter(
-				getActivity(),
-				TheGroupRepo.All(groupParams),
-				GroupEntity -> {
-					PurchaseSummary().ReloadSummary(SabadConstants.TheCoefficient);
-					AutoCheckout();
-				},
-				GroupEntity -> {
-					PurchaseSummary().ReloadSummary(SabadConstants.TheCoefficient);
-					AutoCheckout();
-				},
-				component -> {
-					invoiceItemFormViewModel.init(component.getEntity(),true,null,false);
-					InvoiceItemFormDialog dialog = new InvoiceItemFormDialog(
-							new InvoiceItemFormInputArgs(
-									component.getEntity().Item,
-									component.getEntity(),
-									null,
-									null,
-									invoiceItemEntity -> {
-										component.DisplayEntity(component.getEntity().RefreshForced(TheGroupRepo));
-										PurchaseSummary().ReloadSummary(SabadConstants.TheCoefficient);
-										AutoCheckout();
-									},
-									invoiceItemEntity -> {
-										component.DisplayEntity(component.getEntity().RefreshForced(TheGroupRepo));
-										PurchaseSummary().ReloadSummary(SabadConstants.TheCoefficient);
-									},
-									TheGroupRepo,
-									TheGroupUnitRepo,
-									TheProductRepo,
-									TheProductBarcodeRepo,
-									TheInvoiceItemRepo,
-									TheUnitRepo,
-									new BeepManager(requireActivity())
-							),
-							(AppCompatActivity) requireActivity(),
-							true,
-							null,
-							invoiceItemFormViewModel
-					);
-					dialog.show();
-				},
-				GroupEntity -> Reload(),
-				Rial.Coefficients.Rial
-		);
-		GroupsRecyclerView().setAdapter(theAdapter);
+        public final int ID;
 
-		groupParams.QueryableName = new TextFilter(query, TextMatchModes.Exactly);
-		boolean found = TheGroupRepo.Count(groupParams) == 1;
-		RegisterButton().setVisibility(found ? View.GONE : View.VISIBLE);
-		EditButton().setVisibility(found ? View.VISIBLE : View.GONE);
-		RegisterButton().setEnabled(FarayanUtility.IsUsable(query));
-		PurchaseSummary().ReloadSummary(SabadConstants.TheCoefficient);
-	}
-
-	private void init() {
-		if (reloaded)
-			return;
-		if (TheGroupRepo == null)
-			return;
-		if (QueryEditText() == null)
-			return;
-		Reload(Objects.requireNonNull(QueryEditText().getText()).toString());
-		reloaded = true;
-	}
-
-	private void Reload() {
-		Reload(Objects.requireNonNull(QueryEditText().getText()).toString());
-	}
-
-	@Override
-	public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-		if (requestCode == Requests.Scan.ID && resultCode == SabadConstants.DataChangedResultCode) {
-			Reload();
-		} else {
-			super.onActivityResult(requestCode, resultCode, data);
-		}
-	}
-
-	@Override
-	public boolean HandleBackPressed() {
-		if (FarayanUtility.IsUsable(QueryEditText().getText())) {
-			QueryEditText().setText("");
-			return true;
-		}
-		return super.HandleBackPressed();
-	}
-
-	@Override
-	public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-		invoiceItemFormViewModel = new ViewModelProvider(requireActivity()).get(InvoiceItemFormViewModel.class);
-	}
+        Requests(int id) {
+            ID = id;
+        }
+    }
 }

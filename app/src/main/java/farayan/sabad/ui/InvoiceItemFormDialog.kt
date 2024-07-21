@@ -1,9 +1,12 @@
 package farayan.sabad.ui
 
 import android.Manifest
+import android.app.Dialog
 import android.content.DialogInterface
+import android.os.Build
 import android.util.Log
 import android.view.Gravity
+import android.view.WindowInsets
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.Image
@@ -11,7 +14,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -23,9 +25,11 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Button
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.IconButton
 import androidx.compose.material.LocalTextStyle
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
@@ -33,9 +37,7 @@ import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.CheckCircle
-import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
@@ -84,8 +86,8 @@ import farayan.sabad.core.OnePlace.InvoiceItem.InvoiceItemEntity
 import farayan.sabad.core.commons.Currency
 import farayan.sabad.core.commons.UnitVariations
 import farayan.sabad.core.model.unit.UnitEntity
+import farayan.sabad.isUsable
 import farayan.sabad.referencePrice
-import farayan.sabad.ui.Core.SabadBaseDialog
 import farayan.sabad.ui.components.CameraCapture
 import farayan.sabad.ui.components.CurrenciesDropdownMenuBox
 import farayan.sabad.ui.components.GroupsDropdownMenuBox
@@ -107,19 +109,26 @@ class InvoiceItemFormDialog(
     cancelable: Boolean,
     cancelListener: DialogInterface.OnCancelListener?,
     private val viewModel: InvoiceItemFormViewModel
-) : SabadBaseDialog(context, cancelable, cancelListener) {
+) : Dialog(context, cancelable, cancelListener) {
     init {
-        if (dialogFullScreen()) {
-            val window = window
-            val wlp = window!!.attributes
-            wlp.gravity = Gravity.CENTER
-            window.attributes = wlp
-            getWindow()!!.setLayout(
-                WindowManager.LayoutParams.MATCH_PARENT,
-                WindowManager.LayoutParams.MATCH_PARENT
-            )
+
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            window!!.setDecorFitsSystemWindows(false)
+            //window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
+        } else {
+            @Suppress("DEPRECATION")
+            window!!.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
         }
+
         setContentView(ComposeView(context).apply {
+            setOnApplyWindowInsetsListener { _, windowInsets ->
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                    val imeHeight = windowInsets.getInsets(WindowInsets.Type.ime()).bottom
+                    setPadding(0, 0, 0, imeHeight)
+                }
+                windowInsets
+            }
             setViewTreeLifecycleOwner(context)
             setViewTreeSavedStateRegistryOwner(context)
             setViewTreeViewModelStoreOwner(context)
@@ -157,7 +166,7 @@ class InvoiceItemFormDialog(
                 CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
                     Column(
                         modifier = Modifier
-                            .fillMaxSize()
+                            .fillMaxWidth()
                             .verticalScroll(rememberScrollState())
                     ) {
                         Text(
@@ -171,7 +180,9 @@ class InvoiceItemFormDialog(
                         OutlinedTextField(
                             value = barcodeValue.value,
                             onValueChange = { viewModel.barcodeChangedManually(it) },
-                            modifier = Modifier.padding(5.dp),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(5.dp),
                             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next),
                             textStyle = LocalTextStyle.current.copy(
                                 textAlign = TextAlign.Center,
@@ -247,7 +258,8 @@ class InvoiceItemFormDialog(
                                     GroupPickState.resolveStatus(it, viewModel.pickedItems.value)
                                 )
                             }.sortedBy { it.status.position },
-                            readonly = groupValue.value.fixed
+                            readonly = groupValue.value.fixed,
+                            modifier = Modifier.fillMaxWidth()
                         )
                         OutlinedTextField(
                             value = nameValue,
@@ -264,7 +276,9 @@ class InvoiceItemFormDialog(
                                 )
                             },
                             onValueChange = { nameValue = it },
-                            modifier = Modifier.defaults(),
+                            modifier = Modifier
+                                .defaults()
+                                .fillMaxWidth(),
                             textStyle = TextStyle(fontFamily = appFont),
                             readOnly = product.value.fixed,
                             keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next),
@@ -309,10 +323,17 @@ class InvoiceItemFormDialog(
                             }
                         }
 
+                        val unitVariation = quantityUnit?.variation ?: packageMeasurementUnit
+                        val unitAmount = if (quantityUnit?.variation.hasValue) quantityValue else packageMeasurementValue
+                        val priceLabel: String = if (quantityUnit?.displayableName.isUsable()) stringResource(
+                            id = R.string.invoice_item_form_dialog_price_amount_by_unit_label,
+                            quantityUnit!!.displayableName!!
+                        ) else stringResource(id = R.string.invoice_item_form_dialog_price_amount_no_unit_label)
+
                         Row(verticalAlignment = Alignment.Bottom) {
                             NumberEntry(
                                 number = priceAmount,
-                                label = stringResource(id = R.string.invoice_item_form_dialog_price_amount_label),
+                                label = priceLabel,
                                 onValueChanged = { priceAmount = it },
                                 modifier = Modifier
                                     .align(Alignment.CenterVertically)
@@ -328,9 +349,6 @@ class InvoiceItemFormDialog(
                                     .weight(0.4f, true),
                             )
                         }
-
-                        val unitVariation = quantityUnit?.variation ?: packageMeasurementUnit
-                        val unitAmount = if (quantityUnit?.variation.hasValue) quantityValue else packageMeasurementValue
 
                         if (unitVariation.hasValue && unitAmount.hasValue && priceAmount.hasValue) {
                             val mainUnitName = stringResource(id = unitVariation!!.mainUnitNameResId)
@@ -357,14 +375,6 @@ class InvoiceItemFormDialog(
                             )
                         }
 
-                        LazyRow(
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-                            items(photos.value) { photo ->
-                                InvoiceItemProduct(photo, onRemove = { viewModel.photoRemoved(it) })
-                            }
-                        }
-
                         if (cameraPermissionState.status.isGranted) {
                             CameraCapture(
                                 modifier = Modifier
@@ -380,18 +390,29 @@ class InvoiceItemFormDialog(
                                     contentDescription = "camera",
                                     modifier = Modifier
                                         .clickable { productPhotography = true }
+                                        .height(192.dp)
                                         .fillMaxWidth()
                                         .defaults()
                                 )
                             } else {
                                 if (cameraPermissionState.status.shouldShowRationale) {
                                     Text(text = "Camera permission is required for taking photo from product")
-                                    Button(onClick = { /*TODO*/ }) {
+                                    Button(onClick = { }) {
                                         Text(text = "request for permission")
                                     }
                                 } else {
                                     cameraPermissionState.launchPermissionRequest()
                                 }
+                            }
+                        }
+
+                        LazyRow(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(48.dp)
+                        ) {
+                            items(photos.value) { photo ->
+                                InvoiceItemProduct(photo, onRemove = { viewModel.photoRemoved(it) })
                             }
                         }
 
@@ -421,6 +442,21 @@ class InvoiceItemFormDialog(
                 }
             }
         })
+    }
+
+    private fun dialogFullScreen(): Boolean {
+        return true
+    }
+
+    fun maximize() {
+        val window = window
+        val wlp = window!!.attributes
+        wlp.gravity = Gravity.CENTER
+        window.attributes = wlp
+        getWindow()!!.setLayout(
+            WindowManager.LayoutParams.MATCH_PARENT,
+            WindowManager.LayoutParams.MATCH_PARENT
+        )
     }
 }
 

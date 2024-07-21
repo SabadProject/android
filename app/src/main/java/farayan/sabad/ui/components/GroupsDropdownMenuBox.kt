@@ -1,5 +1,6 @@
 package farayan.sabad.ui.components
 
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.InlineTextContent
 import androidx.compose.foundation.text.KeyboardOptions
@@ -58,7 +59,9 @@ fun GroupsDropdownMenuBox(
             label = { Text(label, fontFamily = appFont) },
             textStyle = TextStyle(fontFamily = appFont),
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = editable && expanded) },
-            modifier = Modifier.onFocusEvent { expanded = editable && it.hasFocus },
+            modifier = Modifier
+                .fillMaxWidth()
+                .onFocusEvent { expanded = editable && it.hasFocus },
             colors = ExposedDropdownMenuDefaults.textFieldColors(backgroundColor = if (readonly) Color.LightGray else Color.Transparent),
             keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next),
         )
