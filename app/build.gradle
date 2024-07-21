@@ -89,7 +89,7 @@ android {
         }
     }
 
-    flavorDimensions "publisher", "edition"
+    flavorDimensions "publisher"
     productFlavors {
         farayan {
             dimension "publisher"
@@ -102,17 +102,6 @@ android {
         cafebazaar {
             dimension "publisher"
             versionNameSuffix = "-Cafebazaar"
-        }
-        master {
-            dimension "edition"
-        }
-        explorer {
-            dimension "edition"
-            applicationIdSuffix = ".explorer"
-        }
-        offline {
-            dimension "edition"
-            applicationIdSuffix = ".offline"
         }
     }
     buildFeatures {
