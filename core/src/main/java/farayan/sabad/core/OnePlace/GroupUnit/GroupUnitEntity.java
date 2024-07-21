@@ -15,12 +15,16 @@ public class GroupUnitEntity extends SabadEntityBase<GroupUnitEntity> {
     @DatabaseField(columnName = GroupUnitSchema.Unit, foreign = true)
     public UnitEntity Unit;
 
+    @DatabaseField(columnName = GroupUnitSchema.Position)
+    public Integer Position;
+
     public GroupUnitEntity() {
     }
 
-    public GroupUnitEntity(GroupEntity group, UnitEntity unit) {
+    public GroupUnitEntity(GroupEntity group, UnitEntity unit, Integer position) {
         Group = group;
         Unit = unit;
+        Position = position;
     }
 
     @Override

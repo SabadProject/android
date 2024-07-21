@@ -93,7 +93,7 @@ public class SabadDatabase extends OrmLiteSqliteOpenHelper {
             CategoryEntity dressing = new CategoryEntity("چاشنی");
             CategoryEntity spices = new CategoryEntity("ادویه");
             daOs.UnitDAO.create(Arrays.asList(bottle, kg, g, litre, can, pack));
-            daOs.GroupUnitDAD.create(Stream.of(bottle, kg, g, litre, can, pack).map(this::NewGroupUnitEntity).collect(Collectors.toList()));
+            daOs.GroupUnitDAD.create(Stream.of(kg, g, litre, can, pack, bottle).map(this::NewGroupUnitEntity).collect(Collectors.toList()));
 
             init(
                     daOs,
