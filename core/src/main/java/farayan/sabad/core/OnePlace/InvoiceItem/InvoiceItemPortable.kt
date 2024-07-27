@@ -7,14 +7,15 @@ import farayan.sabad.core.OnePlace.Invoice.InvoiceEntity
 import farayan.sabad.core.base.SabadPortableBase
 import farayan.sabad.core.model.product.ProductEntity
 import farayan.sabad.core.model.unit.UnitEntity
+import java.math.BigDecimal
 
 class InvoiceItemPortable(
     entity: InvoiceItemEntity,
     val Product: SabadPortableBase<ProductEntity>,
-    val Quantity: Double,
-    val Fee: Double,
-    val Discount: Double,
-    val Total: Double,
+    val Quantity: BigDecimal,
+    val Fee: BigDecimal,
+    val Discount: BigDecimal,
+    val Total: BigDecimal,
     val Invoice: SabadPortableBase<InvoiceEntity>,
     val Group: SabadPortableBase<GroupEntity>,
     val Unit: SabadPortableBase<UnitEntity>?,

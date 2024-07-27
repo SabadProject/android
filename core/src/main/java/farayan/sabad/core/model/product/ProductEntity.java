@@ -20,6 +20,7 @@ public class ProductEntity extends SabadEntityBase<ProductEntity> implements IBo
     @DatabaseField(columnName = ProductSchema.QueryableName)
     public String QueryableName;
 
+    @Deprecated
     @DatabaseField(columnName = ProductSchema.PhotoLocation)
     public String PhotoLocation;
 
@@ -29,6 +30,7 @@ public class ProductEntity extends SabadEntityBase<ProductEntity> implements IBo
     @DatabaseField(columnName = ProductSchema.Group, foreign = true)
     public GroupEntity Group;
 
+    @Deprecated
     @DatabaseField(columnName = ProductSchema.LastPurchase, foreign = true)
     public InvoiceItemEntity LastPurchase;
 

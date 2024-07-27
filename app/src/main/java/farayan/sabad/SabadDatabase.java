@@ -30,13 +30,13 @@ import farayan.sabad.core.OnePlace.GroupUnit.GroupUnitEntity;
 import farayan.sabad.core.OnePlace.Invoice.InvoiceEntity;
 import farayan.sabad.core.OnePlace.InvoiceItem.InvoiceItemEntity;
 import farayan.sabad.core.OnePlace.NeedChange.NeedChangeEntity;
-import farayan.sabad.core.OnePlace.ProductBarcode.ProductBarcodeEntity;
 import farayan.sabad.core.OnePlace.Store.StoreEntity;
 import farayan.sabad.core.OnePlace.StoreCategory.StoreCategoryEntity;
 import farayan.sabad.core.OnePlace.StoreGroup.StoreGroupEntity;
 import farayan.sabad.core.commons.UnitVariations;
 import farayan.sabad.core.model.product.ProductEntity;
 import farayan.sabad.core.model.unit.UnitEntity;
+import farayan.sabad.model.product_barcode.ProductBarcodeEntity;
 
 
 public class SabadDatabase extends OrmLiteSqliteOpenHelper {

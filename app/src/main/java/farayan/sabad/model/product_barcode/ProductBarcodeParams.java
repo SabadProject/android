@@ -1,5 +1,7 @@
-package farayan.sabad.core.OnePlace.ProductBarcode;
+package farayan.sabad.model.product_barcode;
 
+
+import com.google.zxing.BarcodeFormat;
 
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -13,7 +15,7 @@ import farayan.sabad.core.model.product.ProductEntity;
 public class ProductBarcodeParams extends SabadParamsBase<ProductBarcodeEntity> {
     public TextFilter Text;
 
-    public EnumFilter<BarcodeFormats> Format;
+    public EnumFilter<BarcodeFormat> Format;
 
     public EntityFilter<ProductEntity> Product;
 

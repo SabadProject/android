@@ -22,7 +22,6 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
-
         android:name=".SabadApp"
         android:allowBackup="true"
         android:hardwareAccelerated="true"
@@ -36,17 +35,20 @@
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:exported="false"
             android:label="@string/AboutSabadTitle"
-            android:theme="@style/SabadTheme.NoActionBar" />
+            android:theme="@style/SabadTheme.NoActionBar"
+            tools:node="merge" />
         <activity
             android:name=".ui.ScanActivity"
             android:exported="false"
-            android:theme="@style/SabadTheme.NoActionBar" />
+            android:theme="@style/SabadTheme.NoActionBar"
+            tools:node="merge" />
         <activity
             android:name=".ui.MainActivity"
             android:exported="true"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize"
-            tools:ignore="DiscouragedApi,LockedOrientationActivity">
+            tools:ignore="DiscouragedApi,LockedOrientationActivity"
+            tools:node="merge">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -56,7 +58,8 @@
 
         <service
             android:name=".services.PushNotificationService"
-            android:exported="false">
+            android:exported="false"
+            tools:node="merge">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
@@ -71,6 +74,16 @@
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_channel_id"
             android:value="@string/default_notification_channel_id" />
+
+        <activity
+            android:name="com.journeyapps.barcodescanner.CaptureActivity"
+            android:clearTaskOnLaunch="true"
+            android:exported="false"
+            android:screenOrientation="sensorLandscape"
+            android:stateNotNeeded="true"
+            android:theme="@style/zxing_CaptureTheme"
+            android:windowSoftInputMode="stateAlwaysHidden"
+            tools:node="merge" />
     </application>
 
 </manifest>

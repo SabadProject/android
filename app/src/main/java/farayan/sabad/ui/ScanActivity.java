@@ -12,15 +12,14 @@ import javax.inject.Inject;
 import dagger.hilt.android.AndroidEntryPoint;
 import farayan.commons.FarayanUtility;
 import farayan.sabad.SabadConstants;
-import farayan.sabad.SabadUtility;
 import farayan.sabad.core.OnePlace.Group.IGroupRepo;
 import farayan.sabad.core.OnePlace.GroupUnit.IGroupUnitRepo;
 import farayan.sabad.core.OnePlace.InvoiceItem.IInvoiceItemRepo;
-import farayan.sabad.core.OnePlace.ProductBarcode.CapturedBarcode;
-import farayan.sabad.core.OnePlace.ProductBarcode.IProductBarcodeRepo;
 import farayan.sabad.core.OnePlace.Unit.IUnitRepo;
 import farayan.sabad.core.model.product.IProductRepo;
 import farayan.sabad.core.model.product.ProductEntity;
+import farayan.sabad.model.product_barcode.IProductBarcodeRepo;
+import farayan.sabad.model.product_barcode.QueryableBarcode;
 import farayan.sabad.vms.InvoiceItemFormViewModel;
 
 @AndroidEntryPoint
@@ -39,8 +38,7 @@ public class ScanActivity extends ScanActivityParent {
         public void barcodeResult(BarcodeResult result) {
             ScanBarcodeView().pause();
             FarayanUtility.ReleaseScreenOn(getWindow());
-            CapturedBarcode capturedBarcode = SabadUtility.CapturedBarcodeVersion(result);
-            ProductEntity productEntity = TheProductBarcodeRepo.ByBarcode(capturedBarcode);
+            ProductEntity productEntity = TheProductBarcodeRepo.ByBarcode(new QueryableBarcode(result.getText(), result.getBarcodeFormat()));
 
             beepManager.playBeepSoundAndVibrate();
             InvoiceItemFormDialog dialog = new InvoiceItemFormDialog(
@@ -48,7 +46,7 @@ public class ScanActivity extends ScanActivityParent {
                             null,
                             productEntity == null ? null : productEntity.Group,
                             productEntity,
-                            capturedBarcode,
+                            result,
                             invoiceItemEntity -> {
                                 dataChanged = true;
                                 PurchaseSummary().ReloadSummary(SabadConstants.TheCoefficient);

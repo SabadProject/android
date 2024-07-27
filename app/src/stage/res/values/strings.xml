@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Sabad</string>
+    <string name="app_build_name">(S)</string>
     <string name="home_title">* سبد</string>
 </resources>

@@ -138,7 +138,7 @@ class InvoiceItemFormDialog(
                 val product = viewModel.product.collectAsState()
                 val question = viewModel.question.collectAsState()
 
-                val barcodeValue = viewModel.productBarcode.collectAsState()
+                val barcodeValue = viewModel.formScannedBarcode.collectAsState()
                 var barcodeScan by remember { mutableStateOf(false) }
                 var productPhotography by remember { mutableStateOf(false) }
                 val cameraPermissionState = rememberPermissionState(
@@ -161,7 +161,7 @@ class InvoiceItemFormDialog(
                 }
                 var priceAmount: BigDecimal? by remember { mutableStateOf<BigDecimal?>(null) }
                 var priceCurrency: Currency? by remember { mutableStateOf<Currency?>(null) }
-                val photos = viewModel.productPhotos.collectAsState()
+                val photos = viewModel.formPhotos.collectAsState()
 
                 CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
                     Column(
@@ -178,7 +178,7 @@ class InvoiceItemFormDialog(
                                 .defaults()
                         )
                         OutlinedTextField(
-                            value = barcodeValue.value,
+                            value = barcodeValue.value?.text ?: "",
                             onValueChange = { viewModel.barcodeChangedManually(it) },
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -438,14 +438,22 @@ class InvoiceItemFormDialog(
                                 }
                             }
                         }
+                        androidx.compose.material3.Button(
+                            onClick = {
+                                if (viewModel.persistInvoiceItem())
+                                    this@InvoiceItemFormDialog.dismiss()
+                            },
+                            modifier = Modifier.align(alignment = Alignment.CenterHorizontally)
+                        ) {
+                            Text(
+                                text = stringResource(id = R.string.invoice_item_form_dialog_submit),
+                                style = TextStyle.Default.copy(fontFamily = appFont, color = Color.White),
+                            )
+                        }
                     }
                 }
             }
         })
-    }
-
-    private fun dialogFullScreen(): Boolean {
-        return true
     }
 
     fun maximize() {

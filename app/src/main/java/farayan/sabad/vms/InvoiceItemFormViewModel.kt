@@ -5,21 +5,21 @@ import androidx.compose.material.icons.filled.Star
 import androidx.lifecycle.ViewModel
 import com.journeyapps.barcodescanner.BarcodeResult
 import dagger.hilt.android.lifecycle.HiltViewModel
+import farayan.commons.FarayanUtility
 import farayan.commons.queryable
 import farayan.sabad.core.OnePlace.Group.GroupEntity
 import farayan.sabad.core.OnePlace.Group.IGroupRepo
 import farayan.sabad.core.OnePlace.GroupUnit.GroupUnitEntity
 import farayan.sabad.core.OnePlace.GroupUnit.IGroupUnitRepo
 import farayan.sabad.core.OnePlace.InvoiceItem.IInvoiceItemRepo
-import farayan.sabad.core.OnePlace.ProductBarcode.BarcodeFormats
-import farayan.sabad.core.OnePlace.ProductBarcode.BarcodePoint
-import farayan.sabad.core.OnePlace.ProductBarcode.CapturedBarcode
-import farayan.sabad.core.OnePlace.ProductBarcode.IProductBarcodeRepo
+import farayan.sabad.core.OnePlace.InvoiceItem.InvoiceItemEntity
 import farayan.sabad.core.OnePlace.Unit.IUnitRepo
-import farayan.sabad.core.commons.Currency
-import farayan.sabad.core.commons.Money
+import farayan.sabad.core.model.photo.PhotoEntity
 import farayan.sabad.core.model.product.IProductRepo
 import farayan.sabad.core.model.product.ProductEntity
+import farayan.sabad.model.product_barcode.IProductBarcodeRepo
+import farayan.sabad.model.product_barcode.ProductBarcodeEntity
+import farayan.sabad.model.product_barcode.QueryableBarcode
 import farayan.sabad.utility.hasValue
 import kotlinx.coroutines.flow.MutableStateFlow
 import java.io.File
@@ -28,6 +28,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class InvoiceItemFormViewModel @Inject constructor(
+    private val invoiceItemRepo: IInvoiceItemRepo,
     private val groupRepo: IGroupRepo,
     private val productRepo: IProductRepo,
     private val productBarcodeRepo: IProductBarcodeRepo,
@@ -37,16 +38,13 @@ class InvoiceItemFormViewModel @Inject constructor(
 ) : ViewModel() {
     fun barcodeScanned(br: BarcodeResult) {
         val products = productBarcodeRepo.byBarcode(
-            CapturedBarcode(
+            QueryableBarcode(
                 br.text,
-                BarcodeFormats.valueOf(br.barcodeFormat.name),
-                br.bitmapScaleFactor,
-                br.bitmap,
-                br.resultPoints.map { BarcodePoint(it.x, it.y) }.toTypedArray()
+                br.barcodeFormat,
             )
         )
         if (products.isEmpty()) {
-            productBarcode.value = br.text
+            formScannedBarcode.value = br
             return
         }
         if (product.fixed().hasValue) {
@@ -81,7 +79,7 @@ class InvoiceItemFormViewModel @Inject constructor(
             }
             if (fixedGroupProducts.size == 1) {
                 val theProduct = fixedGroupProducts.first()
-                if (productName.value.isNotBlank() && productName.value.queryable()
+                if (formName.value.isNotBlank() && formName.value.queryable()
                         .contentEquals(theProduct.QueryableName)
                 ) {
                     question.value = Question(
@@ -98,8 +96,8 @@ class InvoiceItemFormViewModel @Inject constructor(
                 }
             }
             if (fixedGroupProducts.size > 1) {
-                if (productName.value.isNotBlank()) {
-                    val queryableName = productName.value.queryable()
+                if (formName.value.isNotBlank()) {
+                    val queryableName = formName.value.queryable()
                     val firstOrNull = fixedGroupProducts.firstOrNull {
                         queryableName.contentEquals(
                             it.QueryableName,
@@ -133,7 +131,7 @@ class InvoiceItemFormViewModel @Inject constructor(
         } else {
             if (products.size == 1) {
                 val theProduct = products.first()
-                if (productName.value.isNotBlank() && !productName.value.queryable()
+                if (formName.value.isNotBlank() && !formName.value.queryable()
                         .contentEquals(theProduct.QueryableName)
                 ) {
                     question.value = Question(
@@ -151,8 +149,8 @@ class InvoiceItemFormViewModel @Inject constructor(
                 }
             }
             if (products.size > 1) {
-                if (productName.value.isNotBlank()) {
-                    val queryableName = productName.value.queryable()
+                if (formName.value.isNotBlank()) {
+                    val queryableName = formName.value.queryable()
                     val firstOrNull =
                         products.firstOrNull { queryableName.contentEquals(it.QueryableName, true) }
                     if (firstOrNull == null) {
@@ -188,7 +186,8 @@ class InvoiceItemFormViewModel @Inject constructor(
     }
 
     fun barcodeChangedManually(barcodeValue: String) {
-        productBarcode.value = barcodeValue
+        //TODO
+        formScannedBarcode.value = null
     }
 
     fun units(): List<GroupUnitEntity> {
@@ -199,26 +198,61 @@ class InvoiceItemFormViewModel @Inject constructor(
     }
 
     fun photoTaken(it: File) {
-        productPhotos.value += it.toString()
+        formPhotos.value += it.toString()
     }
 
     fun photoRemoved(photo: String) {
-        productPhotos.value -= photo
+        formPhotos.value -= photo
+    }
+
+    fun persistInvoiceItem(): Boolean {
+        var p = product.value.value
+        if (p == null) {
+            //p = productRepo.byCategoryAnd
+            p = ProductEntity().apply {
+                this.DisplayableName = FarayanUtility.Displayable(formName.value)
+                this.QueryableName = FarayanUtility.Queryable(formName.value)
+                this.Group = group.value.value ?: throw RuntimeException("group is null")
+            }
+            productRepo.Save(p)
+        }
+        for (photo in formPhotos.value) {
+            val pe = PhotoEntity()
+            pe.product = p
+            pe.path = photo
+        }
+        if (formScannedBarcode.value.hasValue) {
+            val productBarcodes = productBarcodeRepo.byBarcode(formScannedBarcode.value!!.let { QueryableBarcode(it.text, it.barcodeFormat) })
+            if (productBarcodes.isEmpty()) {
+                val productBarcode = ProductBarcodeEntity().apply {
+                    value = formScannedBarcode.value!!.text
+                    format = formScannedBarcode.value!!.barcodeFormat
+                    product = p
+                }
+                productBarcodeRepo.Save(productBarcode)
+            }
+        }
+        val invoiceItem = InvoiceItemEntity().apply {
+            Product = p
+            Quantity = formQuantity.value
+            Fee = formPriceAmount.value
+        }
+        invoiceItemRepo.Save(invoiceItem)
+        return true
     }
 
     val groups = MutableStateFlow(groupRepo.All(groupRepo.NewParams()))
     val pickedItems = MutableStateFlow(itemRepo.pickings())
     val group = MutableStateFlow(Fixable<GroupEntity>())
     val product = MutableStateFlow(Fixable<ProductEntity>())
-    val productBarcode = MutableStateFlow("")
-    val productName = MutableStateFlow("")
-    val productPrice = MutableStateFlow<Money?>(Money(BigDecimal.ZERO, Currency.Rial))
-    val productPhotos = MutableStateFlow(listOf<String>())
-    val itemQuantity = MutableStateFlow(0.0)
-    val itemUnit = MutableStateFlow("")
-    val itemPriceAmount = MutableStateFlow(BigDecimal.ZERO)
-    val itemPriceCurrency = MutableStateFlow("")
-
+    val formScannedBarcode = MutableStateFlow<BarcodeResult?>(null)
+    val formEnteredBarcode = MutableStateFlow<String?>(null)
+    val formName = MutableStateFlow("")
+    val formPhotos = MutableStateFlow(listOf<String>())
+    val formQuantity = MutableStateFlow<BigDecimal>(BigDecimal.ZERO)
+    val formUnit = MutableStateFlow("")
+    val formPriceAmount = MutableStateFlow(BigDecimal.ZERO)
+    val formPriceCurrency = MutableStateFlow("")
     val question = MutableStateFlow<Question?>(null)
 }
 

@@ -94,4 +94,5 @@
     <string name="invoice_item_form_dialog_reference_price_measurable_value" formatted="true">وزن یا حجم هر %s:</string>
     <string name="invoice_item_form_dialog_reference_quantity_unit_unacceptable" formatted="true">مقدار یا تعداد را مثبت درج کنید</string>
     <string name="invoice_item_form_dialog_reference_package_unit_unacceptable" formatted="true">وزن یا حجم را مثبت درج کنید</string>
+    <string name="invoice_item_form_dialog_submit" formatted="true">افزودن</string>
 </resources>

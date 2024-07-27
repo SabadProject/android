@@ -6,6 +6,9 @@ import android.util.AttributeSet;
 
 import androidx.annotation.Nullable;
 
+import java.math.BigDecimal;
+import java.util.Objects;
+
 import javax.inject.Inject;
 
 import dagger.hilt.android.AndroidEntryPoint;
@@ -204,12 +207,12 @@ public class GroupHomeItemComponent extends GroupHomeItemComponentParent impleme
             InvoiceItemSummaryTextView().setText("");
             InvoiceItemSummaryTextView().setVisibility(GONE);
         } else {
-            if (entity.Item.Refreshed(TheInvoiceItemRepo).Quantity == 1d) {
+            if (Objects.equals(entity.Item.Refreshed(TheInvoiceItemRepo).Quantity, BigDecimal.ONE)) {
                 String summary = "%s %s";
                 summary = String.format(
                         summary,
                         FarayanUtility.CatchException(() -> FarayanUtility.Or(entity.Item.Product.Refreshed(TheProductRepo).DisplayableName, ""), x -> ""),
-                        new Rial(RialFixedCoefficient, entity.Item.Total).Textual(getContext().getResources())
+                        new Rial(RialFixedCoefficient, entity.Item.Total.doubleValue()).Textual(getContext().getResources())
                 );
                 InvoiceItemSummaryTextView().setText(summary);
                 InvoiceItemSummaryTextView().setVisibility(VISIBLE);
@@ -217,11 +220,11 @@ public class GroupHomeItemComponent extends GroupHomeItemComponentParent impleme
                 String summary = "%s %s %s، فی: %s، جمع: %s";
                 summary = String.format(
                         summary,
-                        FarayanUtility.MoneyFormatted(entity.Item.Quantity, true, false),
+                        FarayanUtility.MoneyFormatted(entity.Item.Quantity.doubleValue(), true, false),
                         FarayanUtility.CatchException(() -> FarayanUtility.Or(entity.Item.Unit.Refreshed(TheUnitRepo).getDisplayableName(), "«واحد»"), x -> "«واحد»"),
                         FarayanUtility.CatchException(() -> FarayanUtility.Or(entity.Item.Product.Refreshed(TheProductRepo).DisplayableName, ""), x -> ""),
-                        new Rial(RialFixedCoefficient, entity.Item.Fee).Textual(getContext().getResources()),
-                        new Rial(RialFixedCoefficient, entity.Item.Total).Textual(getContext().getResources())
+                        new Rial(RialFixedCoefficient, entity.Item.Fee.doubleValue()).Textual(getContext().getResources()),
+                        new Rial(RialFixedCoefficient, entity.Item.Total.doubleValue()).Textual(getContext().getResources())
                 );
                 InvoiceItemSummaryTextView().setText(summary);
                 InvoiceItemSummaryTextView().setVisibility(VISIBLE);

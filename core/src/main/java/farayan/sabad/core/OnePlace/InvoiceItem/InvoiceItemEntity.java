@@ -3,6 +3,8 @@ package farayan.sabad.core.OnePlace.InvoiceItem;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
+import java.math.BigDecimal;
+
 import farayan.sabad.core.OnePlace.Group.GroupEntity;
 import farayan.sabad.core.OnePlace.Invoice.InvoiceEntity;
 import farayan.sabad.core.base.SabadEntityBase;
@@ -16,16 +18,16 @@ public class InvoiceItemEntity extends SabadEntityBase<InvoiceItemEntity> {
     public ProductEntity Product;
 
     @DatabaseField(columnName = InvoiceItemSchema.Quantity)
-    public double Quantity;
+    public BigDecimal Quantity;
 
     @DatabaseField(columnName = InvoiceItemSchema.Fee)
-    public double Fee;
+    public BigDecimal Fee;
 
     @DatabaseField(columnName = InvoiceItemSchema.Discount)
-    public double Discount;
+    public BigDecimal Discount;
 
     @DatabaseField(columnName = InvoiceItemSchema.Total)
-    public double Total;
+    public BigDecimal Total;
 
     @DatabaseField(columnName = InvoiceItemSchema.Invoice, foreign = true)
     public InvoiceEntity Invoice;
@@ -43,15 +45,15 @@ public class InvoiceItemEntity extends SabadEntityBase<InvoiceItemEntity> {
     public InvoiceItemEntity(
             GroupEntity groupEntity,
             ProductEntity productEntity,
-            double quantity,
-            double fee,
+            BigDecimal quantity,
+            BigDecimal fee,
             UnitEntity unitEntity
     ) {
         this.Group = groupEntity;
         this.Product = productEntity;
         this.Quantity = quantity;
         this.Fee = fee;
-        this.Total = Math.round(quantity * fee);
+        this.Total = quantity.multiply(fee);
         this.Unit = unitEntity;
     }
 
