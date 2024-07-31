@@ -14,12 +14,9 @@ import farayan.sabad.core.OnePlace.GroupUnit.IGroupUnitRepo
 import farayan.sabad.core.OnePlace.InvoiceItem.IInvoiceItemRepo
 import farayan.sabad.core.OnePlace.InvoiceItem.InvoiceItemEntity
 import farayan.sabad.core.OnePlace.Unit.IUnitRepo
-import farayan.sabad.core.model.photo.PhotoEntity
 import farayan.sabad.core.model.product.IProductRepo
 import farayan.sabad.core.model.product.ProductEntity
-import farayan.sabad.model.product_barcode.IProductBarcodeRepo
-import farayan.sabad.model.product_barcode.ProductBarcodeEntity
-import farayan.sabad.model.product_barcode.QueryableBarcode
+import farayan.sabad.db.ProductBarcodeQueries
 import farayan.sabad.utility.hasValue
 import kotlinx.coroutines.flow.MutableStateFlow
 import java.io.File
@@ -31,10 +28,10 @@ class InvoiceItemFormViewModel @Inject constructor(
     private val invoiceItemRepo: IInvoiceItemRepo,
     private val groupRepo: IGroupRepo,
     private val productRepo: IProductRepo,
-    private val productBarcodeRepo: IProductBarcodeRepo,
     private val itemRepo: IInvoiceItemRepo,
     val unitRepo: IUnitRepo,
     private val groupUnitRepo: IGroupUnitRepo,
+    private val pbq: ProductBarcodeQueries,
 ) : ViewModel() {
     fun barcodeScanned(br: BarcodeResult) {
         val products = productBarcodeRepo.byBarcode(

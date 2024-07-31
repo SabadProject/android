@@ -1,0 +1,9 @@
+CREATE TABLE IF NOT EXISTS "product-prices" (
+    id INTEGER PRIMARY KEY,
+    productId TEXT NOT NULL,
+    amount TEXT NOT NULL,
+    currency INTEGER NOT NULL,
+    moment INTEGER
+);
+insert:
+INSERT OR REPLACE INTO "product-prices" VALUES ?;

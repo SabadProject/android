@@ -111,11 +111,8 @@ class InvoiceItemFormDialog(
     private val viewModel: InvoiceItemFormViewModel
 ) : Dialog(context, cancelable, cancelListener) {
     init {
-
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             window!!.setDecorFitsSystemWindows(false)
-            //window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
         } else {
             @Suppress("DEPRECATION")
             window!!.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
@@ -139,8 +136,7 @@ class InvoiceItemFormDialog(
                 val question = viewModel.question.collectAsState()
 
                 val barcodeValue = viewModel.formScannedBarcode.collectAsState()
-                var barcodeScan by remember { mutableStateOf(false) }
-                var productPhotography by remember { mutableStateOf(false) }
+                var cameraUsage by remember { mutableStateOf(CameraUsage.None) }
                 val cameraPermissionState = rememberPermissionState(
                     Manifest.permission.CAMERA
                 ) {
@@ -197,7 +193,7 @@ class InvoiceItemFormDialog(
                             trailingIcon = {
                                 IconButton(
                                     onClick = {
-                                        barcodeScan = true
+                                        cameraUsage = CameraUsage.Barcode
                                         if (!cameraPermissionState.status.isGranted) {
                                             if (!cameraPermissionState.status.shouldShowRationale) {
                                                 cameraPermissionState.launchPermissionRequest()
@@ -216,7 +212,7 @@ class InvoiceItemFormDialog(
                                 }
                             }
                         )
-                        if (barcodeScan) {
+                        if (cameraUsage == CameraUsage.Barcode) {
                             if (cameraPermissionState.status.isGranted) {
                                 AndroidView(
                                     modifier = Modifier
@@ -375,7 +371,7 @@ class InvoiceItemFormDialog(
                             )
                         }
 
-                        if (cameraPermissionState.status.isGranted) {
+                        if (cameraPermissionState.status.isGranted && cameraUsage == CameraUsage.Photo) {
                             CameraCapture(
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -384,12 +380,12 @@ class InvoiceItemFormDialog(
                                 onImageFile = { viewModel.photoTaken(it) }
                             )
                         } else {
-                            if (!productPhotography) {
+                            if (cameraUsage != CameraUsage.Photo) {
                                 Image(
                                     painter = painterResource(id = R.drawable.camera_placeholder),
                                     contentDescription = "camera",
                                     modifier = Modifier
-                                        .clickable { productPhotography = true }
+                                        .clickable { cameraUsage = CameraUsage.Photo }
                                         .height(192.dp)
                                         .fillMaxWidth()
                                         .defaults()
@@ -538,3 +534,8 @@ enum class GroupPickState(
 
 data class GroupInvoiceItemForm(val id: Int, val text: String, val status: GroupPickState)
 
+enum class CameraUsage {
+    None,
+    Barcode,
+    Photo
+}

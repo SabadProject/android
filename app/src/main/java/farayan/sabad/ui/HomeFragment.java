@@ -52,7 +52,6 @@ import farayan.sabad.core.OnePlace.StoreCategory.IStoreCategoryRepo;
 import farayan.sabad.core.OnePlace.StoreGroup.IStoreGroupRepo;
 import farayan.sabad.core.OnePlace.Unit.IUnitRepo;
 import farayan.sabad.core.model.product.IProductRepo;
-import farayan.sabad.model.product_barcode.IProductBarcodeRepo;
 import farayan.sabad.models.Group.GroupRecyclerAdapter;
 import farayan.sabad.vms.InvoiceItemFormViewModel;
 
@@ -71,7 +70,6 @@ public class HomeFragment extends HomeFragmentParent {
     private IInvoiceItemRepo TheInvoiceItemRepo;
     private IGroupUnitRepo TheGroupUnitRepo;
     private IProductRepo TheProductRepo;
-    private IProductBarcodeRepo TheProductBarcodeRepo;
     private IUnitRepo TheUnitRepo;
     private final View.OnClickListener EditButtonOnClickListener = new View.OnClickListener() {
         @Override
@@ -147,7 +145,6 @@ public class HomeFragment extends HomeFragmentParent {
                             TheGroupRepo,
                             TheGroupUnitRepo,
                             TheProductRepo,
-                            TheProductBarcodeRepo,
                             TheInvoiceItemRepo,
                             TheUnitRepo,
                             new BeepManager(requireActivity())
@@ -194,7 +191,6 @@ public class HomeFragment extends HomeFragmentParent {
             IInvoiceItemRepo invoiceItemRepo,
             IGroupUnitRepo GroupUnitRepo,
             IProductRepo productRepo,
-            IProductBarcodeRepo productBarcodeRepo,
             IUnitRepo unitRepo
     ) {
         TheStoreCategoryRepo = storeCategoryRepo;
@@ -206,7 +202,6 @@ public class HomeFragment extends HomeFragmentParent {
         TheInvoiceItemRepo = invoiceItemRepo;
         TheGroupUnitRepo = GroupUnitRepo;
         TheProductRepo = productRepo;
-        TheProductBarcodeRepo = productBarcodeRepo;
         TheUnitRepo = unitRepo;
         init();
     }
@@ -383,7 +378,6 @@ public class HomeFragment extends HomeFragmentParent {
                                     TheGroupRepo,
                                     TheGroupUnitRepo,
                                     TheProductRepo,
-                                    TheProductBarcodeRepo,
                                     TheInvoiceItemRepo,
                                     TheUnitRepo,
                                     new BeepManager(requireActivity())

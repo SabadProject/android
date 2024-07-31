@@ -1,0 +1,16 @@
+import kotlin.Boolean;
+import kotlin.Int;
+
+CREATE TABLE IF NOT EXISTS categories (
+    id INTEGER PRIMARY KEY,
+    categoryId INTEGER NOT NULL,
+    displayableName TEXT NOT NULL,
+    queryableName TEXT NOT NULL,
+    displayableDescription TEXT NOT NULL,
+    queryableDescription TEXT NOT NULL,
+    needed INTEGER AS Boolean NOT NULL,
+    deleted TEXT, --TODO
+    picked INTEGER AS Boolean
+);
+insert:
+INSERT OR REPLACE INTO categories VALUES ?;

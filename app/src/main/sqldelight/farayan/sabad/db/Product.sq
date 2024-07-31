@@ -1,0 +1,13 @@
+import kotlin.Boolean;
+import kotlin.Int;
+
+CREATE TABLE IF NOT EXISTS products (
+    id INTEGER PRIMARY KEY,
+    displayableName TEXT NOT NULL,
+    queryableName TEXT NOT NULL,
+    groupId INTEGER NOT NULL,
+    priceAmount INTEGER,
+    priceCurrency TEXT
+);
+insert:
+INSERT OR REPLACE INTO products VALUES ?;

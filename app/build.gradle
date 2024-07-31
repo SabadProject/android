@@ -8,8 +8,8 @@ apply plugin: "app.cash.sqldelight"
 
 sqldelight {
     databases {
-        create("SabadSQLDelight") {
-            packageName.set("no1.sabad.db")
+        create("SabadPersistence") {
+            packageName.set("farayan.sabad.db")
         }
     }
 }
@@ -245,7 +245,8 @@ dependencies {
     //sqldelight
     implementation("app.cash.sqldelight:android-driver:$sqlDelightVer")
     implementation("app.cash.sqldelight:coroutines-extensions-jvm:$sqlDelightVer")
-
+    implementation("app.cash.sqldelight:android-driver:$sqlDelightVer")
+    implementation("app.cash.sqldelight:primitive-adapters:$sqlDelightVer")
 }
 afterEvaluate {
     publishing {

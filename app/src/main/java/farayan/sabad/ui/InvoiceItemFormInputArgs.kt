@@ -11,7 +11,6 @@ import farayan.sabad.core.OnePlace.InvoiceItem.InvoiceItemEntity
 import farayan.sabad.core.OnePlace.Unit.IUnitRepo
 import farayan.sabad.core.model.product.IProductRepo
 import farayan.sabad.core.model.product.ProductEntity
-import farayan.sabad.model.product_barcode.IProductBarcodeRepo
 
 @Suppress("unused")
 class InvoiceItemFormInputArgs(
@@ -24,7 +23,6 @@ class InvoiceItemFormInputArgs(
     val groupRepo: IGroupRepo,
     val groupUnitRepo: IGroupUnitRepo,
     val productRepo: IProductRepo,
-    val productBarcodeRepo: IProductBarcodeRepo,
     val invoiceItemRepo: IInvoiceItemRepo,
     val unitRepo: IUnitRepo,
     val beepManager: BeepManager

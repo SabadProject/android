@@ -18,8 +18,6 @@ import farayan.sabad.core.OnePlace.InvoiceItem.IInvoiceItemRepo;
 import farayan.sabad.core.OnePlace.Unit.IUnitRepo;
 import farayan.sabad.core.model.product.IProductRepo;
 import farayan.sabad.core.model.product.ProductEntity;
-import farayan.sabad.model.product_barcode.IProductBarcodeRepo;
-import farayan.sabad.model.product_barcode.QueryableBarcode;
 import farayan.sabad.vms.InvoiceItemFormViewModel;
 
 @AndroidEntryPoint
@@ -29,7 +27,6 @@ public class ScanActivity extends ScanActivityParent {
     private IGroupRepo TheGroupRepo;
     private IGroupUnitRepo TheGroupUnitRepo;
     private IProductRepo TheProductRepo;
-    private IProductBarcodeRepo TheProductBarcodeRepo;
     private IInvoiceItemRepo TheInvoiceItemRepo;
     private IUnitRepo TheUnitRepo;
     private boolean dataChanged;
@@ -38,7 +35,7 @@ public class ScanActivity extends ScanActivityParent {
         public void barcodeResult(BarcodeResult result) {
             ScanBarcodeView().pause();
             FarayanUtility.ReleaseScreenOn(getWindow());
-            ProductEntity productEntity = TheProductBarcodeRepo.ByBarcode(new QueryableBarcode(result.getText(), result.getBarcodeFormat()));
+            ProductEntity productEntity = new ProductEntity(); //TheProductBarcodeRepo.ByBarcode(new QueryableBarcode(result.getText(), result.getBarcodeFormat()));
 
             beepManager.playBeepSoundAndVibrate();
             InvoiceItemFormDialog dialog = new InvoiceItemFormDialog(
@@ -62,7 +59,6 @@ public class ScanActivity extends ScanActivityParent {
                             TheGroupRepo,
                             TheGroupUnitRepo,
                             TheProductRepo,
-                            TheProductBarcodeRepo,
                             TheInvoiceItemRepo,
                             TheUnitRepo,
                             new BeepManager(ScanActivity.this)
@@ -84,14 +80,12 @@ public class ScanActivity extends ScanActivityParent {
             IGroupRepo GroupRepo,
             IGroupUnitRepo GroupUnitRepo,
             IProductRepo productRepo,
-            IProductBarcodeRepo productBarcodeRepo,
             IInvoiceItemRepo invoiceItemRepo,
             IUnitRepo unitRepo
     ) {
         this.TheGroupRepo = GroupRepo;
         this.TheGroupUnitRepo = GroupUnitRepo;
         this.TheProductRepo = productRepo;
-        this.TheProductBarcodeRepo = productBarcodeRepo;
         this.TheInvoiceItemRepo = invoiceItemRepo;
         this.TheUnitRepo = unitRepo;
     }

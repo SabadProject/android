@@ -16,8 +16,6 @@ import farayan.sabad.core.OnePlace.StoreCategory.IStoreCategoryRepo;
 import farayan.sabad.core.OnePlace.StoreGroup.IStoreGroupRepo;
 import farayan.sabad.core.OnePlace.Unit.IUnitRepo;
 import farayan.sabad.core.model.product.IProductRepo;
-import farayan.sabad.model.product_barcode.IProductBarcodeRepo;
-import farayan.sabad.model.product_barcode.ProductBarcodeRepo;
 import farayan.sabad.models.Category.CategoryRepo;
 import farayan.sabad.models.CategoryGroup.CategoryGroupRepo;
 import farayan.sabad.models.Group.GroupRepo;
@@ -52,11 +50,6 @@ public class SabadModule {
     @Provides
     public static IProductRepo productRepo() {
         return new ProductRepo();
-    }
-
-    @Provides
-    public static IProductBarcodeRepo productBarcodeRepo() {
-        return new ProductBarcodeRepo();
     }
 
     @Provides

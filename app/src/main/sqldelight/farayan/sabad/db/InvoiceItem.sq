@@ -1,0 +1,12 @@
+CREATE TABLE IF NOT EXISTS invoiceItems (
+    id INTEGER PRIMARY KEY,
+    productId INTEGER NOT NULL,
+    quantity TEXT NOT NULL,
+    fee TEXT NOT NULL,
+    discount TEXT,
+    total TEXT,
+    invoiceId INTEGER,
+    unitId INTEGER
+);
+insert:
+INSERT OR REPLACE INTO invoiceItems VALUES ?;
