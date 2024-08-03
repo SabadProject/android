@@ -1,16 +1,25 @@
 import kotlin.Boolean;
 import kotlin.Int;
 
-CREATE TABLE IF NOT EXISTS categories (
+CREATE TABLE IF NOT EXISTS category (
     id INTEGER PRIMARY KEY,
-    categoryId INTEGER NOT NULL,
     displayableName TEXT NOT NULL,
     queryableName TEXT NOT NULL,
     displayableDescription TEXT NOT NULL,
     queryableDescription TEXT NOT NULL,
     needed INTEGER AS Boolean NOT NULL,
     deleted TEXT, --TODO
-    picked INTEGER AS Boolean
+    picked INTEGER AS Boolean NOT NULL,
+    position INTEGER NOT NULL
 );
+
+INSERT INTO category VALUES (1,'چای','چای','','',0,'',0,1);
+
 insert:
-INSERT OR REPLACE INTO categories VALUES ?;
+INSERT OR REPLACE INTO category VALUES ?;
+
+all:
+SELECT * FROM category ORDER BY position;
+
+first:
+SELECT * FROM category LIMIT 1;

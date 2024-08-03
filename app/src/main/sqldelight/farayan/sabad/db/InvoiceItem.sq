@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS invoiceItems (
+CREATE TABLE IF NOT EXISTS invoiceItem (
     id INTEGER PRIMARY KEY,
     productId INTEGER NOT NULL,
     quantity TEXT NOT NULL,
@@ -8,5 +8,6 @@ CREATE TABLE IF NOT EXISTS invoiceItems (
     invoiceId INTEGER,
     unitId INTEGER
 );
+
 insert:
-INSERT OR REPLACE INTO invoiceItems VALUES ?;
+INSERT OR REPLACE INTO invoiceItem VALUES ?;

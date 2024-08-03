@@ -6,7 +6,6 @@ import farayan.commons.UI.Core.IGenericEvent
 import farayan.sabad.core.OnePlace.Group.GroupEntity
 import farayan.sabad.core.OnePlace.Group.IGroupRepo
 import farayan.sabad.core.OnePlace.GroupUnit.IGroupUnitRepo
-import farayan.sabad.core.OnePlace.InvoiceItem.IInvoiceItemRepo
 import farayan.sabad.core.OnePlace.InvoiceItem.InvoiceItemEntity
 import farayan.sabad.core.OnePlace.Unit.IUnitRepo
 import farayan.sabad.core.model.product.IProductRepo
@@ -23,7 +22,6 @@ class InvoiceItemFormInputArgs(
     val groupRepo: IGroupRepo,
     val groupUnitRepo: IGroupUnitRepo,
     val productRepo: IProductRepo,
-    val invoiceItemRepo: IInvoiceItemRepo,
     val unitRepo: IUnitRepo,
     val beepManager: BeepManager
 )

@@ -36,7 +36,6 @@ import farayan.sabad.core.OnePlace.StoreGroup.StoreGroupEntity;
 import farayan.sabad.core.commons.UnitVariations;
 import farayan.sabad.core.model.product.ProductEntity;
 import farayan.sabad.core.model.unit.UnitEntity;
-import farayan.sabad.model.product_barcode.ProductBarcodeEntity;
 
 
 public class SabadDatabase extends OrmLiteSqliteOpenHelper {
@@ -54,7 +53,6 @@ public class SabadDatabase extends OrmLiteSqliteOpenHelper {
             TableUtils.createTable(cs, InvoiceEntity.class);
             TableUtils.createTable(cs, InvoiceItemEntity.class);
             TableUtils.createTable(cs, ProductEntity.class);
-            TableUtils.createTable(cs, ProductBarcodeEntity.class);
             TableUtils.createTable(cs, GroupUnitEntity.class);
             TableUtils.createTable(cs, UnitEntity.class);
             TableUtils.createTable(cs, StoreEntity.class);
@@ -68,7 +66,6 @@ public class SabadDatabase extends OrmLiteSqliteOpenHelper {
                     getRuntimeExceptionDao(GroupEntity.class),
                     getRuntimeExceptionDao(GroupUnitEntity.class),
                     getRuntimeExceptionDao(CategoryGroupEntity.class),
-                    getRuntimeExceptionDao(ProductBarcodeEntity.class),
                     getRuntimeExceptionDao(UnitEntity.class)
             );
 
@@ -493,20 +490,17 @@ public class SabadDatabase extends OrmLiteSqliteOpenHelper {
         final RuntimeExceptionDao<GroupEntity, Integer> GroupDAD;
         final RuntimeExceptionDao<GroupUnitEntity, Integer> GroupUnitDAD;
         final RuntimeExceptionDao<CategoryGroupEntity, Integer> CategoryGroupDAO;
-        final RuntimeExceptionDao<ProductBarcodeEntity, Integer> ProductBarcodeDAO;
         final RuntimeExceptionDao<UnitEntity, Integer> UnitDAO;
 
         DAOs(
                 RuntimeExceptionDao<GroupEntity, Integer> GroupDAD,
                 RuntimeExceptionDao<GroupUnitEntity, Integer> GroupUnitDAD,
                 RuntimeExceptionDao<CategoryGroupEntity, Integer> categoryGroupDAO,
-                RuntimeExceptionDao<ProductBarcodeEntity, Integer> productBarcodeDAO,
                 RuntimeExceptionDao<UnitEntity, Integer> unitDAO
         ) {
             this.GroupDAD = GroupDAD;
             this.GroupUnitDAD = GroupUnitDAD;
             this.CategoryGroupDAO = categoryGroupDAO;
-            this.ProductBarcodeDAO = productBarcodeDAO;
             this.UnitDAO = unitDAO;
         }
     }

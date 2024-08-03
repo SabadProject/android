@@ -24,7 +24,6 @@ import farayan.sabad.core.OnePlace.Group.GroupParams;
 import farayan.sabad.core.OnePlace.Group.IGroupRepo;
 import farayan.sabad.core.OnePlace.Invoice.IInvoiceRepo;
 import farayan.sabad.core.OnePlace.Invoice.InvoiceEntity;
-import farayan.sabad.core.OnePlace.InvoiceItem.IInvoiceItemRepo;
 import farayan.sabad.core.OnePlace.Store.IStoreRepo;
 import farayan.sabad.core.OnePlace.StoreCategory.IStoreCategoryRepo;
 import farayan.sabad.core.OnePlace.StoreGroup.IStoreGroupRepo;
@@ -56,7 +55,7 @@ public class CheckoutPurchaseDialog extends CheckoutPurchaseDialogParent {
     }
 
     private void Reload() {
-        SabadUtility.PurchaseSummary purchaseSummary = SabadUtility.PurchaseSummary(Args.GroupRepo, Args.InvoiceItemRepo);
+        SabadUtility.PurchaseSummary purchaseSummary = SabadUtility.PurchaseSummary(Args.GroupRepo);
 
         PurchasableCountEditText().setText(getString(R.string.CheckoutPurchaseNeededGroupsCount, purchaseSummary.NeededCount));
         PickedCountEditText().setText(getString(R.string.CheckoutPurchasePickedGroupsCount, purchaseSummary.PickedCount));
@@ -100,8 +99,8 @@ public class CheckoutPurchaseDialog extends CheckoutPurchaseDialogParent {
                         }
                     }
 
-                    groupEntity.Item.Refreshed(Args.InvoiceItemRepo).Invoice = invoiceEntity;
-                    Args.InvoiceItemRepo.Update(groupEntity.Item);
+                    groupEntity.Item.Invoice = invoiceEntity;
+                    //Args.InvoiceItemRepo.Update(groupEntity.Item);
                     invoiceEntity.Total += groupEntity.Item.Total.doubleValue();
                     invoiceEntity.ItemsQuantitySum += groupEntity.Item.Quantity.intValue();
                     invoiceEntity.ItemsPriceSum += groupEntity.Item.Total.intValue();
@@ -132,7 +131,7 @@ public class CheckoutPurchaseDialog extends CheckoutPurchaseDialogParent {
 
             Args.InvoiceRepo.Update(invoiceEntity);
 
-            Args.InvoiceItemRepo.DeleteAllItemsWithoutInvoice();
+            //Args.InvoiceItemRepo.DeleteAllItemsWithoutInvoice();
 
             FarayanUtility.ShowToast(TheActivity, "صورتحساب صادر و کالاهای برداشته‌شده، از فهرست خرید خارج شدند");
             IGenericEvent.Exec(Args.OnCheckedOut, invoiceEntity);
@@ -147,7 +146,6 @@ public class CheckoutPurchaseDialog extends CheckoutPurchaseDialogParent {
         public final IGroupRepo GroupRepo;
         public final IStoreRepo StoreRepo;
         public final IInvoiceRepo InvoiceRepo;
-        public final IInvoiceItemRepo InvoiceItemRepo;
         public final IGenericEvent<InvoiceEntity> OnCheckedOut;
 
         Input(
@@ -157,7 +155,6 @@ public class CheckoutPurchaseDialog extends CheckoutPurchaseDialogParent {
                 IGroupRepo groupRepo,
                 IStoreRepo storeRepo,
                 IInvoiceRepo invoiceRepo,
-                IInvoiceItemRepo invoiceItemRepo,
                 IGenericEvent<InvoiceEntity> onCheckedOut
         ) {
             StoreCategoryRepo = storeCategoryRepo;
@@ -166,7 +163,6 @@ public class CheckoutPurchaseDialog extends CheckoutPurchaseDialogParent {
             GroupRepo = groupRepo;
             StoreRepo = storeRepo;
             InvoiceRepo = invoiceRepo;
-            InvoiceItemRepo = invoiceItemRepo;
             OnCheckedOut = onCheckedOut;
         }
     }

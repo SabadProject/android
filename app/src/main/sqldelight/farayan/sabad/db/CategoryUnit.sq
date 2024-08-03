@@ -1,8 +1,0 @@
-CREATE TABLE IF NOT EXISTS categoryUnits (
-    id INTEGER PRIMARY KEY,
-    categoryId INTEGER NOT NULL,
-    unitId INTEGER NOT NULL,
-    position INTEGER NOT NULL
-);
-insert:
-INSERT OR REPLACE INTO categoryUnits VALUES ?;

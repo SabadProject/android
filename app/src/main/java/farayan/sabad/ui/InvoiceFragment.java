@@ -31,7 +31,6 @@ import farayan.sabad.core.OnePlace.Group.IGroupRepo;
 import farayan.sabad.core.OnePlace.Invoice.IInvoiceRepo;
 import farayan.sabad.core.OnePlace.Invoice.InvoiceEntity;
 import farayan.sabad.core.OnePlace.Invoice.InvoicePortable;
-import farayan.sabad.core.OnePlace.InvoiceItem.IInvoiceItemRepo;
 import farayan.sabad.core.OnePlace.InvoiceItem.InvoiceItemEntity;
 import farayan.sabad.core.OnePlace.InvoiceItem.InvoiceItemParams;
 import farayan.sabad.core.OnePlace.Store.IStoreRepo;
@@ -44,7 +43,6 @@ import farayan.sabad.models.InvoiceItem.InvoiceItemRecyclerAdapter;
 
 @AndroidEntryPoint
 public class InvoiceFragment extends InvoiceFragmentParent implements IEntityView<InvoiceEntity> {
-    private IInvoiceItemRepo TheInvoiceItemRepo;
     private IProductRepo TheProductRepo;
     private IStoreRepo TheStoreRepo;
     private IGroupRepo TheGroupRepo;
@@ -55,14 +53,12 @@ public class InvoiceFragment extends InvoiceFragmentParent implements IEntityVie
 
     @Inject
     public void Inject(
-            IInvoiceItemRepo invoiceItemRepo,
             IStoreRepo storeRepo,
             IProductRepo productRepo,
             IInvoiceRepo invoiceRepo,
             IGroupRepo groupRepo,
             IUnitRepo unitRepo
     ) {
-        TheInvoiceItemRepo = invoiceItemRepo;
         TheStoreRepo = storeRepo;
         TheProductRepo = productRepo;
         TheInvoiceRepo = invoiceRepo;
@@ -84,7 +80,7 @@ public class InvoiceFragment extends InvoiceFragmentParent implements IEntityVie
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.FaraBankMenu) {
-            List<InvoiceItemEntity> items = TheInvoiceItemRepo.InvoiceParams(TheInvoice);
+            List<InvoiceItemEntity> items = List.of();
             InvoicePortable invoicePortable = new InvoicePortable(
                     TheInvoice,
                     items,
@@ -99,13 +95,13 @@ public class InvoiceFragment extends InvoiceFragmentParent implements IEntityVie
                     invoicePortable,
                     TheInvoice.Seller == null ? null : new StorePortable(TheInvoice.Seller.Refreshed(TheStoreRepo)),
                     items.stream()
-                            .map(x -> x.Refreshed(TheInvoiceItemRepo).Product.Refreshed(TheProductRepo))
+                            .map(x -> x.Product.Refreshed(TheProductRepo))
                             .peek(x -> x.Group.Refreshed(TheGroupRepo))
                             .distinct()
                             .map(ProductPortable::new)
                             .collect(Collectors.toList()),
                     items.stream()
-                            .filter(x -> x.Refreshed(TheInvoiceItemRepo).Unit != null)
+                            .filter(x -> x.Unit != null)
                             .map(x -> x.Unit.Refreshed(TheUnitRepo))
                             .distinct()
                             .map(UnitPortable::new)
@@ -143,7 +139,7 @@ public class InvoiceFragment extends InvoiceFragmentParent implements IEntityVie
         SummaryInvoicesItem().DisplayEntity(TheInvoice);
         InvoiceItemParams params = new InvoiceItemParams();
         params.Invoice = new EntityFilter<>(TheInvoice);
-        List<InvoiceItemEntity> items = TheInvoiceItemRepo.All(params);
+        List<InvoiceItemEntity> items = List.of();
         InvoiceItemRecyclerAdapter adapter = new InvoiceItemRecyclerAdapter(getActivity(), items);
         InvoiceItemsRecyclerView().setAdapter(adapter);
         reloaded = true;

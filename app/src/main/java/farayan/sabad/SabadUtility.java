@@ -15,7 +15,6 @@ import farayan.commons.QueryBuilderCore.PropertyValueConditionModes;
 import farayan.sabad.core.OnePlace.Group.GroupEntity;
 import farayan.sabad.core.OnePlace.Group.GroupParams;
 import farayan.sabad.core.OnePlace.Group.IGroupRepo;
-import farayan.sabad.core.OnePlace.InvoiceItem.IInvoiceItemRepo;
 
 public class SabadUtility {
 
@@ -129,7 +128,7 @@ public class SabadUtility {
         );
     }
 
-    public static PurchaseSummary PurchaseSummary(IGroupRepo groupRepo, IInvoiceItemRepo invoiceItemRepo) {
+    public static PurchaseSummary PurchaseSummary(IGroupRepo groupRepo) {
         // آنهایی که مورد نیازند
         GroupParams neededGroupParams = new GroupParams();
         neededGroupParams.Needed = new ComparableFilter<>(true);
@@ -160,8 +159,8 @@ public class SabadUtility {
         List<GroupEntity> itemedGroupes = groupRepo.All(itemedGroupsParams);
         assert itemedGroupes != null;
         int itemedCount = itemedGroupes.size();
-        double quantitiesSum = itemedGroupes.stream().mapToDouble(x -> x.Item.Refreshed(invoiceItemRepo).Quantity.doubleValue()).sum();
-        double pricesSum = itemedGroupes.stream().mapToDouble(x -> x.Item.Refreshed(invoiceItemRepo).Total.doubleValue()).sum();
+        double quantitiesSum = itemedGroupes.stream().mapToDouble(x -> x.Item.Quantity.doubleValue()).sum();
+        double pricesSum = itemedGroupes.stream().mapToDouble(x -> x.Item.Total.doubleValue()).sum();
 
         GroupParams checkedGroupsParams = new GroupParams();
         checkedGroupsParams.Item = new EntityFilter<>(PropertyValueConditionModes.ProvidedValueOrNull);

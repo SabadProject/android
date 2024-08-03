@@ -4,24 +4,20 @@ import dagger.Module;
 import dagger.Provides;
 import dagger.hilt.InstallIn;
 import dagger.hilt.components.SingletonComponent;
-import farayan.sabad.core.OnePlace.Category.ICategoryRepo;
 import farayan.sabad.core.OnePlace.CategoryGroup.ICategoryGroupRepo;
 import farayan.sabad.core.OnePlace.Group.IGroupRepo;
 import farayan.sabad.core.OnePlace.GroupUnit.IGroupUnitRepo;
 import farayan.sabad.core.OnePlace.Invoice.IInvoiceRepo;
-import farayan.sabad.core.OnePlace.InvoiceItem.IInvoiceItemRepo;
 import farayan.sabad.core.OnePlace.NeedChange.INeedChangeRepo;
 import farayan.sabad.core.OnePlace.Store.IStoreRepo;
 import farayan.sabad.core.OnePlace.StoreCategory.IStoreCategoryRepo;
 import farayan.sabad.core.OnePlace.StoreGroup.IStoreGroupRepo;
 import farayan.sabad.core.OnePlace.Unit.IUnitRepo;
 import farayan.sabad.core.model.product.IProductRepo;
-import farayan.sabad.models.Category.CategoryRepo;
 import farayan.sabad.models.CategoryGroup.CategoryGroupRepo;
 import farayan.sabad.models.Group.GroupRepo;
 import farayan.sabad.models.GroupUnit.GroupUnitRepo;
 import farayan.sabad.models.Invoice.InvoiceRepo;
-import farayan.sabad.models.InvoiceItem.InvoiceItemRepo;
 import farayan.sabad.models.NeedChange.NeedChangeRepo;
 import farayan.sabad.models.Product.ProductRepo;
 import farayan.sabad.models.Store.StoreRepo;
@@ -43,11 +39,6 @@ public class SabadModule {
     }
 
     @Provides
-    public static IInvoiceItemRepo invoiceItemRepo() {
-        return new InvoiceItemRepo();
-    }
-
-    @Provides
     public static IProductRepo productRepo() {
         return new ProductRepo();
     }
@@ -65,11 +56,6 @@ public class SabadModule {
     @Provides
     public static IStoreRepo storeRepo() {
         return new StoreRepo();
-    }
-
-    @Provides
-    public static ICategoryRepo categoryRepo() {
-        return new CategoryRepo();
     }
 
     @Provides

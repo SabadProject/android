@@ -16,7 +16,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.google.zxing.client.android.BeepManager;
 
@@ -46,13 +45,13 @@ import farayan.sabad.core.OnePlace.Group.IGroupRepo;
 import farayan.sabad.core.OnePlace.Group.NewGroupNameNeededException;
 import farayan.sabad.core.OnePlace.GroupUnit.IGroupUnitRepo;
 import farayan.sabad.core.OnePlace.Invoice.IInvoiceRepo;
-import farayan.sabad.core.OnePlace.InvoiceItem.IInvoiceItemRepo;
 import farayan.sabad.core.OnePlace.Store.IStoreRepo;
 import farayan.sabad.core.OnePlace.StoreCategory.IStoreCategoryRepo;
 import farayan.sabad.core.OnePlace.StoreGroup.IStoreGroupRepo;
 import farayan.sabad.core.OnePlace.Unit.IUnitRepo;
 import farayan.sabad.core.model.product.IProductRepo;
 import farayan.sabad.models.Group.GroupRecyclerAdapter;
+import farayan.sabad.repo.CategoryRepo;
 import farayan.sabad.vms.InvoiceItemFormViewModel;
 
 
@@ -67,10 +66,11 @@ public class HomeFragment extends HomeFragmentParent {
     private IGroupRepo TheGroupRepo;
     private IStoreRepo TheStoreRepo;
     private IInvoiceRepo TheInvoiceRepo;
-    private IInvoiceItemRepo TheInvoiceItemRepo;
     private IGroupUnitRepo TheGroupUnitRepo;
     private IProductRepo TheProductRepo;
     private IUnitRepo TheUnitRepo;
+    private CategoryRepo categoryRepo;
+
     private final View.OnClickListener EditButtonOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
@@ -87,7 +87,6 @@ public class HomeFragment extends HomeFragmentParent {
                     new GroupFormDialog.Input(
                             groupEntity,
                             TheGroupRepo,
-                            TheInvoiceItemRepo,
                             TheProductRepo,
                             TheGroupUnitRepo,
                             x -> Reload(),
@@ -133,7 +132,7 @@ public class HomeFragment extends HomeFragmentParent {
         }
 
         if (!groupEntity.Picked) {
-            invoiceItemFormViewModel.init(groupEntity, true, null, false);
+            invoiceItemFormViewModel.init(categoryRepo.first(), true, null, false);
             InvoiceItemFormDialog dialog = new InvoiceItemFormDialog(
                     new InvoiceItemFormInputArgs(
                             groupEntity.Item,
@@ -145,7 +144,6 @@ public class HomeFragment extends HomeFragmentParent {
                             TheGroupRepo,
                             TheGroupUnitRepo,
                             TheProductRepo,
-                            TheInvoiceItemRepo,
                             TheUnitRepo,
                             new BeepManager(requireActivity())
                     ),
@@ -188,10 +186,10 @@ public class HomeFragment extends HomeFragmentParent {
             IGroupRepo GroupRepo,
             IStoreRepo storeRepo,
             IInvoiceRepo invoiceRepo,
-            IInvoiceItemRepo invoiceItemRepo,
             IGroupUnitRepo GroupUnitRepo,
             IProductRepo productRepo,
-            IUnitRepo unitRepo
+            IUnitRepo unitRepo,
+            CategoryRepo categoryRepo
     ) {
         TheStoreCategoryRepo = storeCategoryRepo;
         TheStoreGroupRepo = storeGroupRepo;
@@ -199,10 +197,10 @@ public class HomeFragment extends HomeFragmentParent {
         TheGroupRepo = GroupRepo;
         TheStoreRepo = storeRepo;
         TheInvoiceRepo = invoiceRepo;
-        TheInvoiceItemRepo = invoiceItemRepo;
         TheGroupUnitRepo = GroupUnitRepo;
         TheProductRepo = productRepo;
         TheUnitRepo = unitRepo;
+        this.categoryRepo = categoryRepo;
         init();
     }
 
@@ -283,7 +281,6 @@ public class HomeFragment extends HomeFragmentParent {
                         TheGroupRepo,
                         TheStoreRepo,
                         TheInvoiceRepo,
-                        TheInvoiceItemRepo,
                         invoiceEntity -> {
                             Reload();
                             HostActivity.OnFragmentCalled(null, SabadFragmentEvents.DisplayInvoices);
@@ -359,7 +356,7 @@ public class HomeFragment extends HomeFragmentParent {
                     AutoCheckout();
                 },
                 component -> {
-                    invoiceItemFormViewModel.init(component.getEntity(), true, null, false);
+                    invoiceItemFormViewModel.init(categoryRepo.first(), true, null, false);
                     InvoiceItemFormDialog dialog = new InvoiceItemFormDialog(
                             new InvoiceItemFormInputArgs(
                                     component.getEntity().Item,
@@ -378,7 +375,6 @@ public class HomeFragment extends HomeFragmentParent {
                                     TheGroupRepo,
                                     TheGroupUnitRepo,
                                     TheProductRepo,
-                                    TheInvoiceItemRepo,
                                     TheUnitRepo,
                                     new BeepManager(requireActivity())
                             ),
@@ -438,7 +434,8 @@ public class HomeFragment extends HomeFragmentParent {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        invoiceItemFormViewModel = new ViewModelProvider(requireActivity()).get(InvoiceItemFormViewModel.class);
+        //invoiceItemFormViewModel = new ViewModelProvider(requireActivity()).get(InvoiceItemFormViewModel.class);
+        invoiceItemFormViewModel = InvoiceItemFormViewModel.Companion.getFactory().create(InvoiceItemFormViewModel.class);
     }
 
     public enum Requests {

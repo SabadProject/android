@@ -77,15 +77,13 @@ import com.google.accompanist.permissions.shouldShowRationale
 import com.journeyapps.barcodescanner.BarcodeView
 import com.journeyapps.barcodescanner.DefaultDecoderFactory
 import farayan.commons.FarayanUtility
-import farayan.commons.QueryBuilderCore.ensured
 import farayan.sabad.R
 import farayan.sabad.SabadConfigs
 import farayan.sabad.SabadConstants
-import farayan.sabad.core.OnePlace.Group.GroupEntity
-import farayan.sabad.core.OnePlace.InvoiceItem.InvoiceItemEntity
 import farayan.sabad.core.commons.Currency
 import farayan.sabad.core.commons.UnitVariations
-import farayan.sabad.core.model.unit.UnitEntity
+import farayan.sabad.db.Category
+import farayan.sabad.db.InvoiceItem
 import farayan.sabad.isUsable
 import farayan.sabad.referencePrice
 import farayan.sabad.ui.components.CameraCapture
@@ -98,6 +96,7 @@ import farayan.sabad.ui.components.displayable
 import farayan.sabad.utility.hasValue
 import farayan.sabad.vms.InvoiceItemFormViewModel
 import java.math.BigDecimal
+import farayan.sabad.db.Unit as PersistenceUnit
 
 @OptIn(
     ExperimentalPermissionsApi::class, ExperimentalMaterial3Api::class,
@@ -130,8 +129,8 @@ class InvoiceItemFormDialog(
             setViewTreeSavedStateRegistryOwner(context)
             setViewTreeViewModelStoreOwner(context)
             setContent {
-                val groups = viewModel.groups.collectAsState()
-                val groupValue = viewModel.group.collectAsState()
+                val groups = viewModel.categories.collectAsState()
+                val groupValue = viewModel.category.collectAsState()
                 val product = viewModel.product.collectAsState()
                 val question = viewModel.question.collectAsState()
 
@@ -144,19 +143,11 @@ class InvoiceItemFormDialog(
                 }
                 var nameValue by remember { mutableStateOf("") }
                 var quantityValue: BigDecimal? by remember { mutableStateOf(BigDecimal.ONE) }
-                var quantityUnit: UnitEntity? by remember { mutableStateOf<UnitEntity?>(null) }
-                var packageMeasurementUnit: UnitVariations? by remember {
-                    mutableStateOf<UnitVariations?>(
-                        null
-                    )
-                }
-                var packageMeasurementValue: BigDecimal? by remember {
-                    mutableStateOf<BigDecimal?>(
-                        null
-                    )
-                }
-                var priceAmount: BigDecimal? by remember { mutableStateOf<BigDecimal?>(null) }
-                var priceCurrency: Currency? by remember { mutableStateOf<Currency?>(null) }
+                var quantityUnit: PersistenceUnit? by remember { mutableStateOf(null) }
+                var packageMeasurementUnit: UnitVariations? by remember { mutableStateOf(null) }
+                var packageMeasurementValue: BigDecimal? by remember { mutableStateOf(null) }
+                var priceAmount: BigDecimal? by remember { mutableStateOf(null) }
+                var priceCurrency: Currency? by remember { mutableStateOf(null) }
                 val photos = viewModel.formPhotos.collectAsState()
 
                 CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
@@ -175,7 +166,8 @@ class InvoiceItemFormDialog(
                         )
                         OutlinedTextField(
                             value = barcodeValue.value?.text ?: "",
-                            onValueChange = { viewModel.barcodeChangedManually(it) },
+                            onValueChange = { },
+                            enabled = false,
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(5.dp),
@@ -245,12 +237,12 @@ class InvoiceItemFormDialog(
                             }
                         }
                         GroupsDropdownMenuBox(
-                            groupValue.value.value?.DisplayableName ?: "",
+                            groupValue.value.value?.displayableName ?: "",
                             stringResource(id = R.string.invoice_item_form_dialog_group_label),
-                            groups.value!!.map {
+                            groups.value.map {
                                 GroupInvoiceItemForm(
                                     it.id,
-                                    it.DisplayableName,
+                                    it.displayableName,
                                     GroupPickState.resolveStatus(it, viewModel.pickedItems.value)
                                 )
                             }.sortedBy { it.status.position },
@@ -292,7 +284,7 @@ class InvoiceItemFormDialog(
                             UnitsDropdownMenuBox(
                                 selected = "",
                                 label = "واحد",
-                                units = viewModel.units().map { it.Unit.ensured(viewModel.unitRepo) },
+                                units = viewModel.units(),
                                 onValueChanged = { quantityUnit = it },
                                 modifier = Modifier
                                     .defaults()
@@ -319,11 +311,11 @@ class InvoiceItemFormDialog(
                             }
                         }
 
-                        val unitVariation = quantityUnit?.variation ?: packageMeasurementUnit
+                        val unitVariation = quantityUnit?.variation?.let { UnitVariations.valueOf(it) } ?: packageMeasurementUnit
                         val unitAmount = if (quantityUnit?.variation.hasValue) quantityValue else packageMeasurementValue
                         val priceLabel: String = if (quantityUnit?.displayableName.isUsable()) stringResource(
                             id = R.string.invoice_item_form_dialog_price_amount_by_unit_label,
-                            quantityUnit!!.displayableName!!
+                            quantityUnit!!.displayableName
                         ) else stringResource(id = R.string.invoice_item_form_dialog_price_amount_no_unit_label)
 
                         Row(verticalAlignment = Alignment.Bottom) {
@@ -518,21 +510,22 @@ enum class GroupPickState(
 
     companion object {
         fun resolveStatus(
-            group: GroupEntity,
-            pickedItems: List<InvoiceItemEntity>
+            category: Category,
+            pickedItems: List<InvoiceItem>
         ): GroupPickState {
+            @Suppress("KotlinConstantConditions")
             return when {
-                group.Needed && group.Picked -> NeededAndPicked
-                group.Needed && !group.Picked -> NeededButNotPicked
-                !group.Needed && group.Picked -> PickedWithoutNeeded
-                !group.Needed && !group.Picked -> NotNeededNotPicked
+                category.needed && category.picked -> NeededAndPicked
+                category.needed && !category.picked -> NeededButNotPicked
+                !category.needed && category.picked -> PickedWithoutNeeded
+                !category.needed && !category.picked -> NotNeededNotPicked
                 else -> throw RuntimeException()
             }
         }
     }
 }
 
-data class GroupInvoiceItemForm(val id: Int, val text: String, val status: GroupPickState)
+data class GroupInvoiceItemForm(val id: Long, val text: String, val status: GroupPickState)
 
 enum class CameraUsage {
     None,

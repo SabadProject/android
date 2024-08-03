@@ -3,49 +3,45 @@ package farayan.sabad.vms
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Star
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import com.journeyapps.barcodescanner.BarcodeResult
-import dagger.hilt.android.lifecycle.HiltViewModel
-import farayan.commons.FarayanUtility
-import farayan.commons.queryable
-import farayan.sabad.core.OnePlace.Group.GroupEntity
-import farayan.sabad.core.OnePlace.Group.IGroupRepo
-import farayan.sabad.core.OnePlace.GroupUnit.GroupUnitEntity
-import farayan.sabad.core.OnePlace.GroupUnit.IGroupUnitRepo
-import farayan.sabad.core.OnePlace.InvoiceItem.IInvoiceItemRepo
-import farayan.sabad.core.OnePlace.InvoiceItem.InvoiceItemEntity
-import farayan.sabad.core.OnePlace.Unit.IUnitRepo
-import farayan.sabad.core.model.product.IProductRepo
-import farayan.sabad.core.model.product.ProductEntity
-import farayan.sabad.db.ProductBarcodeQueries
+import farayan.sabad.SabadDependencies
+import farayan.sabad.core.commons.Currency
+import farayan.sabad.db.Category
+import farayan.sabad.db.Product
+import farayan.sabad.db.Unit
+import farayan.sabad.queryable
+import farayan.sabad.repo.CategoryRepo
+import farayan.sabad.repo.InvoiceItemRepo
+import farayan.sabad.repo.ProductBarcodeRepo
+import farayan.sabad.repo.ProductPhotoRepo
+import farayan.sabad.repo.ProductRepo
+import farayan.sabad.repo.UnitRepo
 import farayan.sabad.utility.hasValue
 import kotlinx.coroutines.flow.MutableStateFlow
 import java.io.File
 import java.math.BigDecimal
 import javax.inject.Inject
 
-@HiltViewModel
+//@HiltViewModel
 class InvoiceItemFormViewModel @Inject constructor(
-    private val invoiceItemRepo: IInvoiceItemRepo,
-    private val groupRepo: IGroupRepo,
-    private val productRepo: IProductRepo,
-    private val itemRepo: IInvoiceItemRepo,
-    val unitRepo: IUnitRepo,
-    private val groupUnitRepo: IGroupUnitRepo,
-    private val pbq: ProductBarcodeQueries,
+    private val unitRepo: UnitRepo,
+    private val categoryRepo: CategoryRepo,
+    private val invoiceItemRepo: InvoiceItemRepo,
+    private val productRepo: ProductRepo,
+    private val productPhotoRepo: ProductPhotoRepo,
+    private val productBarcodeRepo: ProductBarcodeRepo,
 ) : ViewModel() {
     fun barcodeScanned(br: BarcodeResult) {
-        val products = productBarcodeRepo.byBarcode(
-            QueryableBarcode(
-                br.text,
-                br.barcodeFormat,
-            )
-        )
-        if (products.isEmpty()) {
+        val productBarcodes = productBarcodeRepo.byBarcode(br)
+        if (productBarcodes.isEmpty()) {
             formScannedBarcode.value = br
             return
         }
-        if (product.fixed().hasValue) {
-            if (!products.contains(product.fixed())) {
+        val products = productRepo.byIds(productBarcodes.map { it.productId })
+        if (product.hasFixedValue) {
+            val id = product.theFixedValue.id
+            if (!products.any { it.id == id }) {
                 question.value = Question(
                     Questions.ScannedProductIsNotFixedProduct,
                     "Scanned barcode belongs to another product",
@@ -59,12 +55,12 @@ class InvoiceItemFormViewModel @Inject constructor(
             }
             return
         }
-        if (group.fixed().hasValue) {
-            val fixedGroupProducts = products.filter { it.Group == group.value }
-            if (fixedGroupProducts.isEmpty()) {
+        if (category.hasFixedValue) {
+            val theFixedCategoryProducts = products.filter { it.categoryId == category.value.value!!.id }
+            if (theFixedCategoryProducts.isEmpty()) {
                 question.value = Question(
                     Questions.NoScannedProductBelongsToFixedGroup,
-                    "while there are ${products.size} products with scanned barcode, none of them are in group ${group.fixed()!!.DisplayableName}. Please decide if you want to add new product or scan another product in group ${group.fixed()!!.DisplayableName}",
+                    "while there are ${productBarcodes.size} products with scanned barcode, none of them are in group ${category.theFixedValue.displayableName}. Please decide if you want to add new product or scan another product in group ${category.theFixedValue.displayableName}",
                     Icons.Filled.Star,
                     listOf(
                         QuestionButton("Clear", "clear"),
@@ -74,14 +70,12 @@ class InvoiceItemFormViewModel @Inject constructor(
                 )
                 return
             }
-            if (fixedGroupProducts.size == 1) {
-                val theProduct = fixedGroupProducts.first()
-                if (formName.value.isNotBlank() && formName.value.queryable()
-                        .contentEquals(theProduct.QueryableName)
-                ) {
+            if (theFixedCategoryProducts.size == 1) {
+                val theProduct = theFixedCategoryProducts.first()
+                if (formName.value.isNotBlank() && !formName.value.queryable().contentEquals(theProduct.queryableName)) {
                     question.value = Question(
                         Questions.ScannedProductWithinFixedGroupDoesNotMatchFilledForm,
-                        "One product found in group ${group.fixed()!!.DisplayableName}, but the name does not match what you entered",
+                        "One product found in group ${category.theFixedValue.displayableName}, but the name does not match what you entered",
                         Icons.Filled.Star,
                         listOf(
                             QuestionButton("Select scanned product", "clear"),
@@ -92,12 +86,12 @@ class InvoiceItemFormViewModel @Inject constructor(
                     return
                 }
             }
-            if (fixedGroupProducts.size > 1) {
+            if (theFixedCategoryProducts.size > 1) {
                 if (formName.value.isNotBlank()) {
                     val queryableName = formName.value.queryable()
-                    val firstOrNull = fixedGroupProducts.firstOrNull {
+                    val firstOrNull = theFixedCategoryProducts.firstOrNull {
                         queryableName.contentEquals(
-                            it.QueryableName,
+                            it.queryableName,
                             true
                         )
                     }
@@ -114,9 +108,9 @@ class InvoiceItemFormViewModel @Inject constructor(
                                 QuestionButton("Create new product", "create-product"),
                                 QuestionButton("Clear barcode", "create-product"),
                             ),
-                            fixedGroupProducts.map {
+                            theFixedCategoryProducts.map {
                                 QuestionOption(
-                                    it.DisplayableName,
+                                    it.queryableName,
                                     it.id.toString()
                                 )
                             }
@@ -128,9 +122,7 @@ class InvoiceItemFormViewModel @Inject constructor(
         } else {
             if (products.size == 1) {
                 val theProduct = products.first()
-                if (formName.value.isNotBlank() && !formName.value.queryable()
-                        .contentEquals(theProduct.QueryableName)
-                ) {
+                if (formName.value.isNotBlank() && !formName.value.queryable().contentEquals(theProduct.queryableName)) {
                     question.value = Question(
                         Questions.ScannedProductExistsWithDifferentName,
                         "One product found with scanned barcode, but its name is different with filled.",
@@ -148,8 +140,7 @@ class InvoiceItemFormViewModel @Inject constructor(
             if (products.size > 1) {
                 if (formName.value.isNotBlank()) {
                     val queryableName = formName.value.queryable()
-                    val firstOrNull =
-                        products.firstOrNull { queryableName.contentEquals(it.QueryableName, true) }
+                    val firstOrNull = products.firstOrNull { queryableName.contentEquals(it.queryableName, true) }
                     if (firstOrNull == null) {
                         question.value = Question(
                             Questions.ScannedProductDoesNotMatchFilledForm,
@@ -163,7 +154,7 @@ class InvoiceItemFormViewModel @Inject constructor(
                                 QuestionButton("Create new product", "create-product"),
                                 QuestionButton("Clear barcode", "create-product"),
                             ),
-                            products.map { QuestionOption(it.DisplayableName, it.id.toString()) }
+                            products.map { QuestionOption(it.displayableName, it.id.toString()) }
                         )
                         return
                     }
@@ -173,25 +164,13 @@ class InvoiceItemFormViewModel @Inject constructor(
     }
 
     fun init(
-        selectedGroup: GroupEntity? = null,
+        selectedCategory: Category? = null,
         fixedSelectedGroup: Boolean = false,
-        selectedProduct: ProductEntity? = null,
+        selectedProduct: Product? = null,
         fixedSelectedProduct: Boolean = false,
     ) {
-        group.value = Fixable(selectedGroup, fixedSelectedGroup)
+        category.value = Fixable(selectedCategory, fixedSelectedGroup)
         product.value = Fixable(selectedProduct, fixedSelectedProduct)
-    }
-
-    fun barcodeChangedManually(barcodeValue: String) {
-        //TODO
-        formScannedBarcode.value = null
-    }
-
-    fun units(): List<GroupUnitEntity> {
-        return if (group.fixed().hasValue)
-            groupUnitRepo.groupUnits(group.fixed()!!)
-        else
-            listOf()
     }
 
     fun photoTaken(it: File) {
@@ -202,48 +181,32 @@ class InvoiceItemFormViewModel @Inject constructor(
         formPhotos.value -= photo
     }
 
+    fun units(): List<Unit> {
+        if (category.hasAnyValue)
+            return unitRepo.all()
+        return listOf()
+    }
+
     fun persistInvoiceItem(): Boolean {
-        var p = product.value.value
+        var p = product.stateValue
         if (p == null) {
-            //p = productRepo.byCategoryAnd
-            p = ProductEntity().apply {
-                this.DisplayableName = FarayanUtility.Displayable(formName.value)
-                this.QueryableName = FarayanUtility.Queryable(formName.value)
-                this.Group = group.value.value ?: throw RuntimeException("group is null")
-            }
-            productRepo.Save(p)
+            p = productRepo.create(formName.value, category.stateValue ?: throw RuntimeException("category is null"))
         }
         for (photo in formPhotos.value) {
-            val pe = PhotoEntity()
-            pe.product = p
-            pe.path = photo
+            productPhotoRepo.ensure(p, photo)
         }
         if (formScannedBarcode.value.hasValue) {
-            val productBarcodes = productBarcodeRepo.byBarcode(formScannedBarcode.value!!.let { QueryableBarcode(it.text, it.barcodeFormat) })
-            if (productBarcodes.isEmpty()) {
-                val productBarcode = ProductBarcodeEntity().apply {
-                    value = formScannedBarcode.value!!.text
-                    format = formScannedBarcode.value!!.barcodeFormat
-                    product = p
-                }
-                productBarcodeRepo.Save(productBarcode)
-            }
+            productBarcodeRepo.ensure(p, formScannedBarcode.value!!)
         }
-        val invoiceItem = InvoiceItemEntity().apply {
-            Product = p
-            Quantity = formQuantity.value
-            Fee = formPriceAmount.value
-        }
-        invoiceItemRepo.Save(invoiceItem)
+        invoiceItemRepo.ensure(p, formPriceAmount.value, Currency.valueOf(formPriceCurrency.value), formQuantity.value)
         return true
     }
 
-    val groups = MutableStateFlow(groupRepo.All(groupRepo.NewParams()))
-    val pickedItems = MutableStateFlow(itemRepo.pickings())
-    val group = MutableStateFlow(Fixable<GroupEntity>())
-    val product = MutableStateFlow(Fixable<ProductEntity>())
+    val categories = MutableStateFlow(categoryRepo.all())
+    val pickedItems = MutableStateFlow(invoiceItemRepo.pickedItems())
+    val category = MutableStateFlow(Fixable<Category>())
+    val product = MutableStateFlow(Fixable<Product>())
     val formScannedBarcode = MutableStateFlow<BarcodeResult?>(null)
-    val formEnteredBarcode = MutableStateFlow<String?>(null)
     val formName = MutableStateFlow("")
     val formPhotos = MutableStateFlow(listOf<String>())
     val formQuantity = MutableStateFlow<BigDecimal>(BigDecimal.ZERO)
@@ -251,9 +214,36 @@ class InvoiceItemFormViewModel @Inject constructor(
     val formPriceAmount = MutableStateFlow(BigDecimal.ZERO)
     val formPriceCurrency = MutableStateFlow("")
     val question = MutableStateFlow<Question?>(null)
+    val errorMessage = MutableStateFlow<String?>(null)
+
+    companion object {
+        val Factory: ViewModelProvider.Factory = object : ViewModelProvider.Factory {
+            @Suppress("UNCHECKED_CAST")
+            override fun <T : ViewModel> create(
+                modelClass: Class<T>
+            ): T {
+                val sd = SabadDependencies()
+
+                return InvoiceItemFormViewModel(
+                    sd.unitRepo(),
+                    sd.categoryRepo(),
+                    sd.invoiceItemRepo(),
+                    sd.productRepo(),
+                    sd.productPhotoRepo(),
+                    sd.productBarcodeRepo(),
+                ) as T
+            }
+        }
+    }
 }
 
-data class Fixable<T>(val value: T? = null, val fixed: Boolean = false)
+class Fixable<T>(val value: T? = null, val fixed: Boolean = false) {
+    operator fun invoke() = value
+}
+
+fun <T> MutableStateFlow<T>.invoke(): T {
+    return this.value
+}
 
 enum class Questions {
     ScannedProductIsNotFixedProduct,
@@ -274,5 +264,22 @@ data class Question(
 data class QuestionButton(val label: String, val tag: String)
 data class QuestionOption(val label: String, val tag: String)
 
-fun <T> MutableStateFlow<Fixable<T>>.fixed(): T? =
-    if (this.value.fixed && this.value.hasValue) this.value.value else null
+val <T> MutableStateFlow<Fixable<T>>.hasFixedValue: Boolean
+    get() {
+        return this.value.value.hasValue && this.value.fixed
+    }
+
+val <T> MutableStateFlow<Fixable<T>>.hasAnyValue: Boolean
+    get() {
+        return this.value.value.hasValue
+    }
+
+val <T> MutableStateFlow<Fixable<T>>.theFixedValue: T
+    get() {
+        return this.value.value ?: throw RuntimeException("value is null")
+    }
+
+val <T> MutableStateFlow<Fixable<T>>.stateValue: T?
+    get() {
+        return this.value.value
+    }

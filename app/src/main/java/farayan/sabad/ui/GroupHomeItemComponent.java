@@ -21,7 +21,6 @@ import farayan.sabad.SabadUtility;
 import farayan.sabad.core.OnePlace.Group.GroupEntity;
 import farayan.sabad.core.OnePlace.Group.IGroupRepo;
 import farayan.sabad.core.OnePlace.GroupUnit.IGroupUnitRepo;
-import farayan.sabad.core.OnePlace.InvoiceItem.IInvoiceItemRepo;
 import farayan.sabad.core.OnePlace.NeedChange.INeedChangeRepo;
 import farayan.sabad.core.OnePlace.Unit.IUnitRepo;
 import farayan.sabad.core.model.product.IProductRepo;
@@ -34,7 +33,6 @@ public class GroupHomeItemComponent extends GroupHomeItemComponentParent impleme
     private final IGenericEvent<GroupEntity> OnRemoved;
     private final Rial.Coefficients RialFixedCoefficient;
     private IGroupRepo TheGroupRepo;
-    private IInvoiceItemRepo TheInvoiceItemRepo;
     private IProductRepo TheProductRepo;
     private IUnitRepo TheUnitRepo;
     private IGroupUnitRepo TheGroupUnitRepo;
@@ -96,14 +94,12 @@ public class GroupHomeItemComponent extends GroupHomeItemComponentParent impleme
     @Inject
     public void Inject(
             IGroupRepo GroupRepo,
-            IInvoiceItemRepo invoiceItemRepo,
             IProductRepo productRepo,
             IUnitRepo UnitRepo,
             IGroupUnitRepo GroupUnitRepo,
             INeedChangeRepo needChangeRepo
     ) {
         TheGroupRepo = GroupRepo;
-        TheInvoiceItemRepo = invoiceItemRepo;
         TheProductRepo = productRepo;
         TheUnitRepo = UnitRepo;
         TheGroupUnitRepo = GroupUnitRepo;
@@ -152,7 +148,6 @@ public class GroupHomeItemComponent extends GroupHomeItemComponentParent impleme
                     new GroupFormDialog.Input(
                             TheEntity,
                             TheGroupRepo,
-                            TheInvoiceItemRepo,
                             TheProductRepo,
                             TheGroupUnitRepo,
                             g -> DisplayEntity(g.Refreshed(TheGroupRepo)),
@@ -207,7 +202,7 @@ public class GroupHomeItemComponent extends GroupHomeItemComponentParent impleme
             InvoiceItemSummaryTextView().setText("");
             InvoiceItemSummaryTextView().setVisibility(GONE);
         } else {
-            if (Objects.equals(entity.Item.Refreshed(TheInvoiceItemRepo).Quantity, BigDecimal.ONE)) {
+            if (Objects.equals(entity.Item.Quantity, BigDecimal.ONE)) {
                 String summary = "%s %s";
                 summary = String.format(
                         summary,

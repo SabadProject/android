@@ -1,13 +1,20 @@
 import kotlin.Boolean;
 import kotlin.Int;
 
-CREATE TABLE IF NOT EXISTS products (
+CREATE TABLE IF NOT EXISTS product (
     id INTEGER PRIMARY KEY,
     displayableName TEXT NOT NULL,
     queryableName TEXT NOT NULL,
-    groupId INTEGER NOT NULL,
-    priceAmount INTEGER,
-    priceCurrency TEXT
+    categoryId INTEGER NOT NULL
 );
 insert:
-INSERT OR REPLACE INTO products VALUES ?;
+INSERT OR REPLACE INTO product VALUES ?;
+
+create:
+INSERT INTO product (displayableName,queryableName,categoryId) VALUES (:displayableName,:queryableName,:categoryId);
+
+created:
+SELECT * FROM product WHERE id = last_insert_rowid();
+
+byIds:
+SELECT * FROM product WHERE id IN :ids;

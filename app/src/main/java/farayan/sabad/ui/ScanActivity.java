@@ -14,7 +14,6 @@ import farayan.commons.FarayanUtility;
 import farayan.sabad.SabadConstants;
 import farayan.sabad.core.OnePlace.Group.IGroupRepo;
 import farayan.sabad.core.OnePlace.GroupUnit.IGroupUnitRepo;
-import farayan.sabad.core.OnePlace.InvoiceItem.IInvoiceItemRepo;
 import farayan.sabad.core.OnePlace.Unit.IUnitRepo;
 import farayan.sabad.core.model.product.IProductRepo;
 import farayan.sabad.core.model.product.ProductEntity;
@@ -27,7 +26,6 @@ public class ScanActivity extends ScanActivityParent {
     private IGroupRepo TheGroupRepo;
     private IGroupUnitRepo TheGroupUnitRepo;
     private IProductRepo TheProductRepo;
-    private IInvoiceItemRepo TheInvoiceItemRepo;
     private IUnitRepo TheUnitRepo;
     private boolean dataChanged;
     private final BarcodeCallback ScanBarcodeView_DecodeContinuous = new BarcodeCallback() {
@@ -59,7 +57,6 @@ public class ScanActivity extends ScanActivityParent {
                             TheGroupRepo,
                             TheGroupUnitRepo,
                             TheProductRepo,
-                            TheInvoiceItemRepo,
                             TheUnitRepo,
                             new BeepManager(ScanActivity.this)
                     ),
@@ -80,13 +77,11 @@ public class ScanActivity extends ScanActivityParent {
             IGroupRepo GroupRepo,
             IGroupUnitRepo GroupUnitRepo,
             IProductRepo productRepo,
-            IInvoiceItemRepo invoiceItemRepo,
             IUnitRepo unitRepo
     ) {
         this.TheGroupRepo = GroupRepo;
         this.TheGroupUnitRepo = GroupUnitRepo;
         this.TheProductRepo = productRepo;
-        this.TheInvoiceItemRepo = invoiceItemRepo;
         this.TheUnitRepo = unitRepo;
     }
 

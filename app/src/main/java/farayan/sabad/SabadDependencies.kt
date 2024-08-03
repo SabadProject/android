@@ -5,22 +5,42 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import farayan.sabad.db.ProductBarcodeQueries
 import farayan.sabad.db.SabadPersistence
+import farayan.sabad.repo.CategoryRepo
+import farayan.sabad.repo.InvoiceItemRepo
+import farayan.sabad.repo.ProductBarcodeRepo
+import farayan.sabad.repo.ProductPhotoRepo
+import farayan.sabad.repo.ProductRepo
+import farayan.sabad.repo.UnitRepo
 
 
 @Module
 @InstallIn(SingletonComponent::class)
 class SabadDependencies {
+    private lateinit var db: SabadPersistence
+
     @Provides
     fun persistence(): SabadPersistence {
-        return SabadPersistence(
-            AndroidSqliteDriver(SabadPersistence.Schema, SabadTheApp.getContext(), "sabad.sqdb"),
-        )
+        if (!this::db.isInitialized)
+            db = SabadPersistence(AndroidSqliteDriver(SabadPersistence.Schema, SabadTheApp.getContext(), "sabad.sqdb"))
+        return db
     }
 
     @Provides
-    fun productQueries(db: SabadPersistence): ProductBarcodeQueries {
-        return db.productBarcodeQueries
-    }
+    fun categoryRepo(): CategoryRepo = CategoryRepo(persistence().categoryQueries)
+
+    @Provides
+    fun invoiceItemRepo(): InvoiceItemRepo = InvoiceItemRepo(persistence().invoiceItemQueries)
+
+    @Provides
+    fun productRepo(): ProductRepo = ProductRepo(persistence().productQueries)
+
+    @Provides
+    fun productBarcodeRepo(): ProductBarcodeRepo = ProductBarcodeRepo(persistence().productBarcodeQueries)
+
+    @Provides
+    fun productPhotoRepo(): ProductPhotoRepo = ProductPhotoRepo(persistence().productPhotoQueries)
+
+    @Provides
+    fun unitRepo(): UnitRepo = UnitRepo(persistence().unitQueries)
 }
