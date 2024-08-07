@@ -21,4 +21,6 @@ class ProductPhotoRepo(private val queries: ProductPhotoQueries) {
     fun ensure(product: Product, photo: String): ProductPhoto {
         return queries.byProductAndPath(product.id, photo).executeAsOneOrNull() ?: create(product, photo)
     }
+
+    fun byProduct(product: Product): List<ProductPhoto> = queries.byProduct(product.id).executeAsList()
 }

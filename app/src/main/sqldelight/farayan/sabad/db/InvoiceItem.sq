@@ -2,6 +2,7 @@ CREATE TABLE IF NOT EXISTS invoiceItem (
     id INTEGER PRIMARY KEY,
     productId INTEGER NOT NULL,
     quantity TEXT NOT NULL,
+    currency TEXT NOT NULL,
     fee TEXT NOT NULL,
     discount TEXT,
     total TEXT,
@@ -9,5 +10,20 @@ CREATE TABLE IF NOT EXISTS invoiceItem (
     unitId INTEGER
 );
 
-insert:
-INSERT OR REPLACE INTO invoiceItem VALUES ?;
+current:
+SELECT * FROM invoiceItem WHERE invoiceId IS NULL AND productId = :productId;
+
+create:
+INSERT INTO invoiceItem (productId,quantity,currency,fee,discount,total) VALUES (:productId,:quantity,:currency,:fee,:discount,:total);
+
+created:
+SELECT * FROM invoiceItem WHERE id = last_insert_rowid();
+
+byId:
+SELECT * FROM invoiceItem WHERE id = :id;
+
+update:
+UPDATE invoiceItem SET quantity=:quantity, currency=:currency, fee=:fee, discount=:discount, total=:total WHERE id = ?;
+
+delete:
+DELETE FROM invoiceItem WHERE id = ?;

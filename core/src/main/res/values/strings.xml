@@ -10,4 +10,5 @@
     <string name="unit_variation_kg_name">کیلوگرم</string>
     <string name="unit_variation_ml_name">میلی‌لیتر</string>
     <string name="unit_variation_l_name">لیتر</string>
+    <string name="unit_variation_p_name">عدد</string>
 </resources>

@@ -23,3 +23,6 @@ SELECT * FROM productPhoto WHERE id = last_insert_rowid();
 
 byProductAndPath:
 SELECT * FROM productPhoto WHERE productId = :productId AND path = :path;
+
+byProduct:
+SELECT * FROM productPhoto WHERE productId = :productId;

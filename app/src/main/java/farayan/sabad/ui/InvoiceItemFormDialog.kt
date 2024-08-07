@@ -40,6 +40,7 @@ import androidx.compose.material.icons.outlined.CheckCircle
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -80,7 +81,6 @@ import farayan.commons.FarayanUtility
 import farayan.sabad.R
 import farayan.sabad.SabadConfigs
 import farayan.sabad.SabadConstants
-import farayan.sabad.core.commons.Currency
 import farayan.sabad.core.commons.UnitVariations
 import farayan.sabad.db.Category
 import farayan.sabad.db.InvoiceItem
@@ -133,22 +133,29 @@ class InvoiceItemFormDialog(
                 val groupValue = viewModel.category.collectAsState()
                 val product = viewModel.product.collectAsState()
                 val question = viewModel.question.collectAsState()
-
                 val barcodeValue = viewModel.formScannedBarcode.collectAsState()
+                val nameValue = viewModel.formName.collectAsState()
+                val quantityValue = viewModel.formQuantityValue.collectAsState()
+                val quantityUnit: State<PersistenceUnit?> = viewModel.formQuantityUnit.collectAsState()
+                val packageMeasurementUnit = viewModel.formPackageUnit.collectAsState()
+                val packageMeasurementValue = viewModel.formPackageWorth.collectAsState()
+                val priceAmount = viewModel.formPriceAmount.collectAsState()
+                val priceCurrency = viewModel.formPriceCurrency.collectAsState()
+                val photos = viewModel.formPhotos.collectAsState()
+
                 var cameraUsage by remember { mutableStateOf(CameraUsage.None) }
                 val cameraPermissionState = rememberPermissionState(
                     Manifest.permission.CAMERA
                 ) {
                     Log.i("Permission", "resulted")
                 }
-                var nameValue by remember { mutableStateOf("") }
-                var quantityValue: BigDecimal? by remember { mutableStateOf(BigDecimal.ONE) }
+                /*var quantityValue: BigDecimal? by remember { mutableStateOf(BigDecimal.ONE) }
                 var quantityUnit: PersistenceUnit? by remember { mutableStateOf(null) }
                 var packageMeasurementUnit: UnitVariations? by remember { mutableStateOf(null) }
                 var packageMeasurementValue: BigDecimal? by remember { mutableStateOf(null) }
                 var priceAmount: BigDecimal? by remember { mutableStateOf(null) }
                 var priceCurrency: Currency? by remember { mutableStateOf(null) }
-                val photos = viewModel.formPhotos.collectAsState()
+                val photos = viewModel.formPhotos.collectAsState()*/
 
                 CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
                     Column(
@@ -165,7 +172,7 @@ class InvoiceItemFormDialog(
                                 .defaults()
                         )
                         OutlinedTextField(
-                            value = barcodeValue.value?.text ?: "",
+                            value = barcodeValue.value?.textual ?: "",
                             onValueChange = { },
                             enabled = false,
                             modifier = Modifier
@@ -250,7 +257,7 @@ class InvoiceItemFormDialog(
                             modifier = Modifier.fillMaxWidth()
                         )
                         OutlinedTextField(
-                            value = nameValue,
+                            value = nameValue.value,
                             label = {
                                 Text(
                                     text = stringResource(id = R.string.invoice_item_form_dialog_name_placeholder),
@@ -263,7 +270,7 @@ class InvoiceItemFormDialog(
                                     style = TextStyle(fontFamily = appFont)
                                 )
                             },
-                            onValueChange = { nameValue = it },
+                            onValueChange = { viewModel.formName.value = it },
                             modifier = Modifier
                                 .defaults()
                                 .fillMaxWidth(),
@@ -274,9 +281,9 @@ class InvoiceItemFormDialog(
 
                         Row(verticalAlignment = Alignment.Bottom) {
                             NumberEntry(
-                                number = quantityValue,
+                                number = quantityValue.value,
                                 label = stringResource(id = R.string.invoice_item_form_dialog_quantity_placeholder),
-                                onValueChanged = { quantityValue = it },
+                                onValueChanged = { viewModel.formQuantityValue.value = it },
                                 modifier = Modifier
                                     .align(Alignment.CenterVertically)
                                     .weight(0.5f, true)
@@ -285,24 +292,24 @@ class InvoiceItemFormDialog(
                                 selected = "",
                                 label = "واحد",
                                 units = viewModel.units(),
-                                onValueChanged = { quantityUnit = it },
+                                onValueChanged = { viewModel.formQuantityUnit.value = it },
                                 modifier = Modifier
                                     .defaults()
                                     .padding(top = 6.dp)
                                     .weight(0.5f, true),
                             )
                         }
-                        if (quantityUnit.hasValue && quantityUnit!!.variation == null) {
+                        if (quantityUnit.value.hasValue && quantityUnit.value?.variation == null) {
                             Row {
                                 NumberEntry(
-                                    number = packageMeasurementValue,
-                                    label = stringResource(id = R.string.invoice_item_form_dialog_reference_price_measurable_value, quantityUnit?.displayableName ?: ""),
-                                    onValueChanged = { packageMeasurementValue = it },
+                                    number = packageMeasurementValue.value,
+                                    label = stringResource(id = R.string.invoice_item_form_dialog_reference_price_measurable_value, quantityUnit.value?.displayableName ?: ""),
+                                    onValueChanged = { viewModel.formPackageWorth.value = it },
                                     modifier = Modifier.weight(0.6f)
                                 )
                                 UnitVariationDropdownBox(
-                                    selected = packageMeasurementUnit,
-                                    onValueChanged = { packageMeasurementUnit = it },
+                                    selected = packageMeasurementUnit.value,
+                                    onValueChanged = { viewModel.formPackageUnit.value = it },
                                     modifier = Modifier
                                         .defaults()
                                         .padding(top = 6.dp)
@@ -311,26 +318,26 @@ class InvoiceItemFormDialog(
                             }
                         }
 
-                        val unitVariation = quantityUnit?.variation?.let { UnitVariations.valueOf(it) } ?: packageMeasurementUnit
-                        val unitAmount = if (quantityUnit?.variation.hasValue) quantityValue else packageMeasurementValue
-                        val priceLabel: String = if (quantityUnit?.displayableName.isUsable()) stringResource(
+                        val unitVariation = quantityUnit.value?.variation?.let { UnitVariations.valueOf(it) } ?: packageMeasurementUnit.value
+                        val unitAmount = if (quantityUnit.value?.variation.hasValue) quantityValue else packageMeasurementValue
+                        val priceLabel: String = if (quantityUnit.value?.displayableName.isUsable()) stringResource(
                             id = R.string.invoice_item_form_dialog_price_amount_by_unit_label,
-                            quantityUnit!!.displayableName
+                            quantityUnit.value!!.displayableName
                         ) else stringResource(id = R.string.invoice_item_form_dialog_price_amount_no_unit_label)
 
                         Row(verticalAlignment = Alignment.Bottom) {
                             NumberEntry(
-                                number = priceAmount,
+                                number = priceAmount.value,
                                 label = priceLabel,
-                                onValueChanged = { priceAmount = it },
+                                onValueChanged = { viewModel.formPriceAmount.value = it },
                                 modifier = Modifier
                                     .align(Alignment.CenterVertically)
                                     .weight(0.6f, true)
                             )
                             CurrenciesDropdownMenuBox(
-                                selected = priceCurrency,
+                                selected = priceCurrency.value,
                                 context = LocalContext.current,
-                                onValueChanged = { priceCurrency = it },
+                                onValueChanged = { viewModel.formPriceCurrency.value = it },
                                 modifier = Modifier
                                     .defaults()
                                     .padding(top = 0.dp)
@@ -338,19 +345,19 @@ class InvoiceItemFormDialog(
                             )
                         }
 
-                        if (unitVariation.hasValue && unitAmount.hasValue && priceAmount.hasValue) {
+                        if (unitVariation.hasValue && unitAmount.hasValue && priceAmount.value.hasValue) {
                             val mainUnitName = stringResource(id = unitVariation!!.mainUnitNameResId)
                             val message: String
-                            if (unitAmount!! <= BigDecimal.ZERO) {
-                                message = if (quantityUnit?.variation.hasValue) {
+                            if (unitAmount.value!! <= BigDecimal.ZERO) {
+                                message = if (quantityUnit.value?.variation.hasValue) {
                                     stringResource(id = R.string.invoice_item_form_dialog_reference_quantity_unit_unacceptable)
                                 } else {
                                     stringResource(id = R.string.invoice_item_form_dialog_reference_package_unit_unacceptable)
                                 }
                             } else {
-                                val equivalentText = referencePrice(priceAmount!!, unitAmount, unitVariation.coefficient)
+                                val equivalentText = referencePrice(priceAmount.value!!, unitAmount.value!!, unitVariation.coefficient)
                                     .displayable(false)
-                                val currency = priceCurrency?.resourceId?.let { stringResource(id = it) } ?: ""
+                                val currency = priceCurrency.value?.resourceId?.let { stringResource(id = it) } ?: ""
                                 message = stringResource(id = R.string.invoice_item_form_dialog_reference_price_template, mainUnitName, equivalentText, currency)
                             }
                             Text(
@@ -400,7 +407,7 @@ class InvoiceItemFormDialog(
                                 .height(48.dp)
                         ) {
                             items(photos.value) { photo ->
-                                InvoiceItemProduct(photo, onRemove = { viewModel.photoRemoved(it) })
+                                InvoiceItemProduct(photo.path, onRemove = { viewModel.photoRemoved(it) })
                             }
                         }
 

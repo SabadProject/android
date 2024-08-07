@@ -7,4 +7,6 @@ class UnitRepo(private val queries: UnitQueries) {
     fun all(): List<Unit> {
         return queries.all().executeAsList()
     }
+
+    fun byId(id: Long): Unit? = queries.byId(id).executeAsOneOrNull()
 }

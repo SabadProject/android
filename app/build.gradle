@@ -169,12 +169,10 @@ dependencies {
     debugImplementation "com.facebook.stetho:stetho:1.5.1"
     debugImplementation "com.facebook.stetho:stetho-okhttp3:1.5.0"
     debugImplementation "com.facebook.stetho:stetho-js-rhino:1.5.0"
-    debugImplementation 'com.github.behzadian:debugghost:v1.1.3'
 
     stageImplementation "com.facebook.stetho:stetho:1.5.1"
     stageImplementation "com.facebook.stetho:stetho-okhttp3:1.5.0"
     stageImplementation "com.facebook.stetho:stetho-js-rhino:1.5.0"
-    stageImplementation 'com.github.behzadian:debugghost:v1.1.3'
 
     maintenanceImplementation "com.facebook.stetho:stetho:1.5.1"
     maintenanceImplementation "com.facebook.stetho:stetho-okhttp3:1.5.0"

@@ -1,0 +1,23 @@
+CREATE TABLE IF NOT EXISTS productBarcode (
+    id INTEGER PRIMARY KEY,
+    productId INTEGER NOT NULL,
+    textual TEXT NOT NULL,
+    format TEXT NOT NULL,
+    bitmapResultPoints TEXT,
+    bitmapScaleFactor INTEGER,
+    bitmapFile TEXT
+);
+insert:
+INSERT OR REPLACE INTO productBarcode VALUES ?;
+
+create:
+INSERT INTO productBarcode (productId, textual, format, bitmapResultPoints, bitmapScaleFactor, bitmapFile) VALUES (:productId, :textual, :format, :bitmapResultPoints, :bitmapScaleFactor, :bitmapFile);
+
+created:
+SELECT * FROM productBarcode WHERE id = last_insert_rowid();
+
+byBarcode:
+SELECT * FROM productBarcode WHERE textual = :textual AND format = :format;
+
+byProduct:
+SELECT * FROM productBarcode WHERE productId = :productId;
