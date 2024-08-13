@@ -43,7 +43,7 @@ fun CurrenciesDropdownMenuBox(
     }
 
     var expanded by remember { mutableStateOf(false) }
-    var text by remember { mutableStateOf(TextFieldValue(selected?.textual() ?: "")) }
+    var text = TextFieldValue(selected?.textual() ?: "")
     val editable = !readonly
 
     ExposedDropdownMenuBox(

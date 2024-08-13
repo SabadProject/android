@@ -32,7 +32,8 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
-        android:theme="@style/SabadTheme">
+        android:theme="@style/SabadTheme"
+        tools:replace="android:allowBackup">
         <activity
             android:name=".ui.AboutActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"

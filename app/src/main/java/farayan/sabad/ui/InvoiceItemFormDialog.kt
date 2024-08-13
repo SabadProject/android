@@ -133,7 +133,7 @@ class InvoiceItemFormDialog(
                 val groupValue = viewModel.category.collectAsState()
                 val product = viewModel.product.collectAsState()
                 val question = viewModel.question.collectAsState()
-                val barcodeValue = viewModel.formScannedBarcode.collectAsState()
+                val barcodeValue = viewModel.formScannedExtractedBarcode.collectAsState()
                 val nameValue = viewModel.formName.collectAsState()
                 val quantityValue = viewModel.formQuantityValue.collectAsState()
                 val quantityUnit: State<PersistenceUnit?> = viewModel.formQuantityUnit.collectAsState()
@@ -149,13 +149,6 @@ class InvoiceItemFormDialog(
                 ) {
                     Log.i("Permission", "resulted")
                 }
-                /*var quantityValue: BigDecimal? by remember { mutableStateOf(BigDecimal.ONE) }
-                var quantityUnit: PersistenceUnit? by remember { mutableStateOf(null) }
-                var packageMeasurementUnit: UnitVariations? by remember { mutableStateOf(null) }
-                var packageMeasurementValue: BigDecimal? by remember { mutableStateOf(null) }
-                var priceAmount: BigDecimal? by remember { mutableStateOf(null) }
-                var priceCurrency: Currency? by remember { mutableStateOf(null) }
-                val photos = viewModel.formPhotos.collectAsState()*/
 
                 CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
                     Column(
@@ -163,6 +156,7 @@ class InvoiceItemFormDialog(
                             .fillMaxWidth()
                             .verticalScroll(rememberScrollState())
                     ) {
+                        Text(text = org.joda.time.LocalDateTime(System.currentTimeMillis()).toString("mm:ss"))
                         Text(
                             text = stringResource(id = R.string.invoice_item_form_dialog_title),
                             style = TextStyle(color = Color.White, fontFamily = appFont),
@@ -170,6 +164,7 @@ class InvoiceItemFormDialog(
                                 .background(Color.Black)
                                 .fillMaxWidth()
                                 .defaults()
+
                         )
                         OutlinedTextField(
                             value = barcodeValue.value?.textual ?: "",
@@ -227,6 +222,7 @@ class InvoiceItemFormDialog(
                                                 )
                                             )
                                             decodeContinuous {
+                                                Log.i("barcode", "Paused")
                                                 pause()
                                                 FarayanUtility.ReleaseScreenOn(window)
                                                 SabadConfigs.Notify(inputArgs.beepManager)
@@ -289,7 +285,7 @@ class InvoiceItemFormDialog(
                                     .weight(0.5f, true)
                             )
                             UnitsDropdownMenuBox(
-                                selected = "",
+                                selected = quantityUnit.value,
                                 label = "واحد",
                                 units = viewModel.units(),
                                 onValueChanged = { viewModel.formQuantityUnit.value = it },

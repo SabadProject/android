@@ -28,7 +28,7 @@ import farayan.sabad.db.Unit as PersistenceUnit
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun UnitsDropdownMenuBox(
-    selected: String,
+    selected: PersistenceUnit?,
     label: String,
     units: List<PersistenceUnit>,
     onValueChanged: (PersistenceUnit?) -> Unit,
@@ -36,7 +36,7 @@ fun UnitsDropdownMenuBox(
     readonly: Boolean = false
 ) {
     var expanded by remember { mutableStateOf(false) }
-    var text by remember { mutableStateOf(TextFieldValue(selected)) }
+    var text = TextFieldValue(selected?.displayableName ?: "")
     val editable = !readonly
 
     ExposedDropdownMenuBox(

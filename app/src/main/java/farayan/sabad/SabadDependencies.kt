@@ -6,10 +6,10 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import farayan.sabad.db.SabadPersistence
+import farayan.sabad.repo.BarcodeRepo
 import farayan.sabad.repo.CategoryRepo
 import farayan.sabad.repo.InvoiceItemRepo
 import farayan.sabad.repo.PriceRepo
-import farayan.sabad.repo.ProductBarcodeRepo
 import farayan.sabad.repo.ProductPhotoRepo
 import farayan.sabad.repo.ProductRepo
 import farayan.sabad.repo.UnitRepo
@@ -37,10 +37,10 @@ class SabadDependencies {
     fun productRepo(): ProductRepo = ProductRepo(persistence().productQueries)
 
     @Provides
-    fun productBarcodeRepo(): ProductBarcodeRepo = ProductBarcodeRepo(persistence().productBarcodeQueries)
+    fun barcodeRepo(): BarcodeRepo = BarcodeRepo(persistence().barcodeQueries)
 
     @Provides
-    fun productPhotoRepo(): ProductPhotoRepo = ProductPhotoRepo(persistence().productPhotoQueries)
+    fun photoRepo(): ProductPhotoRepo = ProductPhotoRepo(persistence().photoQueries)
 
     @Provides
     fun unitRepo(): UnitRepo = UnitRepo(persistence().unitQueries)

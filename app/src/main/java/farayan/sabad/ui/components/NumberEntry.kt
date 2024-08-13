@@ -1,6 +1,5 @@
 package farayan.sabad.ui.components
 
-import android.util.Log
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.OutlinedTextField
@@ -31,9 +30,7 @@ fun NumberEntry(
     onValueChanged: (BigDecimal?) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    var value: BigDecimal? by remember {
-        mutableStateOf<BigDecimal?>(number)
-    }
+    var value: BigDecimal? = number
     var suffixedWithDecimalPoint by remember { mutableStateOf(false) }
     OutlinedTextField(
         value = value.displayable(suffixedWithDecimalPoint).let { TextFieldValue(it, TextRange(it.length)) },
@@ -49,10 +46,6 @@ fun NumberEntry(
             val rawText = rawPrice.text
             value = parseBigDecimal(rawText)
             suffixedWithDecimalPoint = rawText.isNotBlank() && rawText.indexOfFirst { it == '.' } == rawText.length - 1
-            Log.i(
-                "number",
-                "$rawText is ${if (suffixedWithDecimalPoint) "" else "NOT"} suffixedWithDecimalPoint "
-            )
             onValueChanged(value)
         },
         modifier = modifier

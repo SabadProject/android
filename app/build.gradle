@@ -202,7 +202,7 @@ dependencies {
     //implementation "farayan.android.libs:farayan-commons:$farayanCommonsVersion"
     implementation project(path: ':farayan-commons')
 
-    implementation "com.github.behzadian:android-number-entry:$numberEntryVersion"
+    //implementation "com.github.behzadian:android-number-entry:$numberEntryVersion"
     //implementation project(path: ':number-entry')
 
     // Compose

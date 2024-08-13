@@ -1,11 +1,11 @@
 package farayan.sabad.repo
 
+import farayan.sabad.db.Photo
+import farayan.sabad.db.PhotoQueries
 import farayan.sabad.db.Product
-import farayan.sabad.db.ProductPhoto
-import farayan.sabad.db.ProductPhotoQueries
 
-class ProductPhotoRepo(private val queries: ProductPhotoQueries) {
-    fun create(product: Product, path: String): ProductPhoto {
+class ProductPhotoRepo(private val queries: PhotoQueries) {
+    fun create(product: Product, path: String): Photo {
         return queries.transactionWithResult {
             val position = 0L
             val widthPixels = 0L
@@ -18,9 +18,9 @@ class ProductPhotoRepo(private val queries: ProductPhotoQueries) {
         }
     }
 
-    fun ensure(product: Product, photo: String): ProductPhoto {
+    fun ensure(product: Product, photo: String): Photo {
         return queries.byProductAndPath(product.id, photo).executeAsOneOrNull() ?: create(product, photo)
     }
 
-    fun byProduct(product: Product): List<ProductPhoto> = queries.byProduct(product.id).executeAsList()
+    fun byProduct(product: Product): List<Photo> = queries.byProduct(product.id).executeAsList()
 }

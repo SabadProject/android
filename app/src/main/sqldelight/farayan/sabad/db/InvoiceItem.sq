@@ -2,19 +2,21 @@ CREATE TABLE IF NOT EXISTS invoiceItem (
     id INTEGER PRIMARY KEY,
     productId INTEGER NOT NULL,
     quantity TEXT NOT NULL,
+    unitId INTEGER,
+    packageWorth TEXT,
+    packageUnit Text,
     currency TEXT NOT NULL,
     fee TEXT NOT NULL,
     discount TEXT,
     total TEXT,
-    invoiceId INTEGER,
-    unitId INTEGER
+    invoiceId INTEGER
 );
 
 current:
 SELECT * FROM invoiceItem WHERE invoiceId IS NULL AND productId = :productId;
 
 create:
-INSERT INTO invoiceItem (productId,quantity,currency,fee,discount,total) VALUES (:productId,:quantity,:currency,:fee,:discount,:total);
+INSERT INTO invoiceItem (productId,quantity,unitId,currency,fee,discount,total,packageWorth,packageUnit) VALUES (:productId,:quantity,:unitId,:currency,:fee,:discount,:total,:packageWorth,:packageUnit);
 
 created:
 SELECT * FROM invoiceItem WHERE id = last_insert_rowid();
@@ -23,7 +25,10 @@ byId:
 SELECT * FROM invoiceItem WHERE id = :id;
 
 update:
-UPDATE invoiceItem SET quantity=:quantity, currency=:currency, fee=:fee, discount=:discount, total=:total WHERE id = ?;
+UPDATE invoiceItem SET quantity=:quantity, unitId=:unitId, currency=:currency, fee=:fee, discount=:discount, total=:total, packageWorth=:packageWorth,packageUnit=:packageUnit WHERE id = ?;
+
+byProductAndNullInvoice:
+SELECT * FROM invoiceItem WHERE productId = :productId AND invoiceId IS NULL;
 
 delete:
 DELETE FROM invoiceItem WHERE id = ?;
