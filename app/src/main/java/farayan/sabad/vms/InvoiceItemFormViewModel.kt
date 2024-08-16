@@ -337,7 +337,7 @@ class InvoiceItemFormViewModel @Inject constructor(
                 return InvoiceItemFormViewModel(
                     sd.unitRepo(),
                     sd.categoryRepo(),
-                    sd.invoiceItemRepo(),
+                    sd.itemRepo(),
                     sd.productRepo(),
                     sd.photoRepo(),
                     sd.barcodeRepo(),

@@ -31,7 +31,7 @@ class SabadDependencies {
     fun categoryRepo(): CategoryRepo = CategoryRepo(persistence().categoryQueries)
 
     @Provides
-    fun invoiceItemRepo(): InvoiceItemRepo = InvoiceItemRepo(persistence().invoiceItemQueries)
+    fun itemRepo(): InvoiceItemRepo = InvoiceItemRepo(persistence().itemQueries)
 
     @Provides
     fun productRepo(): ProductRepo = ProductRepo(persistence().productQueries)

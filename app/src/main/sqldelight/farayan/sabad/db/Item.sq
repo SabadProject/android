@@ -1,0 +1,34 @@
+CREATE TABLE IF NOT EXISTS item (
+    id INTEGER PRIMARY KEY,
+    productId INTEGER NOT NULL,
+    quantity TEXT NOT NULL,
+    unitId INTEGER,
+    packageWorth TEXT,
+    packageUnit Text,
+    currency TEXT NOT NULL,
+    fee TEXT NOT NULL,
+    discount TEXT,
+    total TEXT,
+    invoiceId INTEGER
+);
+
+current:
+SELECT * FROM item WHERE invoiceId IS NULL AND productId = :productId;
+
+create:
+INSERT INTO item (productId,quantity,unitId,currency,fee,discount,total,packageWorth,packageUnit) VALUES (:productId,:quantity,:unitId,:currency,:fee,:discount,:total,:packageWorth,:packageUnit);
+
+created:
+SELECT * FROM item WHERE id = last_insert_rowid();
+
+byId:
+SELECT * FROM item WHERE id = :id;
+
+update:
+UPDATE item SET quantity=:quantity, unitId=:unitId, currency=:currency, fee=:fee, discount=:discount, total=:total, packageWorth=:packageWorth,packageUnit=:packageUnit WHERE id = ?;
+
+byProductAndNullInvoice:
+SELECT * FROM item WHERE productId = :productId AND invoiceId IS NULL;
+
+delete:
+DELETE FROM item WHERE id = ?;

@@ -2,13 +2,13 @@ package farayan.sabad.repo
 
 import farayan.sabad.core.commons.Currency
 import farayan.sabad.core.commons.UnitVariations
-import farayan.sabad.db.InvoiceItem
-import farayan.sabad.db.InvoiceItemQueries
+import farayan.sabad.db.Item
+import farayan.sabad.db.ItemQueries
 import farayan.sabad.db.Product
 import java.math.BigDecimal
 import farayan.sabad.db.Unit as PersistenceUnit
 
-class InvoiceItemRepo(private val queries: InvoiceItemQueries) {
+class InvoiceItemRepo(private val queries: ItemQueries) {
     fun ensure(
         product: Product,
         price: BigDecimal,
@@ -17,7 +17,7 @@ class InvoiceItemRepo(private val queries: InvoiceItemQueries) {
         unit: PersistenceUnit,
         packageWorth: BigDecimal?,
         packageUnit: UnitVariations?
-    ): InvoiceItem {
+    ): Item {
         val ii = current(product)
         return if (ii == null) {
             create(product, price, currency, quantity, unit, packageWorth, packageUnit)
@@ -27,14 +27,14 @@ class InvoiceItemRepo(private val queries: InvoiceItemQueries) {
     }
 
     private fun update(
-        invoiceItem: InvoiceItem,
+        invoiceItem: Item,
         price: BigDecimal,
         currency: Currency,
         quantity: BigDecimal,
         unit: PersistenceUnit,
         packageWorth: BigDecimal?,
         packageUnit: UnitVariations?
-    ): InvoiceItem {
+    ): Item {
         queries.update(
             quantity.toString(),
             unit.id,
@@ -57,7 +57,7 @@ class InvoiceItemRepo(private val queries: InvoiceItemQueries) {
         unit: PersistenceUnit,
         packageWorth: BigDecimal?,
         packageUnit: UnitVariations?
-    ): InvoiceItem {
+    ): Item {
         return queries.transactionWithResult {
             queries.create(
                 product.id,
@@ -74,15 +74,15 @@ class InvoiceItemRepo(private val queries: InvoiceItemQueries) {
         }
     }
 
-    private fun current(product: Product): InvoiceItem? {
+    private fun current(product: Product): Item? {
         return queries.current(product.id).executeAsOneOrNull()
     }
 
-    fun pickedItems(): List<InvoiceItem> {
+    fun pickedItems(): List<Item> {
         return listOf()
     }
 
-    fun pendingItemByProduct(product: Product): InvoiceItem? {
+    fun pendingItemByProduct(product: Product): Item? {
         return queries.byProductAndNullInvoice(product.id).executeAsOneOrNull()
     }
 }

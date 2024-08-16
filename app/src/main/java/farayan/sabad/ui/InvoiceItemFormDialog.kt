@@ -83,7 +83,7 @@ import farayan.sabad.SabadConfigs
 import farayan.sabad.SabadConstants
 import farayan.sabad.core.commons.UnitVariations
 import farayan.sabad.db.Category
-import farayan.sabad.db.InvoiceItem
+import farayan.sabad.db.Item
 import farayan.sabad.isUsable
 import farayan.sabad.referencePrice
 import farayan.sabad.ui.components.CameraCapture
@@ -224,6 +224,7 @@ class InvoiceItemFormDialog(
                                             decodeContinuous {
                                                 Log.i("barcode", "Paused")
                                                 pause()
+                                                cameraUsage = CameraUsage.None
                                                 FarayanUtility.ReleaseScreenOn(window)
                                                 SabadConfigs.Notify(inputArgs.beepManager)
                                                 viewModel.barcodeScanned(it)
@@ -514,7 +515,7 @@ enum class GroupPickState(
     companion object {
         fun resolveStatus(
             category: Category,
-            pickedItems: List<InvoiceItem>
+            pickedItems: List<Item>
         ): GroupPickState {
             @Suppress("KotlinConstantConditions")
             return when {
