@@ -13,13 +13,44 @@ CREATE TABLE IF NOT EXISTS category (
     position INTEGER NOT NULL
 );
 
-INSERT INTO category VALUES (1,'چای','چای','','',0,'',0,1);
-
 insert:
 INSERT OR REPLACE INTO category VALUES ?;
 
+create:
+INSERT INTO category (
+    displayableName,
+    queryableName,
+    displayableDescription,
+    queryableDescription,
+    needed,
+    deleted,
+    picked,
+    position
+) VALUES(
+    :displayableName,
+    :queryableName,
+    :displayableDescription,
+    :queryableDescription,
+    0,
+    NULL,
+    0,
+    :position
+);
+
+byName:
+SELECT * FROM category WHERE queryableName = :queryableName;
+
 all:
-SELECT * FROM category ORDER BY position;
+SELECT * FROM category ORDER BY needed DESC, picked DESC, position ASC;
 
 first:
 SELECT * FROM category LIMIT 1;
+
+changeNeeded:
+UPDATE category SET needed=:needed WHERE id = :categoryId;
+
+byId:
+SELECT * FROM category WHERE id =:id;
+
+filter:
+SELECT * FROM category WHERE queryableName LIKE :queryableName ORDER BY needed DESC, picked DESC;

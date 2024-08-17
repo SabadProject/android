@@ -18,18 +18,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.IconButton
 import androidx.compose.material.LocalTextStyle
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
@@ -37,8 +33,6 @@ import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.CheckCircle
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Surface
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
@@ -75,6 +69,7 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import com.google.accompanist.permissions.shouldShowRationale
+import com.google.zxing.client.android.BeepManager
 import com.journeyapps.barcodescanner.BarcodeView
 import com.journeyapps.barcodescanner.DefaultDecoderFactory
 import farayan.commons.FarayanUtility
@@ -99,16 +94,17 @@ import java.math.BigDecimal
 import farayan.sabad.db.Unit as PersistenceUnit
 
 @OptIn(
-    ExperimentalPermissionsApi::class, ExperimentalMaterial3Api::class,
-    ExperimentalMaterialApi::class
+    ExperimentalPermissionsApi::class
 )
 class InvoiceItemFormDialog(
-    private val inputArgs: InvoiceItemFormInputArgs,
     context: AppCompatActivity,
     cancelable: Boolean,
     cancelListener: DialogInterface.OnCancelListener?,
     private val viewModel: InvoiceItemFormViewModel
 ) : Dialog(context, cancelable, cancelListener) {
+
+    private val beepManager = BeepManager(context)
+
     init {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             window!!.setDecorFitsSystemWindows(false)
@@ -156,7 +152,6 @@ class InvoiceItemFormDialog(
                             .fillMaxWidth()
                             .verticalScroll(rememberScrollState())
                     ) {
-                        Text(text = org.joda.time.LocalDateTime(System.currentTimeMillis()).toString("mm:ss"))
                         Text(
                             text = stringResource(id = R.string.invoice_item_form_dialog_title),
                             style = TextStyle(color = Color.White, fontFamily = appFont),
@@ -226,7 +221,7 @@ class InvoiceItemFormDialog(
                                                 pause()
                                                 cameraUsage = CameraUsage.None
                                                 FarayanUtility.ReleaseScreenOn(window)
-                                                SabadConfigs.Notify(inputArgs.beepManager)
+                                                SabadConfigs.Notify(beepManager)
                                                 viewModel.barcodeScanned(it)
                                             }
                                         }
@@ -409,7 +404,7 @@ class InvoiceItemFormDialog(
                         }
 
                         if (question.value.hasValue) {
-                            androidx.compose.material3.BasicAlertDialog(
+                            /*androidx.compose.material3.BasicAlertDialog(
                                 onDismissRequest = {
                                     // Dismiss the dialog when the user clicks outside the dialog or on the back
                                     // button. If you want to disable that functionality, simply use an empty
@@ -428,9 +423,9 @@ class InvoiceItemFormDialog(
                                         //... AlertDialog content
                                     }
                                 }
-                            }
+                            }*/
                         }
-                        androidx.compose.material3.Button(
+                        Button(
                             onClick = {
                                 if (viewModel.persistInvoiceItem())
                                     this@InvoiceItemFormDialog.dismiss()

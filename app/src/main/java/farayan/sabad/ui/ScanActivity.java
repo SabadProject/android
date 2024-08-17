@@ -23,11 +23,6 @@ import farayan.sabad.vms.InvoiceItemFormViewModel;
 public class ScanActivity extends ScanActivityParent {
     private final InvoiceItemFormViewModel invoiceItemFormViewModel = new ViewModelProvider(this).get(InvoiceItemFormViewModel.class);
     BeepManager beepManager;
-    private IGroupRepo TheGroupRepo;
-    private IGroupUnitRepo TheGroupUnitRepo;
-    private IProductRepo TheProductRepo;
-    private IUnitRepo TheUnitRepo;
-    private boolean dataChanged;
     private final BarcodeCallback ScanBarcodeView_DecodeContinuous = new BarcodeCallback() {
         @Override
         public void barcodeResult(BarcodeResult result) {
@@ -37,7 +32,7 @@ public class ScanActivity extends ScanActivityParent {
 
             beepManager.playBeepSoundAndVibrate();
             InvoiceItemFormDialog dialog = new InvoiceItemFormDialog(
-                    new InvoiceItemFormInputArgs(
+                    /*new InvoiceItemFormInputArgs(
                             null,
                             productEntity == null ? null : productEntity.Group,
                             productEntity,
@@ -59,7 +54,7 @@ public class ScanActivity extends ScanActivityParent {
                             TheProductRepo,
                             TheUnitRepo,
                             new BeepManager(ScanActivity.this)
-                    ),
+                    ),*/
                     ScanActivity.this,
                     true,
                     dialogInterface -> {
@@ -71,6 +66,11 @@ public class ScanActivity extends ScanActivityParent {
             dialog.show();
         }
     };
+    private IGroupRepo TheGroupRepo;
+    private IGroupUnitRepo TheGroupUnitRepo;
+    private IProductRepo TheProductRepo;
+    private IUnitRepo TheUnitRepo;
+    private boolean dataChanged;
 
     @Inject
     public void Inject(

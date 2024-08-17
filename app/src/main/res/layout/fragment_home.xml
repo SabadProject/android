@@ -7,8 +7,8 @@
     android:orientation="vertical"
     android:padding="5dp">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/GroupsRecyclerView"
+    <androidx.compose.ui.platform.ComposeView
+        android:id="@+id/CategoriesComposeView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1" />
