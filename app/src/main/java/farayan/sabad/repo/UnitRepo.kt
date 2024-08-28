@@ -9,4 +9,5 @@ class UnitRepo(private val queries: UnitQueries) {
     }
 
     fun byId(id: Long): Unit? = queries.byId(id).executeAsOneOrNull()
+    fun pickings(): List<Unit> = queries.pickings().executeAsList()
 }

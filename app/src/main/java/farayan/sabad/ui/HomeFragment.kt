@@ -2,12 +2,14 @@
 
 package farayan.sabad.ui
 
+//import androidx.compose.foundation.lazy.items
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.KeyEvent
 import android.view.Menu
 import android.view.MenuInflater
@@ -20,6 +22,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -29,25 +32,41 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-//import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.AlertDialog
+import androidx.compose.material.Divider
+import androidx.compose.material.Icon
 import androidx.compose.material.Switch
 import androidx.compose.material.SwitchDefaults
 import androidx.compose.material.Text
+import androidx.compose.material.TextButton
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.AndroidEntryPoint
 import farayan.commons.Commons.Rial
 import farayan.commons.FarayanUtility
@@ -74,14 +93,26 @@ import farayan.sabad.core.OnePlace.Store.IStoreRepo
 import farayan.sabad.core.OnePlace.StoreCategory.IStoreCategoryRepo
 import farayan.sabad.core.OnePlace.StoreGroup.IStoreGroupRepo
 import farayan.sabad.core.OnePlace.Unit.IUnitRepo
+import farayan.sabad.core.commons.Currency
+import farayan.sabad.core.commons.localize
 import farayan.sabad.core.model.product.IProductRepo
+import farayan.sabad.db.Category
+import farayan.sabad.db.Item
+import farayan.sabad.db.Product
+import farayan.sabad.isUsable
 import farayan.sabad.models.Group.GroupRecyclerAdapter
 import farayan.sabad.repo.CategoryRepo
+import farayan.sabad.utility.hasValue
 import farayan.sabad.vms.HomeViewModel
 import farayan.sabad.vms.InvoiceItemFormViewModel
 import farayan.sabad.vms.InvoiceItemFormViewModel.Companion.Factory
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.launch
+import java.math.BigDecimal
 import java.util.Objects
 import javax.inject.Inject
+import kotlin.Unit
+import farayan.sabad.db.Unit as PersistenceUnit
 
 @AndroidEntryPoint
 class HomeFragment : HomeFragmentParent() {
@@ -152,7 +183,7 @@ class HomeFragment : HomeFragmentParent() {
         }
 
         if (!groupEntity.Picked) {
-            invoiceItemFormViewModel!!.init(categoryRepo!!.first(), true, null, false)
+            //invoiceItemFormViewModel!!.init(categoryRepo!!.first(), true, null, false)
             val dialog = InvoiceItemFormDialog(
                 (requireActivity() as AppCompatActivity),
                 true,
@@ -314,64 +345,143 @@ class HomeFragment : HomeFragmentParent() {
         inflater.inflate(R.menu.home_menu, menu)
     }
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     override fun InitializeLayout() {
+        val items: MutableState<List<Item>> = mutableStateOf(listOf())
+        homeViewModel.viewModelScope.launch {
+            homeViewModel.items.collect {
+                Log.i("flow", "new value received")
+                items.value = it
+            }
+        }
+
+        (requireActivity() as LifecycleOwner).lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                Log.i("flow", "lifecycle event")
+            }
+        }
+
         GroupsRecyclerView().setContent {
-            val categories = homeViewModel.categories.collectAsState()
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxWidth()
-            ) {
-                items(categories.value) { category -> // import androidx.compose.foundation.lazy.items
-                    var needed by remember { mutableStateOf(category.needed) }
-                    Column(
-                        modifier = Modifier
-                            .background(categoryBackgroundRes(category.needed, category.picked), shape = RoundedCornerShape(5.dp))
-                            .fillMaxWidth()
-                    ) {
-                        Row(
+            CompositionLocalProvider(LocalLifecycleOwner provides requireActivity()) {
+                val categories = homeViewModel.categories.collectAsState()
+                val products = homeViewModel.pickedProducts.collectAsState()
+                val units = homeViewModel.pickedUnits.collectAsState()
+                //val items = homeViewModel.items.collectAsStateWithLifecycle(listOf())
+                val removingItem = remember { mutableStateOf<ItemRich?>(null) }
+                Column {
+                    CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
+                        Text(
+                            text = "cats: ${categories.value.size}, prods: ${products.value.size}, items: ${items.value.size}, subs: ${homeViewModel.items.javaClass.simpleName}",
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
+                    CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
+                        LazyColumn(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(4.dp)
-                                .clickable {
-                                    if (!category.needed) {
-                                        homeViewModel.changeNeeded(category, true)
-
-                                    } else {
-                                        val dialog = InvoiceItemFormDialog(
-                                            requireActivity() as AppCompatActivity,
-                                            true,
-                                            null,
-                                            Factory.create(InvoiceItemFormViewModel::class.java)
-                                        )
-                                        dialog.show()
-                                        dialog.maximize()
-                                    }
-                                },
-                            verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Image(
-                                painter = painterResource(id = category.picked(R.drawable.ic_baseline_check_box_24, R.drawable.ic_baseline_crop_square_24)),
-                                modifier = Modifier.alpha(category.needed(1.0f, 0.0f)),
-                                contentDescription = ""
-                            )
-                            Text(text = category.displayableName, style = TextStyle(fontFamily = appFont), modifier = Modifier.weight(1.0f))
-                            Text(
-                                text = stringResource(id = statusResId(category.needed, category.picked)),
-                                style = TextStyle(fontFamily = appFont, fontSize = 9.sp, color = Color.DarkGray)
-                            )
-                            Spacer(modifier = Modifier.width(4.dp))
-                            Switch(
-                                checked = category.needed, onCheckedChange = {
-                                    homeViewModel.changeNeeded(category, it)
+                            items(categories.value, key = { it.id }) { category -> // import androidx.compose.foundation.lazy.items
+                                val categoryItems = items.value.filter { it.categoryId == category.id }
+                                val picked = categoryItems.isNotEmpty()
+                                Column(
+                                    modifier = Modifier
+                                        .background(categoryBackgroundRes(category.needed, picked), shape = RoundedCornerShape(5.dp))
+                                        .fillMaxWidth()
+                                ) {
+                                    Row(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(4.dp)
+                                            .clickable {
+                                                if (!category.needed) {
+                                                    homeViewModel.changeNeeded(category, true)
+                                                } else {
+                                                    val dialogViewModel = Factory.create(InvoiceItemFormViewModel::class.java)
+                                                    val dialog = InvoiceItemFormDialog(
+                                                        requireActivity() as AppCompatActivity,
+                                                        true,
+                                                        null,
+                                                        dialogViewModel
+                                                    )
+                                                    dialog.show()
+                                                    dialog.maximize()
+                                                    dialogViewModel.init(category)
+                                                }
+                                            },
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        Image(
+                                            painter = painterResource(id = picked(R.drawable.ic_baseline_check_box_24, R.drawable.ic_baseline_crop_square_24)),
+                                            modifier = Modifier.alpha(category.needed(1.0f, 0.0f)),
+                                            contentDescription = ""
+                                        )
+                                        Text(
+                                            text = category.displayableName,
+                                            style = TextStyle(fontFamily = appFont, fontSize = 14.sp),
+                                            modifier = Modifier.weight(1.0f)
+                                        )
+                                        Text(
+                                            text = stringResource(id = statusResId(category.needed, category.picked)),
+                                            style = TextStyle(fontFamily = appFont, fontSize = 9.sp, color = Color.DarkGray)
+                                        )
+                                        Spacer(modifier = Modifier.width(4.dp))
+                                        Switch(
+                                            checked = category.needed, onCheckedChange = {
+                                                homeViewModel.changeNeeded(category, it)
+                                            },
+                                            colors = SwitchDefaults.colors(
+                                                checkedThumbColor = Color(0xff_76FF03),
+                                                checkedTrackColor = Color.White,
+                                            )
+                                        )
+                                    }
+                                    for (item in categoryItems) {
+                                        val product = products.value.first { it.id == item.productId }
+                                        val unit = item.unitId?.let { units.value.firstOrNull { it.id == item.unitId } }
+                                        pickedItem(
+                                            item,
+                                            product,
+                                            unit,
+                                            onEdit = { displayItemDialog(item) },
+                                            onRemove = { removingItem.value = ItemRich(item, product, category) },
+                                            Modifier.fillMaxWidth()
+                                        )
+                                    }
+                                }
+                                Spacer(modifier = Modifier.height(3.dp))
+                            }
+                        }
+                        if (removingItem.value.hasValue) {
+                            AlertDialog(
+                                onDismissRequest = { removingItem.value = null },
+                                title = {
+                                    Text(text = stringResource(id = R.string.home_item_remove_dialog_title))
                                 },
-                                colors = SwitchDefaults.colors(
-                                    checkedThumbColor = Color(0xff_76FF03),
-                                    checkedTrackColor = Color.White,
-                                )
+                                text = {
+                                    Text(text = stringResource(id = R.string.home_item_remove_dialog_text, removingItem.value!!.product.displayableName))
+                                },
+                                buttons = {
+                                    Row(
+                                        modifier = Modifier.padding(all = 8.dp),
+                                        horizontalArrangement = Arrangement.Center
+                                    ) {
+                                        TextButton(
+                                            modifier = Modifier.weight(1.0f),
+                                            onClick = { homeViewModel.removeItem(removingItem.value!!.item); removingItem.value = null }
+                                        ) {
+                                            Text(stringResource(id = R.string.home_item_remove_dialog_action_remove_text))
+                                        }
+                                        TextButton(
+                                            modifier = Modifier.weight(1.0f),
+                                            onClick = { removingItem.value = null }
+                                        ) {
+                                            Text(stringResource(id = R.string.home_item_remove_dialog_action_skip_text))
+                                        }
+                                    }
+                                }
                             )
                         }
                     }
-                    Spacer(modifier = Modifier.height(3.dp))
                 }
             }
         }
@@ -380,6 +490,65 @@ class HomeFragment : HomeFragmentParent() {
         EditButton().setOnClickListener(EditButtonOnClickListener)
         RegisterButton().setOnClickListener(RegisterButtonOnClickListener)
         QueryEditText().setOnEditorActionListener(QueryEditTextOnEditorActionListener)
+    }
+
+    private fun displayItemDialog(item: Item) {
+        val dialogViewModel = Factory.create(InvoiceItemFormViewModel::class.java)
+        val dialog = InvoiceItemFormDialog(
+            requireActivity() as AppCompatActivity,
+            true,
+            null,
+            dialogViewModel
+        )
+        dialog.show()
+        dialog.maximize()
+        dialogViewModel.init(item)
+    }
+
+    @Composable
+    private fun pickedItem(item: Item, product: Product, unit: PersistenceUnit?, onEdit: (Item) -> Unit, onRemove: (Item) -> Unit, modifier: Modifier = Modifier) {
+        Divider(color = Color.White, modifier = Modifier.padding(8.dp, 0.dp))
+        Row(modifier = modifier
+            .padding(5.dp)
+            .clickable { onEdit(item) }) {
+            Text(
+                text = product.displayableName,
+                modifier = Modifier
+                    .weight(1.0f)
+                    .padding(4.dp, 2.dp),
+                style = TextStyle(fontFamily = appFont, color = Color.DarkGray)
+            )
+            Text(
+                text = "${item.quantity.localize()} ${unit?.displayableName}",
+                modifier = Modifier
+                    .padding(4.dp, 2.dp)
+                    .width(48.dp),
+                style = TextStyle(fontFamily = appFont, color = Color.DarkGray)
+            )
+            val currency = item.currency.isUsable({ Currency.valueOf(item.currency) }, { null })
+            val price = currency?.let { currency.formatter(BigDecimal(item.fee), LocalContext.current) } ?: item.fee.localize()
+
+            Text(
+                text = price,
+                modifier = Modifier
+                    .padding(4.dp, 2.dp)
+                    .width(24.dp),
+                style = TextStyle(fontFamily = appFont, color = Color.DarkGray)
+            )
+            Icon(
+                Icons.Filled.Edit, contentDescription = "edit", tint = Color.White, modifier = Modifier
+                    .padding(4.dp, 2.dp)
+                    .width(16.dp)
+                    .height(16.dp)
+            )
+            Icon(
+                Icons.Filled.Delete, contentDescription = "delete", tint = Color.White, modifier = Modifier
+                    .padding(4.dp, 2.dp)
+                    .width(16.dp)
+                    .height(16.dp)
+                    .clickable { onRemove(item) }
+            )
+        }
     }
 
     private fun statusResId(needed: Boolean, picked: Boolean): Int {
@@ -422,7 +591,7 @@ class HomeFragment : HomeFragmentParent() {
                 AutoCheckout()
             },
             { component: GroupHomeItemComponent ->
-                invoiceItemFormViewModel!!.init(categoryRepo!!.first(), true, null, false)
+                //invoiceItemFormViewModel!!.init(categoryRepo!!.first(), true, null, false)
                 val dialog = InvoiceItemFormDialog(
                     (requireActivity() as AppCompatActivity),
                     true,
@@ -477,8 +646,15 @@ class HomeFragment : HomeFragmentParent() {
     enum class Requests(val ID: Int) {
         Scan(1)
     }
+
 }
 
 operator fun <T> Boolean.invoke(onTrue: T, onFalse: T): T {
     return if (this) onTrue else onFalse
 }
+
+operator fun <T> Boolean.invoke(onTrue: () -> T, onFalse: () -> T): T {
+    return if (this) onTrue() else onFalse()
+}
+
+data class ItemRich(val item: Item, val product: Product, val category: Category)

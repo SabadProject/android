@@ -1,14 +1,21 @@
 package farayan.sabad.repo
 
+import app.cash.sqldelight.coroutines.asFlow
+import app.cash.sqldelight.coroutines.mapToList
 import farayan.sabad.core.commons.Currency
 import farayan.sabad.core.commons.UnitVariations
 import farayan.sabad.db.Item
 import farayan.sabad.db.ItemQueries
 import farayan.sabad.db.Product
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.shareIn
 import java.math.BigDecimal
 import farayan.sabad.db.Unit as PersistenceUnit
 
-class InvoiceItemRepo(private val queries: ItemQueries) {
+class ItemRepo(private val queries: ItemQueries) {
     fun ensure(
         product: Product,
         price: BigDecimal,
@@ -60,6 +67,7 @@ class InvoiceItemRepo(private val queries: ItemQueries) {
     ): Item {
         return queries.transactionWithResult {
             queries.create(
+                product.categoryId,
                 product.id,
                 quantity.toString(),
                 unit.id,
@@ -78,11 +86,15 @@ class InvoiceItemRepo(private val queries: ItemQueries) {
         return queries.current(product.id).executeAsOneOrNull()
     }
 
-    fun pickedItems(): List<Item> {
-        return listOf()
+    fun pickings(scope: CoroutineScope): SharedFlow<List<Item>> {
+        return queries.pickings().asFlow().mapToList(Dispatchers.IO).shareIn(scope, SharingStarted.WhileSubscribed(5000), 1)
     }
 
     fun pendingItemByProduct(product: Product): Item? {
         return queries.byProductAndNullInvoice(product.id).executeAsOneOrNull()
+    }
+
+    fun delete(item: Item) {
+        queries.delete(item.id)
     }
 }

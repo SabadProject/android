@@ -95,4 +95,8 @@
     <string name="invoice_item_form_dialog_reference_quantity_unit_unacceptable" formatted="true">مقدار یا تعداد را مثبت درج کنید</string>
     <string name="invoice_item_form_dialog_reference_package_unit_unacceptable" formatted="true">وزن یا حجم را مثبت درج کنید</string>
     <string name="invoice_item_form_dialog_submit" formatted="true">افزودن</string>
+    <string name="home_item_remove_dialog_title">تایید حذف یک قلم</string>
+    <string name="home_item_remove_dialog_text">در صورت تایید، کالای %s حذف می‌شود</string>
+    <string name="home_item_remove_dialog_action_remove_text">تایید، حذف</string>
+    <string name="home_item_remove_dialog_action_skip_text">خیر، برگرد</string>
 </resources>

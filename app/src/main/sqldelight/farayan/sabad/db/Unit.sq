@@ -38,3 +38,6 @@ SELECT * FROM unit;
 
 byId:
 SELECT * FROM unit WHERE id = :id;
+
+pickings:
+SELECT * FROM unit WHERE id IN (SELECT unitId FROM item WHERE invoiceId IS NULL);

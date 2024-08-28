@@ -18,6 +18,14 @@ class ProductRepo(private val queries: ProductQueries) {
         return queries.byIds(ids).executeAsList()
     }
 
+    fun pickings(): List<Product> {
+        return queries.pickings().executeAsList()
+    }
+
+    fun byId(id: Long): Product? {
+        return queries.byId(id).executeAsOneOrNull()
+    }
+
     private fun byCategoryAndName(category: Category, name: String): Product? {
         return queries.byCategoryAndName(category.id, name.queryable()).executeAsOneOrNull()
     }

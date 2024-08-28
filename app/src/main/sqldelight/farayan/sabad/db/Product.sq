@@ -19,5 +19,11 @@ SELECT * FROM product WHERE id = last_insert_rowid();
 byIds:
 SELECT * FROM product WHERE id IN :ids;
 
+byId:
+SELECT * FROM product WHERE id = :id;
+
 byCategoryAndName:
 SELECT * FROM product WHERE categoryId = :categoryId AND queryableName = :queryableName;
+
+pickings:
+SELECT * FROM product WHERE id IN (SELECT productId FROM item WHERE invoiceId IS NULL);

@@ -1,5 +1,6 @@
 CREATE TABLE IF NOT EXISTS item (
     id INTEGER PRIMARY KEY,
+    categoryId INTEGER NOT NULL,
     productId INTEGER NOT NULL,
     quantity TEXT NOT NULL,
     unitId INTEGER,
@@ -16,7 +17,7 @@ current:
 SELECT * FROM item WHERE invoiceId IS NULL AND productId = :productId;
 
 create:
-INSERT INTO item (productId,quantity,unitId,currency,fee,discount,total,packageWorth,packageUnit) VALUES (:productId,:quantity,:unitId,:currency,:fee,:discount,:total,:packageWorth,:packageUnit);
+INSERT INTO item (categoryId,productId,quantity,unitId,currency,fee,discount,total,packageWorth,packageUnit) VALUES (:categoryId,:productId,:quantity,:unitId,:currency,:fee,:discount,:total,:packageWorth,:packageUnit);
 
 created:
 SELECT * FROM item WHERE id = last_insert_rowid();
@@ -29,6 +30,9 @@ UPDATE item SET quantity=:quantity, unitId=:unitId, currency=:currency, fee=:fee
 
 byProductAndNullInvoice:
 SELECT * FROM item WHERE productId = :productId AND invoiceId IS NULL;
+
+pickings:
+SELECT * FROM item WHERE invoiceId IS NULL;
 
 delete:
 DELETE FROM item WHERE id = ?;

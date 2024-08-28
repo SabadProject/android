@@ -12,7 +12,10 @@ class CategoryRepo(private val queries: CategoryQueries) {
         return queries.filter(q).executeAsList()
     }
 
-    fun first(): Category? = queries.first().executeAsOneOrNull()
+    fun byId(id: Long): Category? {
+        return queries.byId(id).executeAsOneOrNull()
+    }
+
     fun changeNeeded(category: Category, it: Boolean): Category {
         queries.changeNeeded(it, category.id)
         return queries.byId(category.id).executeAsOne()

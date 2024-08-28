@@ -41,7 +41,7 @@ byName:
 SELECT * FROM category WHERE queryableName = :queryableName;
 
 all:
-SELECT * FROM category ORDER BY needed DESC, picked DESC, position ASC;
+SELECT * FROM category WHERE deleted IS NULL ORDER BY needed DESC, picked DESC, position ASC;
 
 first:
 SELECT * FROM category LIMIT 1;
@@ -53,4 +53,4 @@ byId:
 SELECT * FROM category WHERE id =:id;
 
 filter:
-SELECT * FROM category WHERE queryableName LIKE :queryableName ORDER BY needed DESC, picked DESC;
+SELECT * FROM category WHERE deleted IS NULL AND queryableName LIKE :queryableName ORDER BY needed DESC, picked DESC;

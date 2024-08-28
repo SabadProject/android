@@ -138,6 +138,7 @@ class InvoiceItemFormDialog(
                 val priceAmount = viewModel.formPriceAmount.collectAsState()
                 val priceCurrency = viewModel.formPriceCurrency.collectAsState()
                 val photos = viewModel.formPhotos.collectAsState()
+                val items = viewModel.pickedItems.collectAsState(listOf())
 
                 var cameraUsage by remember { mutableStateOf(CameraUsage.None) }
                 val cameraPermissionState = rememberPermissionState(
@@ -242,7 +243,7 @@ class InvoiceItemFormDialog(
                                 GroupInvoiceItemForm(
                                     it.id,
                                     it.displayableName,
-                                    GroupPickState.resolveStatus(it, viewModel.pickedItems.value)
+                                    GroupPickState.resolveStatus(it, items.value)
                                 )
                             }.sortedBy { it.status.position },
                             readonly = groupValue.value.fixed,
@@ -312,7 +313,7 @@ class InvoiceItemFormDialog(
 
                         val unitVariation = quantityUnit.value?.variation?.let { UnitVariations.valueOf(it) } ?: packageMeasurementUnit.value
                         val unitAmount = if (quantityUnit.value?.variation.hasValue) quantityValue else packageMeasurementValue
-                        val priceLabel: String = if (quantityUnit.value?.displayableName.isUsable()) stringResource(
+                        val priceLabel: String = if (quantityUnit.value?.displayableName.isUsable) stringResource(
                             id = R.string.invoice_item_form_dialog_price_amount_by_unit_label,
                             quantityUnit.value!!.displayableName
                         ) else stringResource(id = R.string.invoice_item_form_dialog_price_amount_no_unit_label)

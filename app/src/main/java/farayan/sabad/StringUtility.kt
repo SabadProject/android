@@ -2,9 +2,13 @@ package farayan.sabad
 
 import farayan.commons.FarayanUtility
 
-fun String?.isUsable(): Boolean {
+fun String?.isValuable(): Boolean {
     return this?.isNotBlank() == true
 }
+
+val String?.isUsable: Boolean
+    get() = this?.isNotBlank() == true
+
 
 fun String.displayable(): String {
     return this.trim()
