@@ -1,10 +1,10 @@
 package farayan.sabad.vms
 
+import android.util.Log
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Star
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewModelScope
 import com.google.zxing.BarcodeFormat
 import com.journeyapps.barcodescanner.BarcodeResult
 import farayan.sabad.SabadDependencies
@@ -29,6 +29,7 @@ import farayan.sabad.repo.ProductRepo
 import farayan.sabad.repo.UnitRepo
 import farayan.sabad.utility.hasValue
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.onEach
 import java.io.File
 import java.math.BigDecimal
 import javax.inject.Inject
@@ -319,7 +320,9 @@ class InvoiceItemFormViewModel @Inject constructor(
     }
 
     val categories = MutableStateFlow(categoryRepo.all())
-    val pickedItems = itemRepo.pickings(viewModelScope) //.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), listOf())
+    val pickedItems = itemRepo.pickings().onEach { items ->
+        Log.d("flow", "Collected items in InvoiceItemFormViewModel: ${items.size}")
+    }
     val category = MutableStateFlow(Fixable<Category>())
     val product = MutableStateFlow(Fixable<Product>())
     val formScannedExtractedBarcode = MutableStateFlow<ExtractedBarcode?>(null)

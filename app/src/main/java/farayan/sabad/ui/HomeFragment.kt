@@ -9,7 +9,6 @@ import android.os.Bundle
 import android.os.Handler
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.KeyEvent
 import android.view.Menu
 import android.view.MenuInflater
@@ -45,7 +44,6 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -61,12 +59,8 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.compose.LocalLifecycleOwner
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dagger.hilt.android.AndroidEntryPoint
 import farayan.commons.Commons.Rial
 import farayan.commons.FarayanUtility
@@ -107,7 +101,6 @@ import farayan.sabad.vms.HomeViewModel
 import farayan.sabad.vms.InvoiceItemFormViewModel
 import farayan.sabad.vms.InvoiceItemFormViewModel.Companion.Factory
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.launch
 import java.math.BigDecimal
 import java.util.Objects
 import javax.inject.Inject
@@ -347,26 +340,13 @@ class HomeFragment : HomeFragmentParent() {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     override fun InitializeLayout() {
-        val items: MutableState<List<Item>> = mutableStateOf(listOf())
-        homeViewModel.viewModelScope.launch {
-            homeViewModel.items.collect {
-                Log.i("flow", "new value received")
-                items.value = it
-            }
-        }
-
-        (requireActivity() as LifecycleOwner).lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                Log.i("flow", "lifecycle event")
-            }
-        }
 
         GroupsRecyclerView().setContent {
             CompositionLocalProvider(LocalLifecycleOwner provides requireActivity()) {
                 val categories = homeViewModel.categories.collectAsState()
                 val products = homeViewModel.pickedProducts.collectAsState()
                 val units = homeViewModel.pickedUnits.collectAsState()
-                //val items = homeViewModel.items.collectAsStateWithLifecycle(listOf())
+                val items = homeViewModel.items.collectAsStateWithLifecycle(listOf())
                 val removingItem = remember { mutableStateOf<ItemRich?>(null) }
                 Column {
                     CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {

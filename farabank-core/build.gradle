@@ -1,0 +1,64 @@
+apply plugin: "com.android.library"
+apply plugin: "dagger.hilt.android.plugin"
+apply plugin: "kotlin-android"
+apply plugin: "maven-publish"
+
+android {
+    lint {
+        baseline = file("farabank-core-lint-baseline.xml")
+    }
+
+    compileSdkVersion 34
+    //buildToolsVersion "29.0.2"
+
+    defaultConfig {
+        multiDexEnabled true
+
+        minSdkVersion 24
+        targetSdkVersion 34
+        versionCode 8
+        versionName "0.1.8"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        vectorDrawables.useSupportLibrary = true
+
+        def addConstant = { constantName, constantValue ->
+            manifestPlaceholders += [(constantName): constantValue]
+            buildConfigField "String", "${constantName}", "\"${constantValue}\""
+        }
+        addConstant("SabadExportInvoiceAction", "${SabadExportInvoiceAction}")
+        addConstant("SabadExportInvoiceCategory", "${SabadExportInvoiceAction}")
+        addConstant("SabadExportInvoiceKey", "${SabadExportInvoiceKey}")
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+    //implementation "farayan.android.libs:farayan-commons:$farayanCommonsVersion"
+    implementation project(path: ':farayan-commons')
+
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
+
+    implementation "com.google.dagger:hilt-android:$hiltVersion"
+    annotationProcessor "com.google.dagger:hilt-android-compiler:$hiltVersion"
+}
+
+afterEvaluate {
+    publishing {
+        publications {
+            snapshot(MavenPublication) {
+                from components.release
+                groupId = "farayan.android.apps"
+                artifactId = "farabank-core"
+                version = project.versionName
+            }
+        }
+
+        repositories {
+        }
+    }
+}

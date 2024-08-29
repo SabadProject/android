@@ -1,5 +1,6 @@
 package farayan.sabad.repo
 
+import android.util.Log
 import app.cash.sqldelight.coroutines.asFlow
 import app.cash.sqldelight.coroutines.mapToList
 import farayan.sabad.core.commons.Currency
@@ -9,8 +10,10 @@ import farayan.sabad.db.ItemQueries
 import farayan.sabad.db.Product
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.shareIn
 import java.math.BigDecimal
 import farayan.sabad.db.Unit as PersistenceUnit
@@ -86,8 +89,13 @@ class ItemRepo(private val queries: ItemQueries) {
         return queries.current(product.id).executeAsOneOrNull()
     }
 
-    fun pickings(scope: CoroutineScope): SharedFlow<List<Item>> {
-        return queries.pickings().asFlow().mapToList(Dispatchers.IO).shareIn(scope, SharingStarted.WhileSubscribed(5000), 1)
+    private val repositoryScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+
+    fun pickings(): SharedFlow<List<Item>> {
+        return queries.pickings().asFlow().mapToList(Dispatchers.IO).onEach { items ->
+            // Log each emission
+            Log.d("flow", "Emitted items: ${items.size}")
+        }.shareIn(repositoryScope, SharingStarted.WhileSubscribed(5000), 1)
     }
 
     fun pendingItemByProduct(product: Product): Item? {

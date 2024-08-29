@@ -1,8 +1,8 @@
 package farayan.sabad.vms
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewModelScope
 import farayan.sabad.SabadDependencies
 import farayan.sabad.db.Category
 import farayan.sabad.db.Item
@@ -15,6 +15,7 @@ import farayan.sabad.repo.ItemRepo
 import farayan.sabad.repo.ProductRepo
 import farayan.sabad.repo.UnitRepo
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 
 class HomeViewModel @Inject constructor(
@@ -44,7 +45,9 @@ class HomeViewModel @Inject constructor(
     val categories = MutableStateFlow(categoriesRepo.all())
     val pickedProducts = MutableStateFlow(productRepo.pickings())
     val pickedUnits = MutableStateFlow(unitRepo.pickings())
-    val items = itemRepo.pickings(viewModelScope)
+    val items = itemRepo.pickings().onEach { items ->
+        Log.d("flow", "Collected items in HomeViewModel: ${items.size}")
+    }
 
     companion object {
         val Factory: ViewModelProvider.Factory = object : ViewModelProvider.Factory {

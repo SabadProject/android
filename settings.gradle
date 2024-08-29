@@ -17,7 +17,7 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name='Sabad'
+rootProject.name = 'Sabad'
 
 include ':sabad-app'
 project(':sabad-app').projectDir = new File(settingsDir, 'app')
@@ -26,7 +26,7 @@ include ':sabad-core'
 project(':sabad-core').projectDir = new File(settingsDir, 'core')
 
 include ':farayan-commons'
-project(':farayan-commons').projectDir = new File(settingsDir, '../../libs/android/commons/farayan-commons')
+project(':farayan-commons').projectDir = new File(settingsDir, 'farayan-commons')
 
 include ':farabank-core'
-project(':farabank-core').projectDir = new File(settingsDir, '../../FaraBank/Android/core')
+project(':farabank-core').projectDir = new File(settingsDir, 'farabank-core')
