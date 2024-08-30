@@ -79,7 +79,6 @@ import farayan.sabad.SabadConstants
 import farayan.sabad.core.commons.UnitVariations
 import farayan.sabad.db.Category
 import farayan.sabad.db.Item
-import farayan.sabad.isUsable
 import farayan.sabad.referencePrice
 import farayan.sabad.ui.components.CameraCapture
 import farayan.sabad.ui.components.CurrenciesDropdownMenuBox
@@ -89,6 +88,7 @@ import farayan.sabad.ui.components.UnitVariationDropdownBox
 import farayan.sabad.ui.components.UnitsDropdownMenuBox
 import farayan.sabad.ui.components.displayable
 import farayan.sabad.utility.hasValue
+import farayan.sabad.utility.isUsable
 import farayan.sabad.vms.InvoiceItemFormViewModel
 import java.math.BigDecimal
 import farayan.sabad.db.Unit as PersistenceUnit

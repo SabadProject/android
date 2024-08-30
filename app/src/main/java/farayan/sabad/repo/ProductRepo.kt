@@ -3,8 +3,8 @@ package farayan.sabad.repo
 import farayan.sabad.db.Category
 import farayan.sabad.db.Product
 import farayan.sabad.db.ProductQueries
-import farayan.sabad.displayable
-import farayan.sabad.queryable
+import farayan.sabad.utility.displayable
+import farayan.sabad.utility.queryable
 
 class ProductRepo(private val queries: ProductQueries) {
     fun create(category: Category, name: String): Product {

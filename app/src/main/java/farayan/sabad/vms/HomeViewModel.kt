@@ -3,20 +3,23 @@ package farayan.sabad.vms
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
 import farayan.sabad.SabadDependencies
 import farayan.sabad.db.Category
 import farayan.sabad.db.Item
 import farayan.sabad.db.Product
-import farayan.sabad.db.Unit
-import farayan.sabad.isUsable
-import farayan.sabad.queryable
 import farayan.sabad.repo.CategoryRepo
 import farayan.sabad.repo.ItemRepo
 import farayan.sabad.repo.ProductRepo
 import farayan.sabad.repo.UnitRepo
+import farayan.sabad.utility.isUsable
+import farayan.sabad.utility.queryable
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import javax.inject.Inject
+import farayan.sabad.db.Unit as PersistenceUnit
 
 class HomeViewModel @Inject constructor(
     private val categoriesRepo: CategoryRepo,
@@ -36,7 +39,7 @@ class HomeViewModel @Inject constructor(
     }
 
     fun product(productId: Long): Product = productRepo.byId(productId)!!
-    fun unit(unitId: Long): Unit? = unitRepo.byId(unitId)
+    fun unit(unitId: Long): PersistenceUnit? = unitRepo.byId(unitId)
     fun removeItem(item: Item) {
         itemRepo.delete(item)
     }
@@ -45,8 +48,17 @@ class HomeViewModel @Inject constructor(
     val categories = MutableStateFlow(categoriesRepo.all())
     val pickedProducts = MutableStateFlow(productRepo.pickings())
     val pickedUnits = MutableStateFlow(unitRepo.pickings())
-    val items = itemRepo.pickings().onEach { items ->
+    val items = itemRepo.pickings(viewModelScope).onEach { items ->
         Log.d("flow", "Collected items in HomeViewModel: ${items.size}")
+    }
+
+    init {
+        viewModelScope.launch {
+            while (true) {
+                Log.i("flow", "HomeViewModel: ${this@HomeViewModel}")
+                delay(5_000)
+            }
+        }
     }
 
     companion object {
@@ -55,6 +67,7 @@ class HomeViewModel @Inject constructor(
             override fun <T : ViewModel> create(
                 modelClass: Class<T>
             ): T {
+                Log.i("flow", "creating HomeViewModel")
                 val sd = SabadDependencies()
 
                 return HomeViewModel(

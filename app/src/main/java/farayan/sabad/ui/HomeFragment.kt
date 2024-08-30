@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.KeyEvent
 import android.view.Menu
 import android.view.MenuInflater
@@ -93,14 +94,13 @@ import farayan.sabad.core.model.product.IProductRepo
 import farayan.sabad.db.Category
 import farayan.sabad.db.Item
 import farayan.sabad.db.Product
-import farayan.sabad.isUsable
 import farayan.sabad.models.Group.GroupRecyclerAdapter
 import farayan.sabad.repo.CategoryRepo
 import farayan.sabad.utility.hasValue
+import farayan.sabad.utility.isUsable
 import farayan.sabad.vms.HomeViewModel
 import farayan.sabad.vms.InvoiceItemFormViewModel
 import farayan.sabad.vms.InvoiceItemFormViewModel.Companion.Factory
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import java.math.BigDecimal
 import java.util.Objects
 import javax.inject.Inject
@@ -111,7 +111,7 @@ import farayan.sabad.db.Unit as PersistenceUnit
 class HomeFragment : HomeFragmentParent() {
     var handler: Handler = Handler()
     private var invoiceItemFormViewModel: InvoiceItemFormViewModel? = null //= new ViewModelProvider(requireActivity()).get(InvoiceItemFormViewModel.class);
-    private val homeViewModel: HomeViewModel = HomeViewModel.Factory.create(HomeViewModel::class.java)
+    private lateinit var homeViewModel: HomeViewModel
     private var reloaded = false
     private var TheStoreCategoryRepo: IStoreCategoryRepo? = null
     private var TheStoreGroupRepo: IStoreGroupRepo? = null
@@ -338,9 +338,9 @@ class HomeFragment : HomeFragmentParent() {
         inflater.inflate(R.menu.home_menu, menu)
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     override fun InitializeLayout() {
-
+        Log.i("flow", "HomeFragment: InitializeLayout")
+        homeViewModel = HomeViewModel.Factory.create(HomeViewModel::class.java)
         GroupsRecyclerView().setContent {
             CompositionLocalProvider(LocalLifecycleOwner provides requireActivity()) {
                 val categories = homeViewModel.categories.collectAsState()
@@ -418,7 +418,7 @@ class HomeFragment : HomeFragmentParent() {
                                     for (item in categoryItems) {
                                         val product = products.value.first { it.id == item.productId }
                                         val unit = item.unitId?.let { units.value.firstOrNull { it.id == item.unitId } }
-                                        pickedItem(
+                                        PickedItem(
                                             item,
                                             product,
                                             unit,
@@ -486,7 +486,7 @@ class HomeFragment : HomeFragmentParent() {
     }
 
     @Composable
-    private fun pickedItem(item: Item, product: Product, unit: PersistenceUnit?, onEdit: (Item) -> Unit, onRemove: (Item) -> Unit, modifier: Modifier = Modifier) {
+    private fun PickedItem(item: Item, product: Product, unit: PersistenceUnit?, onEdit: (Item) -> Unit, onRemove: (Item) -> Unit, modifier: Modifier = Modifier) {
         Divider(color = Color.White, modifier = Modifier.padding(8.dp, 0.dp))
         Row(modifier = modifier
             .padding(5.dp)
@@ -502,7 +502,7 @@ class HomeFragment : HomeFragmentParent() {
                 text = "${item.quantity.localize()} ${unit?.displayableName}",
                 modifier = Modifier
                     .padding(4.dp, 2.dp)
-                    .width(48.dp),
+                    .width(64.dp),
                 style = TextStyle(fontFamily = appFont, color = Color.DarkGray)
             )
             val currency = item.currency.isUsable({ Currency.valueOf(item.currency) }, { null })
@@ -512,7 +512,7 @@ class HomeFragment : HomeFragmentParent() {
                 text = price,
                 modifier = Modifier
                     .padding(4.dp, 2.dp)
-                    .width(24.dp),
+                    .width(48.dp),
                 style = TextStyle(fontFamily = appFont, color = Color.DarkGray)
             )
             Icon(

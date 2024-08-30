@@ -13,6 +13,8 @@ import farayan.sabad.repo.PriceRepo
 import farayan.sabad.repo.ProductPhotoRepo
 import farayan.sabad.repo.ProductRepo
 import farayan.sabad.repo.UnitRepo
+import farayan.sabad.utility.displayable
+import farayan.sabad.utility.queryable
 
 
 @Module
@@ -30,6 +32,9 @@ class SabadDependencies {
     }
 
     private fun ensureCategories(db: SabadPersistence) {
+        createCategory("آب هندوانه")
+        createCategory("پودر لبنه‌ی قهوه")
+        createCategory("خوشبوکننده")
         createCategory("آبلیمو")
         createCategory("نمک")
         createCategory("خیارشور")

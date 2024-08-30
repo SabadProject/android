@@ -5,6 +5,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Star
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
 import com.google.zxing.BarcodeFormat
 import com.journeyapps.barcodescanner.BarcodeResult
 import farayan.sabad.SabadDependencies
@@ -18,8 +19,6 @@ import farayan.sabad.db.Item
 import farayan.sabad.db.Photo
 import farayan.sabad.db.Product
 import farayan.sabad.db.Unit
-import farayan.sabad.isUsable
-import farayan.sabad.queryable
 import farayan.sabad.repo.BarcodeRepo
 import farayan.sabad.repo.CategoryRepo
 import farayan.sabad.repo.ItemRepo
@@ -28,6 +27,8 @@ import farayan.sabad.repo.ProductPhotoRepo
 import farayan.sabad.repo.ProductRepo
 import farayan.sabad.repo.UnitRepo
 import farayan.sabad.utility.hasValue
+import farayan.sabad.utility.isUsable
+import farayan.sabad.utility.queryable
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.onEach
 import java.io.File
@@ -46,34 +47,47 @@ class InvoiceItemFormViewModel @Inject constructor(
     private val priceRepo: PriceRepo,
 ) : ViewModel() {
     fun barcodeScanned(br: BarcodeResult) {
-        formScannedExtractedBarcode.value = br.barcode()
-        val productBarcodes = barcodeRepo.byBarcode(br.barcode())
-        if (productBarcodes.isEmpty()) {
+        val tag = "invoice-item-form-dialog:barcode-scanned"
+        Log.d(tag, "barcode scanned: $br")
+        val extractedBarcode = br.barcode()
+        formScannedExtractedBarcode.value = extractedBarcode
+        val barcodes = barcodeRepo.byBarcode(extractedBarcode)
+        if (barcodes.isEmpty()) {
+            Log.d(tag, "No barcode found with barcode: $extractedBarcode")
             return
         }
-        val products = productRepo.byIds(productBarcodes.map { it.productId })
+        Log.d(tag, "${barcodes.size} barcodes found with barcode: $extractedBarcode")
+        val products = productRepo.byIds(barcodes.map { it.productId })
+        Log.d(tag, "${products.size} products found with barcode: $extractedBarcode")
         if (product.hasFixedValue) {
+            Log.d(tag, "Product is fixed, so start barcodeScannedWithFixedProduct. barcode: $extractedBarcode")
             barcodeScannedWithFixedProduct(products)
             return
         }
         if (category.hasFixedValue) {
-            barcodeScannedWithFixedCategory(products, productBarcodes)
+            Log.d(tag, "Category is fixed, so start barcodeScannedWithFixedCategory. barcode: $extractedBarcode")
+            barcodeScannedWithFixedCategory(products, barcodes)
         } else {
             if (products.size == 1) {
+                Log.d(tag, "Category is NOT fixed and only one product is found so start barcodeScannedMatched1RelatedProduct. barcode: $extractedBarcode")
                 barcodeScannedMatched1RelatedProduct(products)
                 return
             }
             if (products.size > 1) {
+                Log.d(tag, "Category is NOT fixed, and multiple products found so start barcodeScannedMatchedMultipleProduct. barcode: $extractedBarcode")
                 barcodeScannedMatchedMultipleProduct(products)
             }
         }
     }
 
     private fun barcodeScannedMatchedMultipleProduct(products: List<Product>) {
+        val tag = "barcodeScannedMatchedMultipleProduct"
         if (formName.value.isNotBlank()) {
+            Log.d(tag, "form is usable, checking if any related product can be found")
             val queryableName = formName.value.queryable()
             val firstOrNull = products.firstOrNull { queryableName.contentEquals(it.queryableName, true) }
             if (firstOrNull == null) {
+                Log.d(tag, "No product matched with filled form, so asking from user what to do")
                 question.value = Question(
                     Questions.ScannedProductDoesNotMatchFilledForm,
                     "Multiple products with scanned barcode, but none of them match the filled form.",
@@ -90,6 +104,7 @@ class InvoiceItemFormViewModel @Inject constructor(
                 )
                 return
             } else {
+                Log.d(tag, "One product matched with filled form, so filling rest of form with it")
                 fillProduct(firstOrNull)
             }
         }
@@ -320,7 +335,7 @@ class InvoiceItemFormViewModel @Inject constructor(
     }
 
     val categories = MutableStateFlow(categoryRepo.all())
-    val pickedItems = itemRepo.pickings().onEach { items ->
+    val pickedItems = itemRepo.pickings(viewModelScope).onEach { items ->
         Log.d("flow", "Collected items in InvoiceItemFormViewModel: ${items.size}")
     }
     val category = MutableStateFlow(Fixable<Category>())

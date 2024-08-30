@@ -10,7 +10,6 @@ import farayan.sabad.db.ItemQueries
 import farayan.sabad.db.Product
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.onEach
@@ -89,13 +88,11 @@ class ItemRepo(private val queries: ItemQueries) {
         return queries.current(product.id).executeAsOneOrNull()
     }
 
-    private val repositoryScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
-
-    fun pickings(): SharedFlow<List<Item>> {
+    fun pickings(scope: CoroutineScope): SharedFlow<List<Item>> {
         return queries.pickings().asFlow().mapToList(Dispatchers.IO).onEach { items ->
             // Log each emission
             Log.d("flow", "Emitted items: ${items.size}")
-        }.shareIn(repositoryScope, SharingStarted.WhileSubscribed(5000), 1)
+        }.shareIn(scope, SharingStarted.WhileSubscribed(500_000), 1)
     }
 
     fun pendingItemByProduct(product: Product): Item? {

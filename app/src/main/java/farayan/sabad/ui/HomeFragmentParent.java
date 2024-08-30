@@ -22,6 +22,7 @@ public abstract class HomeFragmentParent extends SabadBaseFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        Log.i("flow", "HomeFragmentParent: onCreateView");
         NullLoadedViews();
         long start = System.currentTimeMillis();
         rootView = inflater.inflate(R.layout.fragment_home, container, false);

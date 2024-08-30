@@ -1,4 +1,4 @@
-package farayan.sabad
+package farayan.sabad.utility
 
 import farayan.commons.FarayanUtility
 
