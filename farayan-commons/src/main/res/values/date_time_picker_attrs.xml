@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="DateTimePickerComponent">
+        <attr name="dateTimePickerStyle" format="reference"/>
+        <attr name="hint"/>
+        <attr name="textColor"/>
+
+        <attr name="minYear"/>
+        <attr name="maxYear"/>
+        <attr name="selectedYear"/>
+        <attr name="selectedMonth"/>
+        <attr name="selectedDay"/>
+        <attr name="selectedHour"/>
+        <attr name="selectedMinute"/>
+        <attr name="selectedSecond"/>
+
+        <attr name="hintColor"/>
+        <attr name="defaultColor"/>
+        <attr name="leadingZero"/>
+        <attr name="numberLang"/>
+        <attr name="yearColor"/>
+        <attr name="monthColor"/>
+        <attr name="dayNumberColor"/>
+        <attr name="dayLeadingZero"/>
+        <attr name="hourColor"/>
+        <attr name="hourStep"/>
+        <attr name="hourLeadingZero"/>
+        <attr name="hourMode"/>
+        <attr name="datePickerTimeMode"/>
+        <attr name="minuteColor"/>
+        <attr name="minuteStep"/>
+        <attr name="minuteLeadingZero"/>
+        <attr name="secondColor"/>
+        <attr name="secondStep"/>
+        <attr name="secondLeadingZero"/>
+        <attr name="secondDisplay"/>
+
+        <attr name="preparedItemsColor"/>
+        <attr name="hourMinuteSeparatorColor"/>
+        <attr name="minuteSecondSeparatorColor"/>
+
+        <attr name="defaultTextSize"/>
+        <attr name="yearTextSize"/>
+        <attr name="monthTextSize"/>
+        <attr name="dayNumberTextSize"/>
+        <attr name="dayNameTextSize"/>
+        <attr name="hourTextSize"/>
+        <attr name="hourMinuteSeparatorTextSize"/>
+        <attr name="minuteTextSize"/>
+        <attr name="minuteSecondSeparatorTextSize"/>
+        <attr name="secondTextSize"/>
+        <attr name="preparedItemsTextSize"/>
+
+        <attr name="dayNameDisplay"/>
+        <attr name="dayNameColor"/>
+        <attr name="dateTimeMode"/>
+        <attr name="dialogType"/>
+        <attr name="monthDisplayMode"/>
+        <attr name="monthDisplayTemplate"/>
+
+        <attr name="dateHeaderBackground" />
+        <attr name="dateHeaderTextColor" />
+        <attr name="dateHeaderTextGravity" />
+        <attr name="dateHeaderTextSize" />
+        <attr name="timeHeaderBackground" />
+        <attr name="timeHeaderTextColor" />
+        <attr name="timeHeaderTextGravity" />
+        <attr name="timeHeaderTextSize" />
+        <attr name="preparedHeaderBackground" />
+        <attr name="preparedHeaderTextColor" />
+        <attr name="preparedHeaderTextGravity" />
+        <attr name="preparedHeaderTextSize" />
+
+        <attr name="dateTimePickerTabsStyle" format="reference"/>
+        <attr name="dateTimePickerDateTabStyle" format="reference"/>
+        <attr name="dateTimePickerYearWheelStyle" format="reference"/>
+        <attr name="dateTimePickerMonthWheelStyle" format="reference"/>
+    </declare-styleable>
+</resources>

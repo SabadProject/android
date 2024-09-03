@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:gravity="center"
+              android:orientation="vertical"
+              android:padding="5dp">
+
+    <LinearLayout
+        android:id="@+id/PickerLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layoutDirection="ltr"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+        <farayan.commons.UI.CustomNumberPicker
+            android:id="@+id/Level4NumberPicker"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:id="@+id/Level4And3SeparatorTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=","/>
+
+        <farayan.commons.UI.CustomNumberPicker
+            android:id="@+id/Level3NumberPicker"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:id="@+id/Level3And2SeparatorTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=","/>
+
+        <farayan.commons.UI.CustomNumberPicker
+            android:id="@+id/Level2NumberPicker"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:id="@+id/Level2And1SeparatorTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=","/>
+
+        <farayan.commons.UI.CustomNumberPicker
+            android:id="@+id/Level1NumberPicker"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:id="@+id/FloatingPointSeparatorTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="."/>
+
+        <farayan.commons.UI.CustomNumberPicker
+            android:id="@+id/FloatingPointNumberPicker"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/PrefixTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="25sp"/>
+
+        <CheckBox
+            android:id="@+id/DisplayPickerCheckBox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/currecy_box_display_picker_checkbox_bg"
+            android:button="@null"/>
+
+        <LinearLayout
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layoutDirection="ltr">
+
+
+            <TextView
+                android:id="@+id/SignTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:text="+"
+                android:textSize="25sp"/>
+
+            <EditText
+                android:id="@+id/NaturalNumberEditText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:background="@null"
+                android:gravity="center"
+                android:inputType="number"
+                android:selectAllOnFocus="true"
+                android:textSize="25sp"/>
+
+            <TextView
+                android:id="@+id/DecimalSeparatorTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="/"/>
+
+            <EditText
+                android:id="@+id/DecimalPartEditText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@null"
+                android:gravity="center"
+                android:inputType="number"
+                android:selectAllOnFocus="true"
+                android:textSize="25sp"/>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/SuffixTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="25sp"/>
+    </LinearLayout>
+
+</LinearLayout>

@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="item_click_support" type="id" />
+
+    <attr name="hint" format="string"/>
+    <attr name="hintValue" format="string"/>
+    <attr name="h" format="reference|color"/>
+    <attr name="textColor" format="reference|color"/>
+    <attr name="hintGravity">
+        <!-- Push object to the top of its container, not changing its size. -->
+        <flag name="top" value="0x30"/>
+        <!-- Push object to the bottom of its container, not changing its size. -->
+        <flag name="bottom" value="0x50"/>
+        <!-- Push object to the left of its container, not changing its size. -->
+        <flag name="left" value="0x03"/>
+        <!-- Push object to the right of its container, not changing its size. -->
+        <flag name="right" value="0x05"/>
+        <!-- Place object in the vertical center of its container, not changing its size. -->
+        <flag name="center_vertical" value="0x10"/>
+        <!-- Grow the vertical size of the object if needed so it completely fills its container. -->
+        <flag name="fill_vertical" value="0x70"/>
+        <!-- Place object in the horizontal center of its container, not changing its size. -->
+        <flag name="center_horizontal" value="0x01"/>
+        <!-- Grow the horizontal size of the object if needed so it completely fills its container. -->
+        <flag name="fill_horizontal" value="0x07"/>
+        <!-- Place the object in the center of its container in both the vertical and horizontal axis, not changing its size. -->
+        <flag name="center" value="0x11"/>
+        <!-- Grow the horizontal and vertical size of the object if needed so it completely fills its container. -->
+        <flag name="fill" value="0x77"/>
+        <!-- Additional option that can be set to have the top and/or bottom edges of
+             the child clipped to its container's bounds.
+             The clip will be based on the vertical gravity: a top gravity will clip the bottom
+             edge, a bottom gravity will clip the top edge, and neither will clip both edges. -->
+        <flag name="clip_vertical" value="0x80"/>
+        <!-- Additional option that can be set to have the left and/or right edges of
+             the child clipped to its container's bounds.
+             The clip will be based on the horizontal gravity: a left gravity will clip the right
+             edge, a right gravity will clip the left edge, and neither will clip both edges. -->
+        <flag name="clip_horizontal" value="0x08"/>
+        <!-- Push object to the beginning of its container, not changing its size. -->
+        <flag name="start" value="0x00800003"/>
+        <!-- Push object to the end of its container, not changing its size. -->
+        <flag name="end" value="0x00800005"/>
+    </attr>
+
+
+    <attr name="dialogHeaderTextGravity">
+        <!-- Push object to the top of its container, not changing its size. -->
+        <flag name="top" value="0x30"/>
+        <!-- Push object to the bottom of its container, not changing its size. -->
+        <flag name="bottom" value="0x50"/>
+        <!-- Push object to the left of its container, not changing its size. -->
+        <flag name="left" value="0x03"/>
+        <!-- Push object to the right of its container, not changing its size. -->
+        <flag name="right" value="0x05"/>
+        <!-- Place object in the vertical center of its container, not changing its size. -->
+        <flag name="center_vertical" value="0x10"/>
+        <!-- Grow the vertical size of the object if needed so it completely fills its container. -->
+        <flag name="fill_vertical" value="0x70"/>
+        <!-- Place object in the horizontal center of its container, not changing its size. -->
+        <flag name="center_horizontal" value="0x01"/>
+        <!-- Grow the horizontal size of the object if needed so it completely fills its container. -->
+        <flag name="fill_horizontal" value="0x07"/>
+        <!-- Place the object in the center of its container in both the vertical and horizontal axis, not changing its size. -->
+        <flag name="center" value="0x11"/>
+        <!-- Grow the horizontal and vertical size of the object if needed so it completely fills its container. -->
+        <flag name="fill" value="0x77"/>
+        <!-- Additional option that can be set to have the top and/or bottom edges of
+             the child clipped to its container's bounds.
+             The clip will be based on the vertical gravity: a top gravity will clip the bottom
+             edge, a bottom gravity will clip the top edge, and neither will clip both edges. -->
+        <flag name="clip_vertical" value="0x80"/>
+        <!-- Additional option that can be set to have the left and/or right edges of
+             the child clipped to its container's bounds.
+             The clip will be based on the horizontal gravity: a left gravity will clip the right
+             edge, a right gravity will clip the left edge, and neither will clip both edges. -->
+        <flag name="clip_horizontal" value="0x08"/>
+        <!-- Push object to the beginning of its container, not changing its size. -->
+        <flag name="start" value="0x00800003"/>
+        <!-- Push object to the end of its container, not changing its size. -->
+        <flag name="end" value="0x00800005"/>
+    </attr>
+    <attr name="dialogButtonTextGravity">
+        <!-- Push object to the top of its container, not changing its size. -->
+        <flag name="top" value="0x30"/>
+        <!-- Push object to the bottom of its container, not changing its size. -->
+        <flag name="bottom" value="0x50"/>
+        <!-- Push object to the left of its container, not changing its size. -->
+        <flag name="left" value="0x03"/>
+        <!-- Push object to the right of its container, not changing its size. -->
+        <flag name="right" value="0x05"/>
+        <!-- Place object in the vertical center of its container, not changing its size. -->
+        <flag name="center_vertical" value="0x10"/>
+        <!-- Grow the vertical size of the object if needed so it completely fills its container. -->
+        <flag name="fill_vertical" value="0x70"/>
+        <!-- Place object in the horizontal center of its container, not changing its size. -->
+        <flag name="center_horizontal" value="0x01"/>
+        <!-- Grow the horizontal size of the object if needed so it completely fills its container. -->
+        <flag name="fill_horizontal" value="0x07"/>
+        <!-- Place the object in the center of its container in both the vertical and horizontal axis, not changing its size. -->
+        <flag name="center" value="0x11"/>
+        <!-- Grow the horizontal and vertical size of the object if needed so it completely fills its container. -->
+        <flag name="fill" value="0x77"/>
+        <!-- Additional option that can be set to have the top and/or bottom edges of
+             the child clipped to its container's bounds.
+             The clip will be based on the vertical gravity: a top gravity will clip the bottom
+             edge, a bottom gravity will clip the top edge, and neither will clip both edges. -->
+        <flag name="clip_vertical" value="0x80"/>
+        <!-- Additional option that can be set to have the left and/or right edges of
+             the child clipped to its container's bounds.
+             The clip will be based on the horizontal gravity: a left gravity will clip the right
+             edge, a right gravity will clip the left edge, and neither will clip both edges. -->
+        <flag name="clip_horizontal" value="0x08"/>
+        <!-- Push object to the beginning of its container, not changing its size. -->
+        <flag name="start" value="0x00800003"/>
+        <!-- Push object to the end of its container, not changing its size. -->
+        <flag name="end" value="0x00800005"/>
+    </attr>
+
+    <declare-styleable name="CurrencyBoxComponent">
+        <attr name="textColor"/>
+        <attr name="prefix" format="string"/>
+        <attr name="suffix" format="string"/>
+        <attr name="digitsCount" format="integer"/>
+        <attr name="readOnly" format="boolean"/>
+        <attr name="supportFloatingPoint" format="boolean"/>
+        <attr name="FloatingPointPrecision" format="integer"/>
+        <attr name="thousandSeparator" format="string"/>
+        <attr name="floatingPointSeparator" format="string"/>
+        <attr name="fontSize" format="integer"/>
+        <attr name="allowPickers" format="boolean"/>
+        <attr name="supportsNegative" format="boolean"/>
+    </declare-styleable>
+
+
+    <declare-styleable name="EnumSpinner">
+        <attr name="hintValue"/>
+        <attr name="hintColor"/>
+        <attr name="textColor"/>
+    </declare-styleable>
+
+    <declare-styleable name="DateRangeBox">
+        <attr name="hint"/>
+        <attr name="textColor"/>
+        <attr name="popupBackground" format="reference|color"/>
+    </declare-styleable>
+
+
+    <attr name="errorRightDrawable" format="reference"/>
+    <attr name="errorLeftDrawable" format="reference"/>
+    <attr name="errorTintColor" format="color|reference"/>
+
+    <declare-styleable name="CommonTextInputEditText">
+        <attr name="hintGravity"/>
+        <attr name="errorRightDrawable" />
+        <attr name="errorLeftDrawable" />
+        <attr name="errorTintColor"/>
+    </declare-styleable>
+
+    <declare-styleable name="CommonAutoCompleteTextBox">
+        <attr name="autoOpenOnClick" format="boolean|reference"/>
+        <attr name="hintGravity"/>
+        <attr name="errorRightDrawable" />
+        <attr name="errorLeftDrawable" />
+        <attr name="errorTintColor"/>
+    </declare-styleable>
+
+</resources>

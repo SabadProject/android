@@ -1,0 +1,8 @@
+// must be renamed to ".local.gradle" and must not be added to git
+ext {
+    nexusUrl = "http://nexus.local:63987" // NOT ENDING WITH SLASH /
+    nexusUsername = "FarayanCommons"
+    nexusPassword = "D64hvD69DA7h"
+    nexusReleaseVersion = "1.0.0-GA"
+    nexusSnapshotVersion = "1.0.1-SNAPSHOT"
+}

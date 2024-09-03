@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <attr name="minYear" format="integer|reference"/>
+    <attr name="maxYear" format="integer|reference"/>
+    <attr name="selectedYear" format="integer|reference"/>
+    <attr name="selectedMonth" format="integer|reference"/>
+    <attr name="selectedDay" format="integer|reference"/>
+    <attr name="selectedHour" format="integer|reference"/>
+    <attr name="selectedMinute" format="integer|reference"/>
+    <attr name="selectedSecond" format="integer|reference"/>
+
+    <attr name="hintColor" format="color|reference"/>
+    <attr name="defaultColor" format="color|reference"/>
+    <attr name="yearColor" format="color|reference"/>
+    <attr name="monthColor" format="color|reference"/>
+    <attr name="dayNumberColor" format="color|reference"/>
+    <attr name="dayNameColor" format="color|reference"/>
+    <attr name="hourColor" format="color|reference"/>
+    <attr name="hourMinuteSeparatorColor" format="color|reference"/>
+    <attr name="minuteColor" format="color|reference"/>
+    <attr name="minuteSecondSeparatorColor" format="color|reference"/>
+    <attr name="secondColor" format="color|reference"/>
+    <attr name="preparedItemsColor" format="color|reference"/>
+
+    <attr name="leadingZero" format="boolean|reference"/>
+    <attr name="dayLeadingZero" format="boolean|reference"/>
+    <attr name="hourLeadingZero" format="boolean|reference"/>
+    <attr name="minuteLeadingZero" format="boolean|reference"/>
+    <attr name="secondLeadingZero" format="boolean|reference"/>
+    <attr name="hourStep" format="integer|reference"/>
+    <attr name="secondStep" format="integer|reference"/>
+    <attr name="minuteStep" format="integer|reference"/>
+
+    <attr name="defaultTextSize" format="dimension|reference"/>
+    <attr name="yearTextSize" format="dimension|reference"/>
+    <attr name="monthTextSize" format="dimension|reference"/>
+    <attr name="dayNumberTextSize" format="dimension|reference"/>
+    <attr name="dayNameTextSize" format="dimension|reference"/>
+    <attr name="hourTextSize" format="dimension|reference"/>
+    <attr name="hourMinuteSeparatorTextSize" format="dimension|reference"/>
+    <attr name="minuteTextSize" format="dimension|reference"/>
+    <attr name="minuteSecondSeparatorTextSize" format="dimension|reference"/>
+    <attr name="secondTextSize" format="dimension|reference"/>
+    <attr name="preparedItemsTextSize" format="dimension|reference"/>
+
+    <attr name="dayNameDisplay" format="boolean|reference"/>
+    <attr name="secondDisplay" format="boolean|reference"/>
+    <attr name="numberLang">
+        <enum name="English" value="1"/>
+        <enum name="Persian" value="2"/>
+        <enum name="Arabic" value="3"/>
+    </attr>
+    <attr name="datePickerTimeMode">
+        <enum name="DayStart" value="1"/>
+        <enum name="Now" value="2"/>
+    </attr>
+    <attr name="hourMode">
+        <enum name="TwentyFour24Hours" value="24"/>
+        <enum name="Twelve12Hours" value="12"/>
+    </attr>
+    <attr name="dateTimeMode">
+        <flag name="Date" value="1"/>
+        <flag name="Time" value="2"/>
+        <flag name="Prepared" value="4"/>
+    </attr>
+    <attr name="dialogType" format="enum">
+        <enum name="Standard" value="0"/>
+        <enum name="Footer" value="1"/>
+    </attr>
+    <attr name="monthDisplayMode" format="enum">
+        <enum name="MonthNames" value="0"/>
+        <enum name="MonthIndex" value="1"/>
+        <enum name="Template" value="2"/>
+    </attr>
+    <attr name="monthDisplayTemplate" format="string|reference"/>
+
+    <attr name="dateHeaderBackground" format="color|reference"/>
+    <attr name="dateHeaderTextColor" format="color|reference"/>
+    <attr name="dateHeaderTextGravity">
+        <flag name="top" value="0x30"/>
+        <flag name="bottom" value="0x50"/>
+        <flag name="left" value="0x03"/>
+        <flag name="right" value="0x05"/>
+        <flag name="center_vertical" value="0x10"/>
+        <flag name="fill_vertical" value="0x70"/>
+        <flag name="center_horizontal" value="0x01"/>
+        <flag name="fill_horizontal" value="0x07"/>
+        <flag name="center" value="0x11"/>
+        <flag name="fill" value="0x77"/>
+        <flag name="clip_vertical" value="0x80"/>
+        <flag name="clip_horizontal" value="0x08"/>
+        <flag name="start" value="0x00800003"/>
+        <flag name="end" value="0x00800005"/>
+    </attr>
+    <attr name="dateHeaderTextSize" format="dimension|reference"/>
+
+	<attr name="timeHeaderBackground" format="color|reference"/>
+	<attr name="timeHeaderTextColor" format="color|reference"/>
+	<attr name="timeHeaderTextGravity">
+		<flag name="top" value="0x30"/>
+		<flag name="bottom" value="0x50"/>
+		<flag name="left" value="0x03"/>
+		<flag name="right" value="0x05"/>
+		<flag name="center_vertical" value="0x10"/>
+		<flag name="fill_vertical" value="0x70"/>
+		<flag name="center_horizontal" value="0x01"/>
+		<flag name="fill_horizontal" value="0x07"/>
+		<flag name="center" value="0x11"/>
+		<flag name="fill" value="0x77"/>
+		<flag name="clip_vertical" value="0x80"/>
+		<flag name="clip_horizontal" value="0x08"/>
+		<flag name="start" value="0x00800003"/>
+		<flag name="end" value="0x00800005"/>
+	</attr>
+	<attr name="timeHeaderTextSize" format="dimension|reference"/>
+
+	<attr name="preparedHeaderBackground" format="color|reference"/>
+	<attr name="preparedHeaderTextColor" format="color|reference"/>
+	<attr name="preparedHeaderTextGravity">
+		<flag name="top" value="0x30"/>
+		<flag name="bottom" value="0x50"/>
+		<flag name="left" value="0x03"/>
+		<flag name="right" value="0x05"/>
+		<flag name="center_vertical" value="0x10"/>
+		<flag name="fill_vertical" value="0x70"/>
+		<flag name="center_horizontal" value="0x01"/>
+		<flag name="fill_horizontal" value="0x07"/>
+		<flag name="center" value="0x11"/>
+		<flag name="fill" value="0x77"/>
+		<flag name="clip_vertical" value="0x80"/>
+		<flag name="clip_horizontal" value="0x08"/>
+		<flag name="start" value="0x00800003"/>
+		<flag name="end" value="0x00800005"/>
+	</attr>
+	<attr name="preparedHeaderTextSize" format="dimension|reference"/>
+</resources>
