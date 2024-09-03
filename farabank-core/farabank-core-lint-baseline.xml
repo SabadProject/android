@@ -4,23 +4,12 @@
     <issue
         id="GradleDependency"
         message="A newer version of org.jetbrains.kotlin:kotlin-stdlib than 1.8.10 is available: 1.9.22"
-        errorLine1="dependencies {"
+        errorLine1="    implementation &quot;org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion&quot;"
         errorLine2="                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="build.gradle"
-            line="40"
+            line="47"
             column="20"/>
-    </issue>
-
-    <issue
-        id="ExpiredTargetSdkVersion"
-        message="Google Play requires that apps target API level 31 or higher.&#xA;"
-        errorLine1="    defaultConfig {"
-        errorLine2="        ~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="build.gradle"
-            line="14"
-            column="9"/>
     </issue>
 
 </issues>

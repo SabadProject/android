@@ -2,24 +2,13 @@
 <issues format="6" by="lint 7.4.1" type="baseline" client="gradle" dependencies="false" name="AGP (7.4.1)" variant="all" version="7.4.1">
 
     <issue
-        id="GradleCompatible"
-        message="The compileSdkVersion (31) should not be lower than the targetSdkVersion (34)"
-        errorLine1="    compileSdkVersion 31"
-        errorLine2="    ~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="build.gradle"
-            line="14"
-            column="5"/>
-    </issue>
-
-    <issue
         id="GradleDependency"
         message="A newer version of org.jetbrains.kotlin:kotlin-stdlib than 1.8.10 is available: 1.9.22"
         errorLine1="    implementation &quot;org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion&quot;"
         errorLine2="                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="build.gradle"
-            line="39"
+            line="43"
             column="20"/>
     </issue>
 

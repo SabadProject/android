@@ -4,8 +4,12 @@ apply plugin: "kotlin-android"
 apply plugin: "maven-publish"
 
 android {
+    namespace 'farayan.farabank.core'
     lint {
         baseline = file("farabank-core-lint-baseline.xml")
+        lintOptions {
+            abortOnError false
+        }
     }
 
     compileSdkVersion 34

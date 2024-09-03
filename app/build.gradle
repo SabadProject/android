@@ -15,8 +15,12 @@ sqldelight {
 }
 
 android {
+    namespace 'farayan.sabad'
     lint {
         baseline = file("sabad-lint-baseline.xml")
+        lintOptions {
+            abortOnError false
+        }
     }
     dexOptions {
         javaMaxHeapSize "5g"

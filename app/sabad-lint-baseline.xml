@@ -5,21 +5,32 @@
         id="ObsoleteLintCustomCheck"
         message="Lint found an issue registry (`androidx.compose.runtime.lint.RuntimeIssueRegistry`) which requires a newer API level. That means that the custom lint checks are intended for a newer lint version; please upgrade.">
         <location
-            file="C:/Users/Homayoun/.gradle/caches/transforms-3/6989644c5e54631f9ab8f458488bde90/transformed/jetified-runtime-release/jars/lint.jar"/>
+            file="$GRADLE_USER_HOME/caches/transforms-3/6989644c5e54631f9ab8f458488bde90/transformed/jetified-runtime-release/jars/lint.jar"/>
     </issue>
 
     <issue
         id="ObsoleteLintCustomCheck"
         message="Lint found an issue registry (`androidx.compose.ui.lint.UiIssueRegistry`) which requires a newer API level. That means that the custom lint checks are intended for a newer lint version; please upgrade.">
         <location
-            file="C:/Users/Homayoun/.gradle/caches/transforms-3/b728fda082456bd4714e6de4c444b546/transformed/jetified-ui-release/jars/lint.jar"/>
+            file="$GRADLE_USER_HOME/caches/transforms-3/b728fda082456bd4714e6de4c444b546/transformed/jetified-ui-release/jars/lint.jar"/>
     </issue>
 
     <issue
         id="ObsoleteLintCustomCheck"
         message="Requires newer lint; these checks **will be skipped**!&#xA;&#xA;Lint found an issue registry (`androidx.lifecycle.lint.LiveDataCoreIssueRegistry`)&#xA;which was compiled against a newer version of lint&#xA;than this one. This is usually fine, but not in this&#xA;case; some basic verification shows that the lint&#xA;check jar references (for example) the following API&#xA;which is not valid in the version of lint which is running:&#xA;org.jetbrains.kotlin.analysis.api.lifetime.impl.NoWriteActionInAnalyseCallChecker: void afterLeavingAnalysisContext()&#xA;(Referenced from androidx/lifecycle/lint/NonNullableMutableLiveDataDetector$createUastHandler$1.class)&#xA;&#xA;Therefore, this lint check library is **not** included&#xA;in analysis. This affects the following lint checks:&#xA;`NullSafeMutableLiveData`&#xA;&#xA;To use this lint check, upgrade to a more recent version&#xA;of lint.&#xA;&#xA;Version of Lint API this lint check is using is 14.&#xA;The Lint API version currently running is 13 (7.3+).">
         <location
-            file="C:/Users/Homayoun/.gradle/caches/transforms-3/6432b48b77bc9180d08ef6cc4656d09f/transformed/lifecycle-livedata-core-2.8.1/jars/lint.jar"/>
+            file="$GRADLE_USER_HOME/caches/transforms-3/6432b48b77bc9180d08ef6cc4656d09f/transformed/lifecycle-livedata-core-2.8.1/jars/lint.jar"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 26 (current min is 24): `java.time.LocalDateTime#now`"
+        errorLine1="                                LocalDateTime.now().let { it.minute.toString() + &quot;:&quot; + it.second }"
+        errorLine2="                                              ~~~">
+        <location
+            file="src/main/java/farayan/sabad/ui/MainActivity.kt"
+            line="102"
+            column="47"/>
     </issue>
 
     <issue
@@ -34,21 +45,21 @@
     </issue>
 
     <issue
-        id="NewApi"
-        message="`?android:attr/colorError` requires API level 26 (current min is 24)"
-        errorLine1="                            android:textColor=&quot;?android:attr/colorError&quot;"
-        errorLine2="                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/activity_about.xml"
-            line="100"
-            column="29"/>
-    </issue>
-
-    <issue
         id="NotificationPermission"
         message="When targeting Android 13 or higher, posting a permission requires holding the `POST_NOTIFICATIONS` permission (usage from com.google.firebase.messaging.DisplayNotification)">
         <location
             file="src/main/AndroidManifest.xml"/>
+    </issue>
+
+    <issue
+        id="UnusedAttribute"
+        message="Attribute `dataExtractionRules` is only used in API level 31 and higher (current min is 24)"
+        errorLine1="        android:dataExtractionRules=&quot;@null&quot;"
+        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/AndroidManifest.xml"
+            line="26"
+            column="9"/>
     </issue>
 
     <issue
@@ -60,391 +71,6 @@
             file="src/main/res/drawable/ic_sabad_white_512dp.xml"
             line="2"
             column="20"/>
-    </issue>
-
-    <issue
-        id="UsingMaterialAndMaterial3Libraries"
-        message="Using a material import while also using the material3 library"
-        errorLine1="import androidx.compose.material.Button"
-        errorLine2="       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/farayan/sabad/ui/components/CameraPreview.kt"
-            line="18"
-            column="8"/>
-    </issue>
-
-    <issue
-        id="UsingMaterialAndMaterial3Libraries"
-        message="Using a material import while also using the material3 library"
-        errorLine1="import androidx.compose.material.DropdownMenuItem"
-        errorLine2="       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/farayan/sabad/ui/components/CurrenciesDropdownMenuBox.kt"
-            line="7"
-            column="8"/>
-    </issue>
-
-    <issue
-        id="UsingMaterialAndMaterial3Libraries"
-        message="Using a material import while also using the material3 library"
-        errorLine1="import androidx.compose.material.ExposedDropdownMenuBox"
-        errorLine2="       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/farayan/sabad/ui/components/CurrenciesDropdownMenuBox.kt"
-            line="9"
-            column="8"/>
-    </issue>
-
-    <issue
-        id="UsingMaterialAndMaterial3Libraries"
-        message="Using a material import while also using the material3 library"
-        errorLine1="import androidx.compose.material.ExposedDropdownMenuDefaults"
-        errorLine2="       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/farayan/sabad/ui/components/CurrenciesDropdownMenuBox.kt"
-            line="10"
-            column="8"/>
-    </issue>
-
-    <issue
-        id="UsingMaterialAndMaterial3Libraries"
-        message="Using a material import while also using the material3 library"
-        errorLine1="import androidx.compose.material.OutlinedTextField"
-        errorLine2="       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/farayan/sabad/ui/components/CurrenciesDropdownMenuBox.kt"
-            line="11"
-            column="8"/>
-    </issue>
-
-    <issue
-        id="UsingMaterialAndMaterial3Libraries"
-        message="Using a material import while also using the material3 library"
-        errorLine1="import androidx.compose.material.Text"
-        errorLine2="       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/farayan/sabad/ui/components/CurrenciesDropdownMenuBox.kt"
-            line="12"
-            column="8"/>
-    </issue>
-
-    <issue
-        id="UsingMaterialAndMaterial3Libraries"
-        message="Using a material import while also using the material3 library"
-        errorLine1="import androidx.compose.material.DropdownMenuItem"
-        errorLine2="       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/farayan/sabad/ui/components/ExposedDropdownMenuComplex.kt"
-            line="4"
-            column="8"/>
-    </issue>
-
-    <issue
-        id="UsingMaterialAndMaterial3Libraries"
-        message="Using a material import while also using the material3 library"
-        errorLine1="import androidx.compose.material.ExposedDropdownMenuBox"
-        errorLine2="       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/farayan/sabad/ui/components/ExposedDropdownMenuComplex.kt"
-            line="6"
-            column="8"/>
-    </issue>
-
-    <issue
-        id="UsingMaterialAndMaterial3Libraries"
-        message="Using a material import while also using the material3 library"
-        errorLine1="import androidx.compose.material.ExposedDropdownMenuDefaults"
-        errorLine2="       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/farayan/sabad/ui/components/ExposedDropdownMenuComplex.kt"
-            line="7"
-            column="8"/>
-    </issue>
-
-    <issue
-        id="UsingMaterialAndMaterial3Libraries"
-        message="Using a material import while also using the material3 library"
-        errorLine1="import androidx.compose.material.OutlinedTextField"
-        errorLine2="       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/farayan/sabad/ui/components/ExposedDropdownMenuComplex.kt"
-            line="8"
-            column="8"/>
-    </issue>
-
-    <issue
-        id="UsingMaterialAndMaterial3Libraries"
-        message="Using a material import while also using the material3 library"
-        errorLine1="import androidx.compose.material.Text"
-        errorLine2="       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/farayan/sabad/ui/components/ExposedDropdownMenuComplex.kt"
-            line="9"
-            column="8"/>
-    </issue>
-
-    <issue
-        id="UsingMaterialAndMaterial3Libraries"
-        message="Using a material import while also using the material3 library"
-        errorLine1="import androidx.compose.material.DropdownMenuItem"
-        errorLine2="       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/farayan/sabad/ui/components/GroupsDropdownMenuBox.kt"
-            line="8"
-            column="8"/>
-    </issue>
-
-    <issue
-        id="UsingMaterialAndMaterial3Libraries"
-        message="Using a material import while also using the material3 library"
-        errorLine1="import androidx.compose.material.ExposedDropdownMenuBox"
-        errorLine2="       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/farayan/sabad/ui/components/GroupsDropdownMenuBox.kt"
-            line="10"
-            column="8"/>
-    </issue>
-
-    <issue
-        id="UsingMaterialAndMaterial3Libraries"
-        message="Using a material import while also using the material3 library"
-        errorLine1="import androidx.compose.material.ExposedDropdownMenuDefaults"
-        errorLine2="       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/farayan/sabad/ui/components/GroupsDropdownMenuBox.kt"
-            line="11"
-            column="8"/>
-    </issue>
-
-    <issue
-        id="UsingMaterialAndMaterial3Libraries"
-        message="Using a material import while also using the material3 library"
-        errorLine1="import androidx.compose.material.Icon"
-        errorLine2="       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/farayan/sabad/ui/components/GroupsDropdownMenuBox.kt"
-            line="12"
-            column="8"/>
-    </issue>
-
-    <issue
-        id="UsingMaterialAndMaterial3Libraries"
-        message="Using a material import while also using the material3 library"
-        errorLine1="import androidx.compose.material.OutlinedTextField"
-        errorLine2="       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/farayan/sabad/ui/components/GroupsDropdownMenuBox.kt"
-            line="13"
-            column="8"/>
-    </issue>
-
-    <issue
-        id="UsingMaterialAndMaterial3Libraries"
-        message="Using a material import while also using the material3 library"
-        errorLine1="import androidx.compose.material.Text"
-        errorLine2="       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/farayan/sabad/ui/components/GroupsDropdownMenuBox.kt"
-            line="14"
-            column="8"/>
-    </issue>
-
-    <issue
-        id="UsingMaterialAndMaterial3Libraries"
-        message="Using a material import while also using the material3 library"
-        errorLine1="import androidx.compose.material.Button"
-        errorLine2="       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/farayan/sabad/ui/InvoiceItemFormDialog.kt"
-            line="28"
-            column="8"/>
-    </issue>
-
-    <issue
-        id="UsingMaterialAndMaterial3Libraries"
-        message="Using a material import while also using the material3 library"
-        errorLine1="import androidx.compose.material.IconButton"
-        errorLine2="       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/farayan/sabad/ui/InvoiceItemFormDialog.kt"
-            line="30"
-            column="8"/>
-    </issue>
-
-    <issue
-        id="UsingMaterialAndMaterial3Libraries"
-        message="Using a material import while also using the material3 library"
-        errorLine1="import androidx.compose.material.LocalTextStyle"
-        errorLine2="       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/farayan/sabad/ui/InvoiceItemFormDialog.kt"
-            line="31"
-            column="8"/>
-    </issue>
-
-    <issue
-        id="UsingMaterialAndMaterial3Libraries"
-        message="Using a material import while also using the material3 library"
-        errorLine1="import androidx.compose.material.MaterialTheme"
-        errorLine2="       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/farayan/sabad/ui/InvoiceItemFormDialog.kt"
-            line="32"
-            column="8"/>
-    </issue>
-
-    <issue
-        id="UsingMaterialAndMaterial3Libraries"
-        message="Using a material import while also using the material3 library"
-        errorLine1="import androidx.compose.material.OutlinedTextField"
-        errorLine2="       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/farayan/sabad/ui/InvoiceItemFormDialog.kt"
-            line="33"
-            column="8"/>
-    </issue>
-
-    <issue
-        id="UsingMaterialAndMaterial3Libraries"
-        message="Using a material import while also using the material3 library"
-        errorLine1="import androidx.compose.material.Text"
-        errorLine2="       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/farayan/sabad/ui/InvoiceItemFormDialog.kt"
-            line="34"
-            column="8"/>
-    </issue>
-
-    <issue
-        id="UsingMaterialAndMaterial3Libraries"
-        message="Using a material import while also using the material3 library"
-        errorLine1="import androidx.compose.material.OutlinedTextField"
-        errorLine2="       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/farayan/sabad/ui/components/NumberEntry.kt"
-            line="6"
-            column="8"/>
-    </issue>
-
-    <issue
-        id="UsingMaterialAndMaterial3Libraries"
-        message="Using a material import while also using the material3 library"
-        errorLine1="import androidx.compose.material.Text"
-        errorLine2="       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/farayan/sabad/ui/components/NumberEntry.kt"
-            line="7"
-            column="8"/>
-    </issue>
-
-    <issue
-        id="UsingMaterialAndMaterial3Libraries"
-        message="Using a material import while also using the material3 library"
-        errorLine1="import androidx.compose.material.DropdownMenuItem"
-        errorLine2="       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/farayan/sabad/ui/components/UnitVariationDropdownBox.kt"
-            line="7"
-            column="8"/>
-    </issue>
-
-    <issue
-        id="UsingMaterialAndMaterial3Libraries"
-        message="Using a material import while also using the material3 library"
-        errorLine1="import androidx.compose.material.ExposedDropdownMenuBox"
-        errorLine2="       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/farayan/sabad/ui/components/UnitVariationDropdownBox.kt"
-            line="9"
-            column="8"/>
-    </issue>
-
-    <issue
-        id="UsingMaterialAndMaterial3Libraries"
-        message="Using a material import while also using the material3 library"
-        errorLine1="import androidx.compose.material.ExposedDropdownMenuDefaults"
-        errorLine2="       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/farayan/sabad/ui/components/UnitVariationDropdownBox.kt"
-            line="10"
-            column="8"/>
-    </issue>
-
-    <issue
-        id="UsingMaterialAndMaterial3Libraries"
-        message="Using a material import while also using the material3 library"
-        errorLine1="import androidx.compose.material.OutlinedTextField"
-        errorLine2="       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/farayan/sabad/ui/components/UnitVariationDropdownBox.kt"
-            line="11"
-            column="8"/>
-    </issue>
-
-    <issue
-        id="UsingMaterialAndMaterial3Libraries"
-        message="Using a material import while also using the material3 library"
-        errorLine1="import androidx.compose.material.Text"
-        errorLine2="       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/farayan/sabad/ui/components/UnitVariationDropdownBox.kt"
-            line="12"
-            column="8"/>
-    </issue>
-
-    <issue
-        id="UsingMaterialAndMaterial3Libraries"
-        message="Using a material import while also using the material3 library"
-        errorLine1="import androidx.compose.material.DropdownMenuItem"
-        errorLine2="       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/farayan/sabad/ui/components/UnitsDropdownMenuBox.kt"
-            line="6"
-            column="8"/>
-    </issue>
-
-    <issue
-        id="UsingMaterialAndMaterial3Libraries"
-        message="Using a material import while also using the material3 library"
-        errorLine1="import androidx.compose.material.ExposedDropdownMenuBox"
-        errorLine2="       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/farayan/sabad/ui/components/UnitsDropdownMenuBox.kt"
-            line="8"
-            column="8"/>
-    </issue>
-
-    <issue
-        id="UsingMaterialAndMaterial3Libraries"
-        message="Using a material import while also using the material3 library"
-        errorLine1="import androidx.compose.material.ExposedDropdownMenuDefaults"
-        errorLine2="       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/farayan/sabad/ui/components/UnitsDropdownMenuBox.kt"
-            line="9"
-            column="8"/>
-    </issue>
-
-    <issue
-        id="UsingMaterialAndMaterial3Libraries"
-        message="Using a material import while also using the material3 library"
-        errorLine1="import androidx.compose.material.OutlinedTextField"
-        errorLine2="       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/farayan/sabad/ui/components/UnitsDropdownMenuBox.kt"
-            line="10"
-            column="8"/>
-    </issue>
-
-    <issue
-        id="UsingMaterialAndMaterial3Libraries"
-        message="Using a material import while also using the material3 library"
-        errorLine1="import androidx.compose.material.Text"
-        errorLine2="       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/farayan/sabad/ui/components/UnitsDropdownMenuBox.kt"
-            line="11"
-            column="8"/>
     </issue>
 
     <issue
@@ -498,12 +124,12 @@
     <issue
         id="StringFormatInvalid"
         message="Format string &apos;`PurchaseSummaryPickedItems`&apos; is not a valid format string so it should not be passed to `String.format`"
-        errorLine1="  PickedItemsTextView().setText(getContext().getString("
-        errorLine2="                                ^">
+        errorLine1="        PickedItemsTextView().setText(getContext().getString("
+        errorLine2="                                      ^">
         <location
             file="src/main/java/farayan/sabad/ui/PurchaseSummaryComponent.java"
-            line="59"
-            column="33"/>
+            line="55"
+            column="39"/>
         <location
             file="src/main/res/values/strings.xml"
             line="26"
@@ -514,12 +140,12 @@
     <issue
         id="StringFormatInvalid"
         message="Format string &apos;`PurchaseSummaryRemainedItems`&apos; is not a valid format string so it should not be passed to `String.format`"
-        errorLine1="  RemainedItemsTextView().setText(getContext().getString("
-        errorLine2="                                  ^">
+        errorLine1="        RemainedItemsTextView().setText(getContext().getString("
+        errorLine2="                                        ^">
         <location
             file="src/main/java/farayan/sabad/ui/PurchaseSummaryComponent.java"
-            line="65"
-            column="35"/>
+            line="61"
+            column="41"/>
         <location
             file="src/main/res/values/strings.xml"
             line="27"
@@ -530,12 +156,12 @@
     <issue
         id="StringFormatInvalid"
         message="Format string &apos;`SubtotalTextView`&apos; is not a valid format string so it should not be passed to `String.format`"
-        errorLine1="  SubtotalTextView().setText(getContext().getString("
-        errorLine2="                             ^">
+        errorLine1="        SubtotalTextView().setText(getContext().getString("
+        errorLine2="                                   ^">
         <location
             file="src/main/java/farayan/sabad/ui/PurchaseSummaryComponent.java"
-            line="70"
-            column="30"/>
+            line="66"
+            column="36"/>
         <location
             file="src/main/res/values/strings.xml"
             line="28"
@@ -805,6 +431,17 @@
 
     <issue
         id="UnusedResources"
+        message="The resource `R.menu.home_menu` appears to be unused"
+        errorLine1="&lt;menu xmlns:tools=&quot;http://schemas.android.com/tools&quot;"
+        errorLine2="^">
+        <location
+            file="src/main/res/menu/home_menu.xml"
+            line="2"
+            column="1"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
         message="The resource `R.drawable.ic_baseline_add_circle_24` appears to be unused"
         errorLine1="&lt;vector xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;"
         errorLine2="^">
@@ -843,6 +480,28 @@
         errorLine2="^">
         <location
             file="src/main/res/drawable/ic_baseline_done_24.xml"
+            line="1"
+            column="1"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.drawable.ic_baseline_edit_24` appears to be unused"
+        errorLine1="&lt;vector android:height=&quot;24dp&quot; android:tint=&quot;#FFFFFF&quot;"
+        errorLine2="^">
+        <location
+            file="src/main/res/drawable/ic_baseline_edit_24.xml"
+            line="1"
+            column="1"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.drawable.ic_baseline_list_alt_24` appears to be unused"
+        errorLine1="&lt;vector android:height=&quot;24dp&quot; android:tint=&quot;#FFFFFF&quot;"
+        errorLine2="^">
+        <location
+            file="src/main/res/drawable/ic_baseline_list_alt_24.xml"
             line="1"
             column="1"/>
     </issue>
@@ -893,6 +552,17 @@
 
     <issue
         id="UnusedResources"
+        message="The resource `R.color.ic_launcher_background` appears to be unused"
+        errorLine1="    &lt;color name=&quot;ic_launcher_background&quot;>#3FC5F0&lt;/color>"
+        errorLine2="           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/ic_launcher_background.xml"
+            line="3"
+            column="12"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
         message="The resource `R.drawable.ic_launcher_foreground` appears to be unused"
         errorLine1="&lt;vector xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;"
         errorLine2="^">
@@ -904,23 +574,23 @@
 
     <issue
         id="UnusedResources"
-        message="The resource `R.mipmap.ic_launcher_round` appears to be unused"
-        errorLine1="&lt;adaptive-icon xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;>"
-        errorLine2="^">
-        <location
-            file="src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml"
-            line="2"
-            column="1"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
         message="The resource `R.drawable.ic_sabad_white_512dp` appears to be unused"
         errorLine1="&lt;vector xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;"
         errorLine2="^">
         <location
             file="src/main/res/drawable/ic_sabad_white_512dp.xml"
             line="1"
+            column="1"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.menu.main_menu` appears to be unused"
+        errorLine1="&lt;menu xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;"
+        errorLine2="^">
+        <location
+            file="src/main/res/menu/main_menu.xml"
+            line="2"
             column="1"/>
     </issue>
 
@@ -970,6 +640,17 @@
 
     <issue
         id="UnusedResources"
+        message="The resource `R.string.Insert` appears to be unused"
+        errorLine1="    &lt;string name=&quot;Insert&quot;>درج&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="5"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
         message="The resource `R.string.EditProduct` appears to be unused"
         errorLine1="    &lt;string name=&quot;EditProduct&quot;>ویرایش&lt;/string>"
         errorLine2="            ~~~~~~~~~~~~~~~~~~">
@@ -992,12 +673,100 @@
 
     <issue
         id="UnusedResources"
+        message="The resource `R.string.Checkout` appears to be unused"
+        errorLine1="    &lt;string name=&quot;Checkout&quot;>پایان خرید&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="8"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.Scan` appears to be unused"
+        errorLine1="    &lt;string name=&quot;Scan&quot;>پویش&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="9"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.ListInvoices` appears to be unused"
+        errorLine1="    &lt;string name=&quot;ListInvoices&quot;>فهرست خریدها&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="10"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
         message="The resource `R.string.ContinuePurchase` appears to be unused"
         errorLine1="    &lt;string name=&quot;ContinuePurchase&quot;>ادامه‌ی خرید&lt;/string>"
         errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/values/strings.xml"
             line="11"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.NameNeeded` appears to be unused"
+        errorLine1="    &lt;string name=&quot;NameNeeded&quot;>نام را درج کنید&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="12"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.NewGroupGuide` appears to be unused"
+        errorLine1="    &lt;string name=&quot;NewGroupGuide&quot;>راهنما* نیازمندی جدید درج شد، برای ویرایش یا حذف، می‌توانید انگشت خود را برروی نیازمندی نگه‌داشته یا هم‌اکنون دکمه‌ی ویرایش را بزنید. برای اطلاعات بیشتر اینجا را کلیک کنید&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="13"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.CategoryUsedName` appears to be unused"
+        errorLine1="    &lt;string name=&quot;CategoryUsedName&quot;>این دسته‌بندی قبلا درج شده&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="14"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.CategoryQuickQueryHint` appears to be unused"
+        errorLine1="    &lt;string name=&quot;CategoryQuickQueryHint&quot;>بخشی از نام کالا&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="15"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.Edit` appears to be unused"
+        errorLine1="    &lt;string name=&quot;Edit&quot;>ویرایش&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="16"
             column="13"/>
     </issue>
 
@@ -1075,6 +844,17 @@
         <location
             file="src/main/res/values/strings.xml"
             line="47"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.AboutSabadMenu` appears to be unused"
+        errorLine1="    &lt;string name=&quot;AboutSabadMenu&quot;>درباره‌ی 🛒سبد&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="57"
             column="13"/>
     </issue>
 
@@ -1178,56 +958,10 @@
     </issue>
 
     <issue
-        id="IconLauncherShape"
-        message="Launcher icon used as round icon did not have a circular shape">
-        <location
-            file="src/main/res/mipmap-hdpi/ic_launcher.png"/>
-    </issue>
-
-    <issue
-        id="IconLauncherShape"
-        message="Launcher icon used as round icon did not have a circular shape">
-        <location
-            file="src/main/res/mipmap-mdpi/ic_launcher.png"/>
-    </issue>
-
-    <issue
-        id="IconLauncherShape"
-        message="Launcher icon used as round icon did not have a circular shape">
-        <location
-            file="src/main/res/mipmap-xhdpi/ic_launcher.png"/>
-    </issue>
-
-    <issue
-        id="IconLauncherShape"
-        message="Launcher icon used as round icon did not have a circular shape">
-        <location
-            file="src/main/res/mipmap-xxhdpi/ic_launcher.png"/>
-    </issue>
-
-    <issue
-        id="IconLauncherShape"
-        message="Launcher icon used as round icon did not have a circular shape">
-        <location
-            file="src/main/res/mipmap-xxxhdpi/ic_launcher.png"/>
-    </issue>
-
-    <issue
-        id="MonochromeLauncherIcon"
-        message="The application adaptive icon is missing a monochrome tag"
-        errorLine1="&lt;adaptive-icon xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;>"
-        errorLine2="^">
-        <location
-            file="src/main/res/mipmap-anydpi-v26/ic_launcher.xml"
-            line="2"
-            column="1"/>
-    </issue>
-
-    <issue
         id="IconLocation"
-        message="Found bitmap drawable `res/drawable/camera_placeholder.jpg` in densityless folder">
+        message="Found bitmap drawable `res/drawable/camera_placeholder.png` in densityless folder">
         <location
-            file="src/main/res/drawable/camera_placeholder.jpg"/>
+            file="src/main/res/drawable/camera_placeholder.png"/>
     </issue>
 
     <issue

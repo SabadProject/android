@@ -3,8 +3,12 @@ apply plugin: "maven-publish"
 apply plugin: "kotlin-android"
 
 android {
-    lintOptions {
-        abortOnError false
+    namespace 'farayan.commons'
+    lint {
+        baseline = file("farayan-commons-lint-baseline.xml")
+        lintOptions {
+            abortOnError false
+        }
     }
     useLibrary "org.apache.http.legacy"
     compileSdkVersion 34

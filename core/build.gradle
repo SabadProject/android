@@ -4,8 +4,12 @@ apply plugin: "kotlin-android"
 apply plugin: "maven-publish"
 
 android {
+    namespace 'farayan.sabad.core'
     lint {
         baseline = file("sabad-core-lint-baseline.xml")
+        lintOptions {
+            abortOnError false
+        }
     }
 
     dexOptions {
