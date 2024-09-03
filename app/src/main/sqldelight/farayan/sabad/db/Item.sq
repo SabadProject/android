@@ -6,8 +6,8 @@ CREATE TABLE IF NOT EXISTS item (
     unitId INTEGER,
     packageWorth TEXT,
     packageUnit Text,
-    currency TEXT NOT NULL,
-    fee TEXT NOT NULL,
+    currency TEXT,
+    fee TEXT,
     discount TEXT,
     total TEXT,
     invoiceId INTEGER
@@ -36,3 +36,6 @@ SELECT * FROM item WHERE invoiceId IS NULL;
 
 delete:
 DELETE FROM item WHERE id = ?;
+
+pickingsSummary:
+SELECT SUM(quantity) AS quantitySum, SUM(total) AS totalSum, currency FROM item WHERE invoiceId IS NULL GROUP BY currency;

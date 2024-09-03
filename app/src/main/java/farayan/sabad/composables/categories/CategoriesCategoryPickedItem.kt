@@ -1,4 +1,4 @@
-package farayan.sabad.composables
+package farayan.sabad.composables.categories
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
@@ -41,17 +41,17 @@ fun CategoriesCategoryPickedItem(item: Item, product: Product, unit: farayan.sab
             style = TextStyle(fontFamily = appFont, color = Color.DarkGray)
         )
         Text(
-            text = "${item.quantity.localize()} ${unit?.displayableName}",
+            text = "${item.quantity.localize()} ${unit?.displayableName ?: ""}",
             modifier = Modifier
                 .padding(4.dp, 2.dp)
                 .width(64.dp),
             style = TextStyle(fontFamily = appFont, color = Color.DarkGray)
         )
-        val currency = item.currency.isUsable({ Currency.valueOf(item.currency) }, { null })
-        val price = currency?.let { currency.formatter(BigDecimal(item.fee), ctx) } ?: item.fee.localize()
+        val currency = item.currency.isUsable({ Currency.valueOf(item.currency!!) }, { null })
+        val price = currency?.let { currency.formatter(BigDecimal(item.fee), ctx) } ?: item.fee?.localize()
 
         Text(
-            text = price,
+            text = price ?: "",
             modifier = Modifier
                 .padding(4.dp, 2.dp)
                 .width(48.dp),

@@ -99,4 +99,10 @@
     <string name="home_item_remove_dialog_text">در صورت تایید، کالای %s حذف می‌شود</string>
     <string name="home_item_remove_dialog_action_remove_text">تایید، حذف</string>
     <string name="home_item_remove_dialog_action_skip_text">خیر، برگرد</string>
+    <string name="purchase_summary_picked_items_count_label">تعداد اقلام برداشته</string>
+    <string name="purchase_summary_picked_items_count_value">%s قلم، %s عدد</string>
+    <string name="purchase_summary_remained_items_count_label">تعداد اقلام مانده</string>
+    <string name="purchase_summary_remained_items_count_value">%s قلم</string>
+    <string name="purchase_summary_price_label">جمع کل</string>
+    <string name="category_quick_query_label">بخشی از نام کالا</string>
 </resources>

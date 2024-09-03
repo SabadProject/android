@@ -7,6 +7,7 @@ import farayan.sabad.core.commons.Currency
 import farayan.sabad.core.commons.UnitVariations
 import farayan.sabad.db.Item
 import farayan.sabad.db.ItemQueries
+import farayan.sabad.db.PickingsSummary
 import farayan.sabad.db.Product
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -20,10 +21,10 @@ import farayan.sabad.db.Unit as PersistenceUnit
 class ItemRepo(private val queries: ItemQueries) {
     fun ensure(
         product: Product,
-        price: BigDecimal,
-        currency: Currency,
+        price: BigDecimal?,
+        currency: Currency?,
         quantity: BigDecimal,
-        unit: PersistenceUnit,
+        unit: PersistenceUnit?,
         packageWorth: BigDecimal?,
         packageUnit: UnitVariations?
     ): Item {
@@ -37,20 +38,20 @@ class ItemRepo(private val queries: ItemQueries) {
 
     private fun update(
         invoiceItem: Item,
-        price: BigDecimal,
-        currency: Currency,
+        price: BigDecimal?,
+        currency: Currency?,
         quantity: BigDecimal,
-        unit: PersistenceUnit,
+        unit: PersistenceUnit?,
         packageWorth: BigDecimal?,
         packageUnit: UnitVariations?
     ): Item {
         queries.update(
             quantity.toString(),
-            unit.id,
-            currency.name,
+            unit?.id,
+            currency?.name,
             price.toString(),
             BigDecimal.ZERO.toString(),
-            price.multiply(quantity).toString(),
+            price?.multiply(quantity).toString(),
             packageWorth?.toString(),
             packageUnit?.name,
             invoiceItem.id
@@ -60,10 +61,10 @@ class ItemRepo(private val queries: ItemQueries) {
 
     private fun create(
         product: Product,
-        price: BigDecimal,
-        currency: Currency,
+        price: BigDecimal?,
+        currency: Currency?,
         quantity: BigDecimal,
-        unit: PersistenceUnit,
+        unit: PersistenceUnit?,
         packageWorth: BigDecimal?,
         packageUnit: UnitVariations?
     ): Item {
@@ -72,11 +73,11 @@ class ItemRepo(private val queries: ItemQueries) {
                 product.categoryId,
                 product.id,
                 quantity.toString(),
-                unit.id,
-                currency.name,
+                unit?.id,
+                currency?.name,
                 price.toString(),
                 BigDecimal.ZERO.toString(),
-                price.multiply(quantity).toString(),
+                price?.multiply(quantity).toString(),
                 packageWorth?.toString(),
                 packageUnit?.name
             )
@@ -88,12 +89,15 @@ class ItemRepo(private val queries: ItemQueries) {
         return queries.current(product.id).executeAsOneOrNull()
     }
 
-    fun pickings(scope: CoroutineScope): SharedFlow<List<Item>> {
-        return queries.pickings().asFlow().mapToList(Dispatchers.IO).onEach { items ->
-            // Log each emission
-            Log.d("flow", "Emitted items: ${items.size}")
-        }.shareIn(scope, SharingStarted.WhileSubscribed(500_000), 1)
-    }
+    private val repoScope = CoroutineScope(Dispatchers.IO)
+
+    fun pickings(scope: CoroutineScope): SharedFlow<List<Item>> = _pickings
+
+    private val _pickings: SharedFlow<List<Item>> = queries.pickings().asFlow().mapToList(Dispatchers.IO).onEach { items ->
+        // Log each emission
+        Log.d("flow", "Emitted items: ${items.size}")
+    }.shareIn(repoScope, SharingStarted.WhileSubscribed(500_000), 1)
+
 
     fun pendingItemByProduct(product: Product): Item? {
         return queries.byProductAndNullInvoice(product.id).executeAsOneOrNull()
@@ -101,5 +105,9 @@ class ItemRepo(private val queries: ItemQueries) {
 
     fun delete(item: Item) {
         queries.delete(item.id)
+    }
+
+    fun pickingSummary(): PickingsSummary? {
+        return queries.pickingsSummary().executeAsList().firstOrNull()
     }
 }

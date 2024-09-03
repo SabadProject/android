@@ -159,6 +159,8 @@ dependencies {
     implementation "com.journeyapps:zxing-android-embedded:4.1.0"
     implementation group: "commons-io", name: "commons-io", version: "2.8.0"
 
+    implementation "androidx.activity:activity-compose:1.9.1"
+
     implementation "com.google.dagger:hilt-android:$hiltVersion"
     //implementation 'androidx.compose.material3:material3-android:1.2.1'
     kapt "com.google.dagger:hilt-compiler:$hiltVersion"
@@ -206,7 +208,7 @@ dependencies {
     //implementation project(path: ':number-entry')
 
     // Compose
-    def composeBom = platform('androidx.compose:compose-bom:2024.05.00')
+    def composeBom = platform('androidx.compose:compose-bom:2024.08.00')
     implementation(composeBom)
     androidTestImplementation(composeBom)
 

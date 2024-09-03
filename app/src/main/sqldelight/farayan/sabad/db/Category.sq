@@ -31,11 +31,14 @@ INSERT INTO category (
     :queryableName,
     :displayableDescription,
     :queryableDescription,
-    0,
+    :needed,
     NULL,
     0,
     :position
 );
+
+created:
+SELECT * FROM category WHERE id = last_insert_rowid();
 
 byName:
 SELECT * FROM category WHERE queryableName = :queryableName;
@@ -54,3 +57,9 @@ SELECT * FROM category WHERE id =:id;
 
 filter:
 SELECT * FROM category WHERE deleted IS NULL AND queryableName LIKE :queryableName ORDER BY needed DESC, picked DESC;
+
+pickedCategoriesCount:
+SELECT count(*) FROM category WHERE deleted IS NULL AND needed = 1 AND id IN (SELECT categoryId FROM item WHERE invoiceId IS NULL);
+
+remainedCategoriesCount:
+SELECT count(*) FROM category WHERE deleted IS NULL AND needed = 1 AND id NOT IN (SELECT categoryId FROM item WHERE invoiceId IS NULL);

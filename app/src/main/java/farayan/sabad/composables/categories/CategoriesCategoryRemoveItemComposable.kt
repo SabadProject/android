@@ -1,4 +1,4 @@
-package farayan.sabad.composables
+package farayan.sabad.composables.categories
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row

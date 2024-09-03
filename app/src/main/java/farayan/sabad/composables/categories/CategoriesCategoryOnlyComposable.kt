@@ -1,6 +1,6 @@
-package farayan.sabad.composables
+package farayan.sabad.composables.categories
 
-import androidx.appcompat.app.AppCompatActivity
+import android.app.Activity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
@@ -24,14 +24,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import farayan.sabad.R
 import farayan.sabad.db.Category
-import farayan.sabad.ui.InvoiceItemFormDialog
 import farayan.sabad.ui.appFont
 import farayan.sabad.utility.invoke
-import farayan.sabad.vms.InvoiceItemFormViewModel
-import farayan.sabad.vms.InvoiceItemFormViewModel.Companion.Factory
+import farayan.sabad.vms.HomeViewModel
 
 @Composable
-fun CategoriesCategoryOnlyComposable(category: Category, changeNeeded: (Category, Boolean) -> Unit, picked: Boolean) {
+fun CategoriesCategoryOnlyComposable(category: Category, changeNeeded: (Category, Boolean) -> Unit, picked: Boolean, homeViewModel: HomeViewModel) {
     val ctx = LocalContext.current
     Row(
         modifier = Modifier
@@ -41,16 +39,7 @@ fun CategoriesCategoryOnlyComposable(category: Category, changeNeeded: (Category
                 if (!category.needed) {
                     changeNeeded(category, true)
                 } else {
-                    val dialogViewModel = Factory.create(InvoiceItemFormViewModel::class.java)
-                    val dialog = InvoiceItemFormDialog(
-                        ctx as AppCompatActivity,
-                        true,
-                        null,
-                        dialogViewModel
-                    )
-                    dialog.show()
-                    dialog.maximize()
-                    dialogViewModel.init(category)
+                    displayCategoryDialog(category, ctx as Activity)
                 }
             },
         verticalAlignment = Alignment.CenterVertically

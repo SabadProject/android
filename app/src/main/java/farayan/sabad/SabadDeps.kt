@@ -1,10 +1,6 @@
 package farayan.sabad
 
 import app.cash.sqldelight.driver.android.AndroidSqliteDriver
-import dagger.Module
-import dagger.Provides
-import dagger.hilt.InstallIn
-import dagger.hilt.components.SingletonComponent
 import farayan.sabad.db.SabadPersistence
 import farayan.sabad.repo.BarcodeRepo
 import farayan.sabad.repo.CategoryRepo
@@ -17,12 +13,9 @@ import farayan.sabad.utility.displayable
 import farayan.sabad.utility.queryable
 
 
-@Module
-@InstallIn(SingletonComponent::class)
-class SabadDependencies {
+object SabadDeps {
     private lateinit var db: SabadPersistence
 
-    @Provides
     fun persistence(): SabadPersistence {
         if (!this::db.isInitialized) {
             db = SabadPersistence(AndroidSqliteDriver(SabadPersistence.Schema, SabadTheApp.getContext(), "sabad.sqdb"))
@@ -98,30 +91,21 @@ class SabadDependencies {
         db.categoryQueries.byName(name.queryable()).executeAsOneOrNull() ?: db.categoryQueries.create(name.displayable(), name.queryable(), "", "", false, index++)
     }
 
-    @Provides
     fun categoryRepo(): CategoryRepo = CategoryRepo(persistence().categoryQueries)
 
     private val itemRepoValue by lazy { ItemRepo(persistence().itemQueries) }
 
-    @Provides
     fun itemRepo(): ItemRepo = itemRepoValue
 
-    @Provides
     fun productRepo(): ProductRepo = ProductRepo(persistence().productQueries)
 
-    @Provides
     fun barcodeRepo(): BarcodeRepo = BarcodeRepo(persistence().barcodeQueries)
 
-    @Provides
     fun photoRepo(): ProductPhotoRepo = ProductPhotoRepo(persistence().photoQueries)
 
-    @Provides
     fun unitRepo(): UnitRepo = UnitRepo(persistence().unitQueries)
 
-    @Provides
     fun priceRepo(): PriceRepo = PriceRepo(persistence().priceQueries)
 
-    companion object {
-        var index = 0L
-    }
+    private var index = 0L
 }

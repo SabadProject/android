@@ -1,10 +1,17 @@
 package farayan.sabad.repo
 
+import app.cash.sqldelight.coroutines.asFlow
+import app.cash.sqldelight.coroutines.mapToList
 import farayan.sabad.db.Category
 import farayan.sabad.db.Product
 import farayan.sabad.db.ProductQueries
 import farayan.sabad.utility.displayable
 import farayan.sabad.utility.queryable
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.shareIn
 
 class ProductRepo(private val queries: ProductQueries) {
     fun create(category: Category, name: String): Product {
@@ -21,6 +28,9 @@ class ProductRepo(private val queries: ProductQueries) {
     fun pickings(): List<Product> {
         return queries.pickings().executeAsList()
     }
+
+    fun pickingsFlow(scope: CoroutineScope): SharedFlow<List<Product>> =
+        queries.pickings().asFlow().mapToList(Dispatchers.IO).shareIn(scope, SharingStarted.WhileSubscribed(5_000), 1)
 
     fun byId(id: Long): Product? {
         return queries.byId(id).executeAsOneOrNull()

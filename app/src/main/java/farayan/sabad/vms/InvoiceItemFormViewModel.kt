@@ -8,7 +8,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.google.zxing.BarcodeFormat
 import com.journeyapps.barcodescanner.BarcodeResult
-import farayan.sabad.SabadDependencies
+import farayan.sabad.SabadDeps
 import farayan.sabad.commons.ExtractedBarcode
 import farayan.sabad.commons.barcode
 import farayan.sabad.core.commons.Currency
@@ -30,7 +30,7 @@ import farayan.sabad.utility.hasValue
 import farayan.sabad.utility.isUsable
 import farayan.sabad.utility.queryable
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import java.io.File
 import java.math.BigDecimal
 import javax.inject.Inject
@@ -46,6 +46,7 @@ class InvoiceItemFormViewModel @Inject constructor(
     private val barcodeRepo: BarcodeRepo,
     private val priceRepo: PriceRepo,
 ) : ViewModel() {
+
     fun barcodeScanned(br: BarcodeResult) {
         val tag = "invoice-item-form-dialog:barcode-scanned"
         Log.d(tag, "barcode scanned: $br")
@@ -263,7 +264,7 @@ class InvoiceItemFormViewModel @Inject constructor(
             formPackageWorth.value = item.packageWorth?.let { BigDecimal(item.packageWorth) }
             formPackageUnit.value = item.packageUnit?.let { UnitVariations.valueOf(item.packageUnit) }
             formPriceAmount.value = BigDecimal(item.fee)
-            formPriceCurrency.value = Currency.valueOf(item.currency)
+            formPriceCurrency.value = item.currency?.let { Currency.valueOf(it) }
         }
     }
 
@@ -311,33 +312,37 @@ class InvoiceItemFormViewModel @Inject constructor(
     }
 
     fun persistInvoiceItem(): Boolean {
-        var p = product.stateValue
-        if (p == null) {
-            p = productRepo.ensure(category.stateValue ?: throw RuntimeException("category is null"), formName.value)
+        var product = product.stateValue
+        if (product == null) {
+            product = productRepo.ensure(category.stateValue ?: throw RuntimeException("category is null"), formName.value)
         }
         for (photo in formPhotos.value) {
-            productPhotoRepo.ensure(p, photo.path)
+            productPhotoRepo.ensure(product, photo.path)
         }
         if (formScannedExtractedBarcode.value.hasValue) {
-            barcodeRepo.ensure(p, formScannedExtractedBarcode.value!!)
+            barcodeRepo.ensure(product, formScannedExtractedBarcode.value!!)
         }
-        if (formPriceAmount.value.hasValue && formPriceAmount.value!! > BigDecimal.ZERO && formPriceCurrency.value.hasValue && formQuantityValue.value.hasValue && formQuantityUnit.value.hasValue)
-            itemRepo.ensure(
-                p,
-                formPriceAmount.value!!,
-                formPriceCurrency.value!!,
-                formQuantityValue.value!!,
-                formQuantityUnit.value!!,
-                formPackageWorth.value,
-                formPackageUnit.value
-            )
+        itemRepo.ensure(
+            product,
+            formPriceAmount.value,
+            formPriceCurrency.value,
+            formQuantityValue.value ?: BigDecimal.ONE,
+            formQuantityUnit.value,
+            formPackageWorth.value,
+            formPackageUnit.value
+        )
         return true
     }
 
     val categories = MutableStateFlow(categoryRepo.all())
-    val pickedItems = itemRepo.pickings(viewModelScope).onEach { items ->
-        Log.d("flow", "Collected items in InvoiceItemFormViewModel: ${items.size}")
+    val pickedItems = itemRepo.pickings(viewModelScope)
+
+    init {
+        viewModelScope.launch {
+            Log.i("flow", "InvoiceItemFormViewModel: pickedItems: $pickedItems, itemRepo: $itemRepo")
+        }
     }
+
     val category = MutableStateFlow(Fixable<Category>())
     val product = MutableStateFlow(Fixable<Product>())
     val formScannedExtractedBarcode = MutableStateFlow<ExtractedBarcode?>(null)
@@ -359,16 +364,15 @@ class InvoiceItemFormViewModel @Inject constructor(
             override fun <T : ViewModel> create(
                 modelClass: Class<T>
             ): T {
-                val sd = SabadDependencies()
 
                 return InvoiceItemFormViewModel(
-                    sd.unitRepo(),
-                    sd.categoryRepo(),
-                    sd.itemRepo(),
-                    sd.productRepo(),
-                    sd.photoRepo(),
-                    sd.barcodeRepo(),
-                    sd.priceRepo()
+                    SabadDeps.unitRepo(),
+                    SabadDeps.categoryRepo(),
+                    SabadDeps.itemRepo(),
+                    SabadDeps.productRepo(),
+                    SabadDeps.photoRepo(),
+                    SabadDeps.barcodeRepo(),
+                    SabadDeps.priceRepo()
                 ) as T
             }
         }
