@@ -76,7 +76,7 @@ fun CategoriesCategoryEditComposable(
             ) {
                 TextButton(
                     modifier = Modifier.weight(1.0f),
-                    enabled = name.isUsable,
+                    enabled = error.isEmpty(),
                     onClick = {
                         if (error.isEmpty()) {
                             onConfirmed(name)

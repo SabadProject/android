@@ -48,6 +48,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import farayan.sabad.R
+import farayan.sabad.commons.InvoiceSummary
 import farayan.sabad.composables.categories.CategoriesCategoriesDeleteComposable
 import farayan.sabad.composables.categories.CategoriesCategoryEditComposable
 import farayan.sabad.composables.categories.CategoriesCategoryRemoteItemComposable
@@ -134,6 +135,7 @@ class MainActivity : ComponentActivity() {
                     val units by homeViewModel.pickedUnits.collectAsStateWithLifecycle(listOf())
                     val items by homeViewModel.pickedItems.collectAsStateWithLifecycle(listOf())
                     val categoriesQuery by homeViewModel.queryReadOnly.collectAsStateWithLifecycle()
+                    val invoiceSummary by homeViewModel.invoiceSummary.collectAsStateWithLifecycle(InvoiceSummary(0, 0, 0, null))
 
                     val refreshing by homeViewModel.refreshingReadOnly.collectAsStateWithLifecycle()
                     val refreshState: PullRefreshState = rememberPullRefreshState(refreshing, onRefresh = { homeViewModel.refresh() })
@@ -172,16 +174,31 @@ class MainActivity : ComponentActivity() {
                             CategoriesCategoryEditComposable(
                                 editingCategory!!,
                                 editingCategoryError,
-                                { if (homeViewModel.persistCategory(it, editingCategory!!)) editingCategory = null },
-                                { editingCategory = null }
+                                {
+                                    if (homeViewModel.editCategory(it, editingCategory!!)) {
+                                        editingCategory = null
+                                        homeViewModel.clearSelection()
+                                    }
+                                },
+                                {
+                                    editingCategory = null;
+                                    homeViewModel.clearSelection()
+                                }
                             )
                         }
                         if (removingCategories.isNotEmpty()) {
                             CategoriesCategoriesDeleteComposable(
                                 removingCategories,
-                                editingCategoryError,
-                                { if (homeViewModel.deleteCategories(removingCategories)) removingCategories = listOf() },
-                                { removingCategories = listOf() }
+                                {
+                                    if (homeViewModel.deleteCategories(removingCategories)) {
+                                        removingCategories = listOf();
+                                        homeViewModel.clearSelection()
+                                    }
+                                },
+                                {
+                                    removingCategories = listOf();
+                                    homeViewModel.clearSelection()
+                                }
                             )
                         }
                         if (removingItem.hasValue) {
@@ -191,7 +208,7 @@ class MainActivity : ComponentActivity() {
                                 onCancelled = { removingItem = null }
                             )
                         }
-                        PurchaseSummaryComposable(homeViewModel.invoiceSummary())
+                        PurchaseSummaryComposable(invoiceSummary)
                         CategoryQuickQueryComposable(
                             addable = categoriesQuery.queryable.isUsable && categories.none { it.queryableName.contentEquals(categoriesQuery.queryable) },
                             value = categoriesQuery.original,

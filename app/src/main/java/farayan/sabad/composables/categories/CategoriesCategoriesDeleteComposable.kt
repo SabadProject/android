@@ -21,7 +21,6 @@ import farayan.sabad.ui.appFont
 @Composable
 fun CategoriesCategoriesDeleteComposable(
     categories: List<Category>,
-    upstreamError: ConditionalErrorMessage?,
     onConfirmed: () -> Unit,
     onCancelled: () -> Unit
 ) {

@@ -27,7 +27,13 @@ import farayan.sabad.utility.invoke
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun CategoriesCategoryOnlyComposable(category: Category, changeNeeded: (Category, Boolean) -> Unit, picked: Boolean, selected: Boolean) {
+fun CategoriesCategoryOnlyComposable(
+    category: Category,
+    changeNeeded: (Category, Boolean) -> Unit,
+    needed: Boolean,
+    picked: Boolean,
+    selected: Boolean
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -50,7 +56,8 @@ fun CategoriesCategoryOnlyComposable(category: Category, changeNeeded: (Category
         )
         Spacer(modifier = Modifier.width(4.dp))
         Switch(
-            checked = category.needed, onCheckedChange = {
+            checked = needed,
+            onCheckedChange = {
                 changeNeeded(category, it)
             },
             colors = SwitchDefaults.colors(

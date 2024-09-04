@@ -3,6 +3,8 @@ package farayan.sabad.repo
 import android.util.Log
 import app.cash.sqldelight.coroutines.asFlow
 import app.cash.sqldelight.coroutines.mapToList
+import app.cash.sqldelight.coroutines.mapToOne
+import app.cash.sqldelight.coroutines.mapToOneOrNull
 import farayan.sabad.core.commons.Currency
 import farayan.sabad.core.commons.UnitVariations
 import farayan.sabad.db.Item
@@ -11,6 +13,7 @@ import farayan.sabad.db.PickingsSummary
 import farayan.sabad.db.Product
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.onEach
@@ -107,7 +110,9 @@ class ItemRepo(private val queries: ItemQueries) {
         queries.delete(item.id)
     }
 
-    fun pickingSummary(): PickingsSummary? {
-        return queries.pickingsSummary().executeAsList().firstOrNull()
+    fun pickingSummary(): Flow<PickingsSummary?> {
+        return queries.pickingsSummary().asFlow().mapToOneOrNull(Dispatchers.IO).onEach {
+            Log.d("flow", "new summary: ${it?.}")
+        }
     }
 }
