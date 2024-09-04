@@ -4,8 +4,8 @@ import org.apache.commons.lang3.ArrayUtils;
 
 import farayan.commons.QueryBuilderCore.EntityFilter;
 import farayan.commons.QueryBuilderCore.PropertyFilter;
-import farayan.sabad.core.OnePlace.Store.StoreEntity;
 import farayan.sabad.core.OnePlace.Group.GroupEntity;
+import farayan.sabad.core.OnePlace.Store.StoreEntity;
 import farayan.sabad.core.base.SabadParamsBase;
 
 public class StoreGroupParams extends SabadParamsBase<StoreGroupEntity>

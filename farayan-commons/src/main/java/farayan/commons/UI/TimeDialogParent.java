@@ -1,15 +1,19 @@
 package farayan.commons.UI;
-import android.app.*;
-import android.content.*;
-import android.os.Bundle;
-import android.widget.*;
-import android.view.*;
-import android.util.*;
-import androidx.annotation.*;
-import android.util.*;
+
+import android.app.Activity;
+import android.util.Log;
+import android.view.Gravity;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import farayan.commons.FarayanUtility;
-import farayan.commons.*;
-import farayan.commons.UI.Core.*;
+import farayan.commons.R;
+import farayan.commons.UI.Core.FarayanCommonBaseDialog;
 public abstract class TimeDialogParent extends FarayanCommonBaseDialog {
 
 	private static final int layoutID = R.layout.dialog_time;

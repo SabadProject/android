@@ -5,7 +5,8 @@ import com.j256.ormlite.dao.RuntimeExceptionDao
 import farayan.commons.FarayanUtility
 import org.apache.commons.lang3.ArrayUtils
 import java.sql.SQLException
-import java.util.*
+import java.util.Arrays
+import java.util.UUID
 import java.util.stream.Collectors
 
 interface IRepo<TEntity : IEntity?> {

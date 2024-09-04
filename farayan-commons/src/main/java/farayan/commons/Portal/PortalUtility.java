@@ -2,10 +2,8 @@ package farayan.commons.Portal;
 
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import android.provider.Settings;
 
 import farayan.commons.FarayanUtility;
-import farayan.commons.PersianCalendar;
 import farayan.commons.WebResponse;
 
 /**

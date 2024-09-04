@@ -4,6 +4,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.recyclerview.widget.RecyclerView;
+
 import farayan.commons.QueryBuilderCore.IEntity;
 
 public class EntityPlusRecyclerValueHolder<TEntity extends IEntity, TPlus>

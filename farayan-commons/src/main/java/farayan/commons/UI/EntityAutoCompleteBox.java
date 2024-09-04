@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 
-
 import java.util.List;
 
 import farayan.commons.FarayanUtility;
@@ -17,9 +16,9 @@ import farayan.commons.QueryBuilderCore.BaseParams;
 import farayan.commons.QueryBuilderCore.IEntity;
 import farayan.commons.QueryBuilderCore.IRepo;
 import farayan.commons.R;
+import farayan.commons.UI.Core.FilterableEntityAdapter;
 import farayan.commons.UI.Core.IBoxEntity;
 import farayan.commons.UI.Core.IGenericEvent;
-import farayan.commons.UI.Core.FilterableEntityAdapter;
 
 
 public abstract class EntityAutoCompleteBox<EntityType extends IEntity & IBoxEntity> extends CommonAutoCompleteTextBox

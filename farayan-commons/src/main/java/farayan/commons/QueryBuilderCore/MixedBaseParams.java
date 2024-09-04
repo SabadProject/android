@@ -1,12 +1,9 @@
 package farayan.commons.QueryBuilderCore;
 
-import com.j256.ormlite.dao.RuntimeExceptionDao;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import farayan.commons.FarayanBaseApp;
 import farayan.commons.FarayanUtility;
 
 public abstract class MixedBaseParams<EntityType extends IEntity, ParamType extends BaseParams<EntityType>>

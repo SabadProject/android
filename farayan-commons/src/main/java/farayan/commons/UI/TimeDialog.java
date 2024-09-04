@@ -1,9 +1,9 @@
 package farayan.commons.UI;
 
-import android.app.Activity;
 import android.content.Context;
 
 import androidx.appcompat.app.AppCompatActivity;
+
 import farayan.commons.Time;
 import farayan.commons.UI.Core.ICommandEvent;
 import farayan.commons.UI.Core.ICommandEventProvider;

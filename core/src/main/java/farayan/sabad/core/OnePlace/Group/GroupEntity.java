@@ -3,8 +3,6 @@ package farayan.sabad.core.OnePlace.Group;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
-import java.util.jar.Attributes;
-
 import farayan.commons.FarayanUtility;
 import farayan.commons.UI.Core.IBoxEntity;
 import farayan.sabad.core.OnePlace.Category.CategoryEntity;

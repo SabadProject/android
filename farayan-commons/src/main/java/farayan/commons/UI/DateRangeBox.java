@@ -15,11 +15,11 @@ import android.widget.Spinner;
 import farayan.commons.FarayanUtility;
 import farayan.commons.PersianCalendar;
 import farayan.commons.PersianPeriod;
+import farayan.commons.QueryBuilderCore.DateFilterTypes;
 import farayan.commons.R;
 import farayan.commons.SimpleEnumBoxTextViewComponent;
 import farayan.commons.UI.Core.ICommandEvent;
 import farayan.commons.UI.Core.ICommandEventProvider;
-import farayan.commons.QueryBuilderCore.DateFilterTypes;
 
 @Deprecated
 public class DateRangeBox extends Spinner implements ICommandEventProvider<String>

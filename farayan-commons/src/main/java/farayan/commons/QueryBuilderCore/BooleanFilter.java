@@ -1,10 +1,5 @@
 package farayan.commons.QueryBuilderCore;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import farayan.commons.FarayanUtility;
-
 /**
  * Created by Homayoun on 28/05/2017.
  */

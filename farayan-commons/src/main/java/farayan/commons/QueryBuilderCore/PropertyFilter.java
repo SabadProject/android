@@ -1,7 +1,6 @@
 package farayan.commons.QueryBuilderCore;
 
 
-import farayan.commons.Action;
 import farayan.commons.IValueProvider;
 
 public class PropertyFilter {

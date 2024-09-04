@@ -8,8 +8,8 @@ import java.util.Collection;
 import farayan.commons.UI.Core.EntityRecyclerViewAdapter;
 import farayan.commons.UI.Core.IEntityView;
 import farayan.commons.UI.Core.IGenericEvent;
-import farayan.sabad.ui.InvoicesItemComponent;
 import farayan.sabad.core.OnePlace.Invoice.InvoiceEntity;
+import farayan.sabad.ui.InvoicesItemComponent;
 
 public class InvoiceAdapter extends EntityRecyclerViewAdapter<InvoiceEntity>
 {

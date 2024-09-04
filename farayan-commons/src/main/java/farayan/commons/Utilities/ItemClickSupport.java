@@ -1,8 +1,9 @@
 package farayan.commons.Utilities;
 
 
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 import farayan.commons.R;
 

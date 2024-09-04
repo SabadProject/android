@@ -1,6 +1,5 @@
 package farayan.commons.UI.Commons;
 
-import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.util.TypedValue;
 import android.widget.TextView;

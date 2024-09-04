@@ -2,12 +2,10 @@ package farayan.commons.UI.Core;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.content.Context;
 import android.graphics.Typeface;
+
 import androidx.annotation.NonNull;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.app.AppCompatDialog;
 import farayan.commons.FarayanBaseApp;
 
 /**

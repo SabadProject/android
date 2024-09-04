@@ -7,6 +7,7 @@ import android.text.TextWatcher;
 import android.util.AttributeSet;
 
 import androidx.annotation.Nullable;
+
 import farayan.commons.Commons.Rial;
 import farayan.commons.R;
 

@@ -2,15 +2,12 @@ package farayan.commons.UI;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
-
-import androidx.annotation.Nullable;
-
-import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.util.AttributeSet;
+
+import androidx.annotation.Nullable;
 
 import com.google.android.material.textfield.TextInputLayout;
 

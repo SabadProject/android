@@ -1,15 +1,17 @@
 package farayan.commons.UI;
-import android.app.*;
-import android.content.*;
-import android.os.Bundle;
-import android.widget.*;
-import android.view.*;
-import android.util.*;
-import androidx.annotation.*;
-import android.util.*;
+
+import android.content.Context;
+import android.util.AttributeSet;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.TextView;
+
+import androidx.annotation.Nullable;
+
 import farayan.commons.FarayanUtility;
-import farayan.commons.*;
-import farayan.commons.UI.Core.*;
+import farayan.commons.R;
+import farayan.commons.UI.Core.FarayanCommonBaseComponent;
 public abstract class SimpleTextViewComponentParent extends FarayanCommonBaseComponent {
 	private View rootView = null;
 

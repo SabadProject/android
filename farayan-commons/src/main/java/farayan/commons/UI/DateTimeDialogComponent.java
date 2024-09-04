@@ -3,22 +3,15 @@ package farayan.commons.UI;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.res.TypedArray;
-import android.graphics.Color;
-import androidx.annotation.Nullable;
 import android.util.AttributeSet;
-import android.view.Gravity;
 import android.view.View;
 
-import farayan.commons.FarayanUtility;
-import farayan.commons.PersianCalendar;
+import androidx.annotation.Nullable;
+
 import farayan.commons.PersianDateTime;
-import farayan.commons.R;
 import farayan.commons.UI.Commons.TextStyle;
 import farayan.commons.UI.Core.IGeneralEvent;
 import farayan.commons.UI.Core.IGeneralEventProvider;
-
-import static android.R.color.black;
 
 /**
  * این ابزار، احتمالا باید پنهان باشد و سپس توسط توسعه‌دهنده، نمایش داده شود

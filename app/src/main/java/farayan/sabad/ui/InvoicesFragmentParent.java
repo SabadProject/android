@@ -1,12 +1,15 @@
 package farayan.sabad.ui;
+
 import android.os.Bundle;
-import android.widget.*;
-import android.view.*;
-import android.util.*;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
 
 import farayan.commons.FarayanUtility;
 import farayan.sabad.R;
-import farayan.sabad.ui.Core.*;
+import farayan.sabad.ui.Core.SabadBaseFragment;
 public abstract class InvoicesFragmentParent extends SabadBaseFragment {
 	private View rootView = null;
 

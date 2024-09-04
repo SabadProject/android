@@ -1,12 +1,17 @@
 package farayan.sabad.ui;
-import android.content.*;
-import android.widget.*;
-import android.view.*;
-import android.util.*;
-import androidx.annotation.*;
+
+import android.content.Context;
+import android.util.AttributeSet;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.TextView;
+
+import androidx.annotation.Nullable;
+
 import farayan.commons.FarayanUtility;
 import farayan.sabad.R;
-import farayan.sabad.ui.Core.*;
+import farayan.sabad.ui.Core.SabadBaseComponent;
 public abstract class GroupBoxItemComponentParent extends SabadBaseComponent {
 	private View rootView = null;
 

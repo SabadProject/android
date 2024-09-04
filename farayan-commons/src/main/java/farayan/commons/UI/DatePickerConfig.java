@@ -1,7 +1,6 @@
 package farayan.commons.UI;
 
 import android.graphics.Typeface;
-import android.graphics.drawable.Drawable;
 
 import farayan.commons.UI.Commons.DatePickerTimeModes;
 import farayan.commons.UI.Commons.HourModes;

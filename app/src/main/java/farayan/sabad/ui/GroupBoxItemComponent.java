@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.AttributeSet;
 
 import androidx.annotation.Nullable;
+
 import farayan.commons.UI.Core.IEntityView;
 import farayan.sabad.core.OnePlace.Group.GroupEntity;
 

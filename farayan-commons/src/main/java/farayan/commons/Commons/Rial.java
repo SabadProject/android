@@ -3,10 +3,7 @@ package farayan.commons.Commons;
 import android.content.res.Resources;
 
 import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
 
-import farayan.commons.Exceptions.Rexception;
 import farayan.commons.FarayanUtility;
 import farayan.commons.R;
 

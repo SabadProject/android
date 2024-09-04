@@ -1,27 +1,27 @@
 package farayan.commons.UI.Views;
 
+import static android.R.color.black;
+import static android.R.color.darker_gray;
+
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.Color;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import androidx.core.content.ContextCompat;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import androidx.core.content.ContextCompat;
 import farayan.commons.R;
 import farayan.commons.SimpleEnumBoxTextViewComponent;
 import farayan.commons.UI.Core.GeneralCommands;
 import farayan.commons.UI.Core.IGeneralEvent;
 import farayan.commons.UI.Core.IGeneralEventProvider;
-
-import static android.R.color.black;
-import static android.R.color.darker_gray;
 
 public abstract class EnumSpinner<
 		EnumType extends Enum<EnumType> & IBoxEnum/*,

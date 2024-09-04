@@ -1,7 +1,5 @@
 package farayan.commons.UI.Commons;
 
-import farayan.commons.UI.DatePickerConfig;
-
 public enum NumberLanguages {
     None(0),
     English(1),

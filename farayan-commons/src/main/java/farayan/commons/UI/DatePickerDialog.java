@@ -1,10 +1,10 @@
 package farayan.commons.UI;
 
-import android.app.Activity;
 import android.content.Context;
 import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
+
 import farayan.commons.PersianCalendar;
 import farayan.commons.UI.Core.ICommandEvent;
 import farayan.commons.UI.Core.ICommandEventProvider;

@@ -1,5 +1,8 @@
 package farayan.commons.UI;
 
+import static android.R.color.black;
+import static android.R.color.darker_gray;
+
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
@@ -11,10 +14,10 @@ import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
-import android.widget.TextView;
 
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.drawable.DrawableCompat;
+
 import farayan.commons.FarayanUtility;
 import farayan.commons.PersianCalendar;
 import farayan.commons.PersianDateTime;
@@ -22,12 +25,8 @@ import farayan.commons.R;
 import farayan.commons.UI.Commons.DatePickerTimeModes;
 import farayan.commons.UI.Commons.HourModes;
 import farayan.commons.UI.Commons.NumberLanguages;
-import farayan.commons.UI.Commons.TextStyle;
 import farayan.commons.UI.Core.IGeneralEvent;
 import farayan.commons.UI.Core.IGeneralEventProvider;
-
-import static android.R.color.black;
-import static android.R.color.darker_gray;
 
 /**
  * به صورت یک متن ساده، تاریخ انتخابی را نشان می‌دهد

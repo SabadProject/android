@@ -1,7 +1,5 @@
 package farayan.commons.QueryBuilderCore;
 
-import java.security.PublicKey;
-
 /**
  * Created by Homayoun on 29/05/2017.
  */

@@ -1,6 +1,8 @@
 package farayan.commons.Commons;
 
-import androidx.recyclerview.widget.LinearLayoutManager;;
+import androidx.recyclerview.widget.LinearLayoutManager;
+
+;
 
 public enum RecyclerViewOrientations
 {

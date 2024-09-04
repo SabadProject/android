@@ -10,9 +10,6 @@ import java.util.Collection;
 import java.util.List;
 
 import farayan.commons.QueryBuilderCore.IEntity;
-import farayan.commons.QueryBuilderCore.BaseParams;
-import farayan.commons.QueryBuilderCore.IRepo;
-import kotlin.Function;
 
 
 /**

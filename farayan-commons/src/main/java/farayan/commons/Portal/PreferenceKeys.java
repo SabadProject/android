@@ -1,8 +1,6 @@
 package farayan.commons.Portal;
 
 
-import java.util.prefs.AbstractPreferences;
-
 public enum PreferenceKeys {
     PortalUserID,
     PortalUserName,

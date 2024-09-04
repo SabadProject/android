@@ -4,15 +4,14 @@ import android.content.Context;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import androidx.recyclerview.widget.RecyclerView;
-import farayan.commons.Exceptions.Rexception;
-import farayan.commons.QueryBuilderCore.IEntity;
 import farayan.commons.QueryBuilderCore.BaseParams;
+import farayan.commons.QueryBuilderCore.IEntity;
 
 
 /**

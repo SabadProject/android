@@ -1,16 +1,11 @@
 package farayan.commons.QueryBuilderCore;
 
-import android.util.Log;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
 import farayan.commons.FarayanUtility;
-
-import static android.R.attr.filter;
-import static android.R.attr.theme;
 
 public class EntityFilter<EntityT extends IEntity> implements IFilter {
     public EntityFilter(EntityT... vals) {

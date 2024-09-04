@@ -4,10 +4,10 @@ import android.content.Context;
 
 import java.util.Collection;
 
-import farayan.commons.UI.Core.IEntityView;
 import farayan.commons.UI.Core.FilterableEntityAdapter;
-import farayan.sabad.ui.GroupBoxItemComponent;
+import farayan.commons.UI.Core.IEntityView;
 import farayan.sabad.core.OnePlace.Group.GroupEntity;
+import farayan.sabad.ui.GroupBoxItemComponent;
 
 
 public class GroupBoxAdapter extends FilterableEntityAdapter<GroupEntity>

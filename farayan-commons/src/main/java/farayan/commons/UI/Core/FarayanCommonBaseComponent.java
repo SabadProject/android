@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
+
 import farayan.commons.FarayanBaseApp;
 
 public abstract class FarayanCommonBaseComponent extends LinearLayout

@@ -1,18 +1,22 @@
 package farayan.commons.UI;
 
+import static android.R.color.black;
+
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Typeface;
 import android.os.Parcel;
 import android.os.Parcelable;
-import androidx.annotation.IdRes;
-import androidx.annotation.Nullable;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RadioGroup;
+
+import androidx.annotation.IdRes;
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 
 import com.github.florent37.singledateandtimepicker.widget.WheelPicker;
 
@@ -21,7 +25,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 
-import androidx.core.content.ContextCompat;
 import farayan.commons.FarayanUtility;
 import farayan.commons.PersianCalendar;
 import farayan.commons.PersianCalendarUtils;
@@ -36,8 +39,6 @@ import farayan.commons.UI.Commons.TextStyle;
 import farayan.commons.UI.Core.IGeneralEvent;
 import farayan.commons.UI.Core.IGeneralEventProvider;
 import farayan.commons.WeekDays;
-
-import static android.R.color.black;
 
 public class DateTimePickerComponent extends DateTimePickerComponentParent1 implements IGeneralEventProvider<Void, DateTimePickerComponent.Events, PersianDateTime> {
 

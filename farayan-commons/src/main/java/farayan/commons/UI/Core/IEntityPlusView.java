@@ -1,7 +1,5 @@
 package farayan.commons.UI.Core;
 
-import java.util.List;
-
 import farayan.commons.QueryBuilderCore.IEntity;
 
 /**

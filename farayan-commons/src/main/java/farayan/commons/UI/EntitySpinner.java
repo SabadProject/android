@@ -9,11 +9,11 @@ import android.widget.Spinner;
 import com.j256.ormlite.dao.RuntimeExceptionDao;
 
 import farayan.commons.QueryBuilderCore.IEntity;
+import farayan.commons.UI.Core.FilterableEntityAdapter;
 import farayan.commons.UI.Core.GeneralCommands;
 import farayan.commons.UI.Core.IBoxEntity;
 import farayan.commons.UI.Core.IGeneralEvent;
 import farayan.commons.UI.Core.IGeneralEventProvider;
-import farayan.commons.UI.Core.FilterableEntityAdapter;
 
 
 public abstract class EntitySpinner<EntityType extends IEntity & IBoxEntity>

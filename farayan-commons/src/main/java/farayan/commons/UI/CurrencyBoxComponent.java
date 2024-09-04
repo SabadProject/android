@@ -1,7 +1,5 @@
 package farayan.commons.UI;
 
-import java.util.ArrayList;
-
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
@@ -16,6 +14,8 @@ import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.NumberPicker;
 import android.widget.NumberPicker.OnValueChangeListener;
+
+import java.util.ArrayList;
 
 import farayan.commons.FarayanBaseApp;
 import farayan.commons.FarayanUtility;

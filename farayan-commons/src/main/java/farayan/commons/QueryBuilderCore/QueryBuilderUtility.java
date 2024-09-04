@@ -1,14 +1,5 @@
 package farayan.commons.QueryBuilderCore;
 
-import android.util.Log;
-
-import com.j256.ormlite.stmt.Where;
-
-import java.sql.SQLException;
-import java.util.List;
-
-import farayan.commons.FarayanUtility;
-
 /**
  * Created by Homayoun on 28/05/2017.
  */

@@ -3,12 +3,11 @@ package farayan.commons.UI.Core;
 import android.content.Context;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
-import androidx.recyclerview.widget.RecyclerView;
 
 import farayan.commons.QueryBuilderCore.BaseParams;
 import farayan.commons.QueryBuilderCore.IEntity;
