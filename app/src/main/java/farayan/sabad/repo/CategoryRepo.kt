@@ -6,8 +6,10 @@ import farayan.commons.queryable
 import farayan.sabad.commons.Text
 import farayan.sabad.db.Category
 import farayan.sabad.db.CategoryQueries
+import farayan.sabad.utility.displayable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.shareIn
@@ -17,14 +19,19 @@ class CategoryRepo(private val queries: CategoryQueries) {
         return queries.all().executeAsList()
     }
 
-    fun allFlow(scope: CoroutineScope): SharedFlow<List<Category>> = queries.all().asFlow().mapToList(Dispatchers.IO).shareIn(scope, SharingStarted.WhileSubscribed(5_000), 1)
+    fun allFlow(): Flow<List<Category>> = queries.all().asFlow().mapToList(Dispatchers.IO)
 
-    fun filter(q: String): List<Category> {
+    fun allSharedFlow(scope: CoroutineScope): SharedFlow<List<Category>> = queries.all().asFlow().mapToList(Dispatchers.IO).shareIn(scope, SharingStarted.WhileSubscribed(5_000), 1)
+
+    fun filterRaw(q: String): List<Category> {
         return queries.filter(q).executeAsList()
     }
 
-    fun filterFlow(q: String, scope: CoroutineScope): SharedFlow<List<Category>> =
+    fun filterSharedFlow(q: String, scope: CoroutineScope): SharedFlow<List<Category>> =
         queries.filter(q).asFlow().mapToList(Dispatchers.IO).shareIn(scope, SharingStarted.WhileSubscribed(5_000), 1)
+
+    fun filterFlow(q: String): Flow<List<Category>> =
+        queries.filter(q).asFlow().mapToList(Dispatchers.IO)
 
     fun byId(id: Long): Category? {
         return queries.byId(id).executeAsOneOrNull()
@@ -56,5 +63,13 @@ class CategoryRepo(private val queries: CategoryQueries) {
             queries.create(name.displayable, name.queryable, "", "", true, 0)
             queries.created().executeAsOne()
         }
+    }
+
+    fun update(category: Category, name: String) {
+        queries.updateName(name.displayable(), name.queryable(), category.id)
+    }
+
+    fun delete(removingCategories: List<Category>) {
+        queries.delete(removingCategories.map { it.id })
     }
 }

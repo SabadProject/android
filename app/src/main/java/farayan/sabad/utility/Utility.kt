@@ -1,5 +1,9 @@
 package farayan.sabad.utility
 
+import android.app.Dialog
+import android.view.Gravity
+import android.view.WindowManager
+
 val Any?.hasValue: Boolean
     get() {
         return this != null
@@ -19,4 +23,16 @@ fun <T> tryCatch(action: () -> T, default: T): T {
     } catch (e: Exception) {
         default
     }
+}
+
+
+fun Dialog.maximize() {
+    val window = window
+    val wlp = window!!.attributes
+    wlp.gravity = Gravity.CENTER
+    window.attributes = wlp
+    getWindow()!!.setLayout(
+        WindowManager.LayoutParams.MATCH_PARENT,
+        WindowManager.LayoutParams.MATCH_PARENT
+    )
 }

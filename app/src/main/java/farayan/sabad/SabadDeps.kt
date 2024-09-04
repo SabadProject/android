@@ -1,6 +1,8 @@
 package farayan.sabad
 
+import android.util.Log
 import app.cash.sqldelight.driver.android.AndroidSqliteDriver
+import app.cash.sqldelight.logs.LogSqliteDriver
 import farayan.sabad.db.SabadPersistence
 import farayan.sabad.repo.BarcodeRepo
 import farayan.sabad.repo.CategoryRepo
@@ -16,9 +18,9 @@ import farayan.sabad.utility.queryable
 object SabadDeps {
     private lateinit var db: SabadPersistence
 
-    fun persistence(): SabadPersistence {
+    private fun persistence(): SabadPersistence {
         if (!this::db.isInitialized) {
-            db = SabadPersistence(AndroidSqliteDriver(SabadPersistence.Schema, SabadTheApp.getContext(), "sabad.sqdb"))
+            db = SabadPersistence(LogSqliteDriver(AndroidSqliteDriver(SabadPersistence.Schema, SabadTheApp.getContext(), "sabad.sqdb")) { Log.i("SQLDelight", it) })
             ensureCategories(db)
         }
         return db

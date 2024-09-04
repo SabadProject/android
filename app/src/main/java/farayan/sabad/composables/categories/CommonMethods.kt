@@ -4,6 +4,7 @@ import android.app.Activity
 import farayan.sabad.db.Category
 import farayan.sabad.db.Item
 import farayan.sabad.ui.InvoiceItemFormDialog
+import farayan.sabad.utility.maximize
 import farayan.sabad.vms.InvoiceItemFormViewModel
 import farayan.sabad.vms.InvoiceItemFormViewModel.Companion.Factory
 

@@ -4,7 +4,9 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import farayan.sabad.R
 import farayan.sabad.SabadDeps
+import farayan.sabad.commons.ConditionalErrorMessage
 import farayan.sabad.commons.InvoiceSummary
 import farayan.sabad.commons.Text
 import farayan.sabad.core.commons.Currency
@@ -18,8 +20,10 @@ import farayan.sabad.repo.ProductRepo
 import farayan.sabad.repo.UnitRepo
 import farayan.sabad.utility.hasValue
 import farayan.sabad.utility.invoke
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.launch
 import java.math.BigDecimal
 import javax.inject.Inject
@@ -38,13 +42,12 @@ class HomeViewModel @Inject constructor(
     }
 
     fun refresh() {
-        filter(categoriesQuery.value.original)
-        refreshing.value = false
+        filter(queryReadOnly.value.original)
+        refreshingMutable.value = false
     }
 
     fun filter(query: String) {
-        categoriesQuery.value = Text(query)
-        //categories.value = if (categoriesQuery.value.queryable.isUsable) categoryRepo.filter("%${categoriesQuery.value.queryable}%") else categoryRepo.all()
+        this.queryMutable.value = Text(query)
     }
 
     fun product(productId: Long): Product = productRepo.byId(productId)!!
@@ -72,12 +75,12 @@ class HomeViewModel @Inject constructor(
     }
 
     fun addCategory() {
-        if (categoriesQuery.value.isEmpty)
+        if (queryReadOnly.value.isEmpty)
             return
-        val current = categoryRepo.byName(categoriesQuery.value)
+        val current = categoryRepo.byName(queryReadOnly.value)
         if (current.hasValue)
             return
-        val created = categoryRepo.create(categoriesQuery.value)
+        val created = categoryRepo.create(queryReadOnly.value)
         /*categories.value += created*/
     }
 
@@ -85,14 +88,51 @@ class HomeViewModel @Inject constructor(
         itemRepo.ensure(productRepo.ensure(category, "PRODUCT1"), BigDecimal("17.0"), Currency.Euro, BigDecimal("1"), unitRepo.all().first(), null, null)
     }
 
-    val refreshing = MutableStateFlow(false)
-    val categoriesQuery = MutableStateFlow(Text(""))
-    val categories: SharedFlow<List<Category>> =
-        if (categoriesQuery.value.isEmpty) categoryRepo.allFlow(viewModelScope)
-        else categoryRepo.filterFlow(categoriesQuery.value.queryable, viewModelScope)
+    fun select(category: Category) {
+        if (!selectedCategoriesMutable.value.contains(category)) {
+            selectedCategoriesMutable.value += category
+        }
+    }
+
+    fun unselect(category: Category) {
+        if (selectedCategoriesMutable.value.contains(category)) {
+            selectedCategoriesMutable.value -= category
+        }
+    }
+
+    fun persistCategory(name: String, editingCategory: Category): Boolean {
+        if (name.isEmpty())
+            return false
+        val current = categoryRepo.byName(name)
+        if (current.hasValue && current!!.id != editingCategory.id) {
+            editingCategoryErrorMutable.value = ConditionalErrorMessage(name, R.string.category_edit_duplicate_name_error)
+            return false
+        }
+        categoryRepo.update(editingCategory, name)
+        return true
+    }
+
+    fun deleteCategories(removingCategories: List<Category>): Boolean {
+        if(removingCategories.isEmpty())
+            return false
+        categoryRepo.delete(removingCategories)
+        return true
+    }
+
+    private val refreshingMutable = MutableStateFlow(false)
+    val refreshingReadOnly = refreshingMutable.asStateFlow()
+    private val queryMutable = MutableStateFlow(Text(""))
+    val queryReadOnly = queryMutable.asStateFlow()
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val categories = queryReadOnly.flatMapLatest { if (it.isEmpty) categoryRepo.allFlow() else categoryRepo.filterFlow("%${it.queryable}%") }
     val pickedProducts = productRepo.pickingsFlow(viewModelScope)
     val pickedUnits = unitRepo.pickingsFlow(viewModelScope)
     val pickedItems = itemRepo.pickings(viewModelScope)
+    private val selectedCategoriesMutable = MutableStateFlow(listOf<Category>())
+    val selectedCategoriesReadonly = selectedCategoriesMutable.asStateFlow()
+    private val editingCategoryErrorMutable = MutableStateFlow<ConditionalErrorMessage?>(null)
+    val editingCategoryErrorReadOnly = editingCategoryErrorMutable.asStateFlow()
 
     init {
         viewModelScope.launch {

@@ -6,7 +6,6 @@ import android.app.Dialog
 import android.content.DialogInterface
 import android.os.Build
 import android.util.Log
-import android.view.Gravity
 import android.view.WindowInsets
 import android.view.WindowManager
 import androidx.compose.foundation.Image
@@ -450,17 +449,6 @@ class InvoiceItemFormDialog(
                 }
             }
         })
-    }
-
-    fun maximize() {
-        val window = window
-        val wlp = window!!.attributes
-        wlp.gravity = Gravity.CENTER
-        window.attributes = wlp
-        getWindow()!!.setLayout(
-            WindowManager.LayoutParams.MATCH_PARENT,
-            WindowManager.LayoutParams.MATCH_PARENT
-        )
     }
 }
 

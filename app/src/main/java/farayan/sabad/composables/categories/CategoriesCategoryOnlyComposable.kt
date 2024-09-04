@@ -1,8 +1,7 @@
 package farayan.sabad.composables.categories
 
-import android.app.Activity
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -16,7 +15,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -26,22 +24,14 @@ import farayan.sabad.R
 import farayan.sabad.db.Category
 import farayan.sabad.ui.appFont
 import farayan.sabad.utility.invoke
-import farayan.sabad.vms.HomeViewModel
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun CategoriesCategoryOnlyComposable(category: Category, changeNeeded: (Category, Boolean) -> Unit, picked: Boolean, homeViewModel: HomeViewModel) {
-    val ctx = LocalContext.current
+fun CategoriesCategoryOnlyComposable(category: Category, changeNeeded: (Category, Boolean) -> Unit, picked: Boolean, selected: Boolean) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(4.dp)
-            .clickable {
-                if (!category.needed) {
-                    changeNeeded(category, true)
-                } else {
-                    displayCategoryDialog(category, ctx as Activity)
-                }
-            },
+            .padding(4.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Image(

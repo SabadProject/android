@@ -41,25 +41,30 @@ created:
 SELECT * FROM category WHERE id = last_insert_rowid();
 
 byName:
-SELECT * FROM category WHERE queryableName = :queryableName;
+SELECT * FROM category WHERE queryableName = :queryableName AND deleted IS NULL;
 
 all:
 SELECT * FROM category WHERE deleted IS NULL ORDER BY needed DESC, picked DESC, position ASC;
 
-first:
-SELECT * FROM category LIMIT 1;
-
 changeNeeded:
 UPDATE category SET needed=:needed WHERE id = :categoryId;
+
+updateName:
+UPDATE category SET displayableName=:displayableName, queryableName=:queryableName WHERE id = :categoryId;
 
 byId:
 SELECT * FROM category WHERE id =:id;
 
 filter:
-SELECT * FROM category WHERE deleted IS NULL AND queryableName LIKE :queryableName ORDER BY needed DESC, picked DESC;
+SELECT * FROM category
+WHERE deleted IS NULL AND (queryableName LIKE :queryableName OR (:queryableName IS NULL OR LENGTH(:queryableName) = 0))
+ORDER BY needed DESC, picked DESC;
 
 pickedCategoriesCount:
 SELECT count(*) FROM category WHERE deleted IS NULL AND needed = 1 AND id IN (SELECT categoryId FROM item WHERE invoiceId IS NULL);
 
 remainedCategoriesCount:
 SELECT count(*) FROM category WHERE deleted IS NULL AND needed = 1 AND id NOT IN (SELECT categoryId FROM item WHERE invoiceId IS NULL);
+
+delete:
+DELETE FROM category WHERE id IN :ids;
