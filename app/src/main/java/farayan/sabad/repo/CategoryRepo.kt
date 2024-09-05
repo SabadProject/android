@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.shareIn
+import java.time.Instant
 
 class CategoryRepo(private val queries: CategoryQueries) {
     fun all(): List<Category> {
@@ -70,6 +71,6 @@ class CategoryRepo(private val queries: CategoryQueries) {
     }
 
     fun delete(removingCategories: List<Category>) {
-        queries.delete(removingCategories.map { it.id })
+        queries.softDelete(Instant.now().toEpochMilli().toString(), removingCategories.map { it.id })
     }
 }

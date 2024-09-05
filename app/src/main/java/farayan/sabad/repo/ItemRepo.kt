@@ -112,7 +112,7 @@ class ItemRepo(private val queries: ItemQueries) {
 
     fun pickingSummary(): Flow<PickingsSummary?> {
         return queries.pickingsSummary().asFlow().mapToOneOrNull(Dispatchers.IO).onEach {
-            Log.d("flow", "new summary: ${it?.}")
+            Log.d("flow", "new summary: ${it}")
         }
     }
 }

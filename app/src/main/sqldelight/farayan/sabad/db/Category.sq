@@ -66,5 +66,8 @@ SELECT count(*) FROM category WHERE deleted IS NULL AND needed = 1 AND id IN (SE
 remainedCategoriesCount:
 SELECT count(*) FROM category WHERE deleted IS NULL AND needed = 1 AND id NOT IN (SELECT categoryId FROM item WHERE invoiceId IS NULL);
 
-delete:
+softDelete:
+UPDATE category SET deleted = :deleted WHERE id IN :ids;
+
+hardDelete:
 DELETE FROM category WHERE id IN :ids;
