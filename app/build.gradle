@@ -102,7 +102,7 @@ android {
         }
     }
 
-    flavorDimensions "publisher"
+    flavorDimensions = ["publisher"]
     productFlavors {
         Farayan {
             dimension "publisher"
