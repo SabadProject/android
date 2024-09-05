@@ -31,7 +31,7 @@ import farayan.sabad.utility.tryCatch
 fun CategoriesCategoryWithItemsComposable(
     category: Category,
     items: List<Item>,
-    changeNeeded: (Category, Boolean) -> Unit,
+    changeNeeded: (Category, Boolean) -> Category,
     products: List<Product>,
     units: List<farayan.sabad.db.Unit>,
     onRemove: (ItemRich) -> Unit,
@@ -56,7 +56,7 @@ fun CategoriesCategoryWithItemsComposable(
                             onSelect(category)
                         }
                     } else {
-                        if (!category.needed) {
+                        if (!needed) {
                             changeNeeded(category, true)
                             needed = true
                         } else {
