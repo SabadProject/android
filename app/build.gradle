@@ -36,7 +36,7 @@ android {
                         "SABAD_KEY_STORE_FILE_PATH=/path/to/key/store/file\n" +
                         "SABAD_KEY_STORE_FILE_PASS=key-store-password\n" +
                         "SABAD_KEY_STORE_ALIAS_NAME=key-alias-name\n" +
-                        "SABAD_KEY_STORE_ALIAS_PASS=key-alias-password")
+                        "SABAD_KEY_STORE_ALIAS_PASS=key-alias-password\n")
             }
             storeFile file(SABAD_KEY_STORE_FILE_PATH)
             storePassword SABAD_KEY_STORE_FILE_PASS
