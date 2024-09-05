@@ -18,8 +18,8 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDirection
 import androidx.compose.ui.unit.dp
-import farayan.sabad.ui.appFont
-import farayan.sabad.ui.defaults
+import farayan.sabad.utility.appFont
+import farayan.sabad.utility.defaults
 import java.math.BigDecimal
 
 

@@ -20,7 +20,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
@@ -81,16 +80,23 @@ import farayan.commons.FarayanUtility
 import farayan.sabad.R
 import farayan.sabad.SabadConfigs
 import farayan.sabad.SabadConstants
+import farayan.sabad.commons.anyValue
+import farayan.sabad.commons.hasFixedValue
 import farayan.sabad.core.commons.UnitVariations
 import farayan.sabad.db.Category
 import farayan.sabad.db.Item
 import farayan.sabad.ui.components.CameraCapture
 import farayan.sabad.ui.components.CurrenciesDropdownMenuBox
+import farayan.sabad.ui.components.GroupInvoiceItemForm
+import farayan.sabad.ui.components.GroupPickState
 import farayan.sabad.ui.components.GroupsDropdownMenuBox
 import farayan.sabad.ui.components.NumberEntry
 import farayan.sabad.ui.components.UnitVariationDropdownBox
 import farayan.sabad.ui.components.UnitsDropdownMenuBox
 import farayan.sabad.ui.components.displayable
+import farayan.sabad.utility.appFont
+import farayan.sabad.utility.defaults
+import farayan.sabad.utility.errorBorder
 import farayan.sabad.utility.hasValue
 import farayan.sabad.utility.isUsable
 import farayan.sabad.utility.referencePrice
@@ -143,9 +149,10 @@ class InvoiceItemFormDialog(
                     val packageMeasurementUnit = viewModel.formPackageUnit.collectAsState()
                     val packageMeasurementValue = viewModel.formPackageWorth.collectAsState()
                     val priceAmount = viewModel.formPriceAmount.collectAsState()
-                    val priceCurrency = viewModel.formPriceCurrency.collectAsState()
+                    val priceCurrency by viewModel.formPriceCurrencyReadOnly.collectAsState()
                     val photos = viewModel.formPhotos.collectAsState()
                     val items = viewModel.pickedItems.collectAsState(listOf())
+                    val persistErrorMessage by viewModel.errorMessage.collectAsState()
 
                     var cameraUsage by remember { mutableStateOf(CameraUsage.None) }
                     val cameraPermissionState = rememberPermissionState(
@@ -169,12 +176,23 @@ class InvoiceItemFormDialog(
                                     .defaults()
 
                             )
+                            if (persistErrorMessage.isUsable) {
+                                Text(
+                                    text = persistErrorMessage!!,
+                                    color = MaterialTheme.colors.error,
+                                    modifier = Modifier
+                                        .padding(4.dp, 4.dp)
+                                        .fillMaxWidth(),
+                                    textAlign = TextAlign.Center
+                                )
+                            }
                             OutlinedTextField(
                                 value = barcodeValue.value?.textual ?: "",
                                 onValueChange = { },
                                 enabled = false,
                                 modifier = Modifier
                                     .fillMaxWidth()
+                                    .errorBorder(persistErrorMessage.isUsable)
                                     .padding(5.dp),
                                 keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next),
                                 textStyle = LocalTextStyle.current.copy(
@@ -273,6 +291,7 @@ class InvoiceItemFormDialog(
                                 onValueChange = { viewModel.formName.value = it },
                                 modifier = Modifier
                                     .defaults()
+                                    .errorBorder(persistErrorMessage.isUsable)
                                     .fillMaxWidth(),
                                 textStyle = TextStyle(fontFamily = appFont),
                                 readOnly = product.value.fixed,
@@ -333,12 +352,14 @@ class InvoiceItemFormDialog(
                                     onValueChanged = { viewModel.formPriceAmount.value = it },
                                     modifier = Modifier
                                         .align(Alignment.CenterVertically)
+                                        .errorBorder(persistErrorMessage.isUsable)
                                         .weight(0.6f, true)
                                 )
                                 CurrenciesDropdownMenuBox(
-                                    selected = priceCurrency.value,
+                                    selected = priceCurrency.anyValue,
+                                    readonly = priceCurrency.hasFixedValue,
                                     context = LocalContext.current,
-                                    onValueChanged = { viewModel.formPriceCurrency.value = it },
+                                    onValueChanged = { viewModel.changeCurrency(it) },
                                     modifier = Modifier
                                         .defaults()
                                         .padding(top = 0.dp)
@@ -358,7 +379,7 @@ class InvoiceItemFormDialog(
                                 } else {
                                     val equivalentText = referencePrice(priceAmount.value!!, unitAmount.value!!, unitVariation.coefficient)
                                         .displayable(false)
-                                    val currency = priceCurrency.value?.resourceId?.let { stringResource(id = it) } ?: ""
+                                    val currency = priceCurrency.anyValue?.resourceId?.let { stringResource(id = it) } ?: ""
                                     message = stringResource(id = R.string.invoice_item_form_dialog_reference_price_template, mainUnitName, equivalentText, currency)
                                 }
                                 Text(
@@ -436,7 +457,7 @@ class InvoiceItemFormDialog(
                             }
                             Button(
                                 onClick = {
-                                    if (viewModel.persistInvoiceItem())
+                                    if (viewModel.persistInvoiceItem(context))
                                         this@InvoiceItemFormDialog.dismiss()
                                 },
                                 modifier = Modifier.align(alignment = Alignment.CenterHorizontally)
@@ -453,77 +474,6 @@ class InvoiceItemFormDialog(
         })
     }
 }
-
-fun Modifier.defaults(): Modifier {
-    return this.padding(5.dp)
-}
-
-val appFont = FontFamily(
-    Font(R.font.vazir)
-)
-
-enum class GroupPickState(
-    val iconColor: Color,
-    val position: Int,
-    val icon: ImageVector,
-    val style: TextStyle
-) {
-    NeededButNotPicked(
-        Color.Black, 0, Icons.Outlined.CheckCircle,
-        TextStyle(
-            fontFamily = appFont,
-            color = Color.Black,
-            fontStyle = FontStyle.Normal,
-            fontWeight = FontWeight.Bold
-        )
-    ),
-    NeededAndPicked(
-        Color.Green, 1, Icons.Filled.CheckCircle,
-        TextStyle(
-            fontFamily = appFont,
-            color = Color.hsl(196F, 0.67F, 0.45F),
-            fontStyle = FontStyle.Normal,
-            fontWeight = FontWeight.Normal
-        )
-    ),
-    PickedWithoutNeeded(
-        Color.Blue, 2, Icons.Filled.Warning,
-        TextStyle(
-            fontFamily = appFont,
-            color = Color.hsl(26F, 0.73F, 0.57F),
-            fontStyle = FontStyle.Italic,
-            fontWeight = FontWeight.Normal
-        )
-    ),
-    NotNeededNotPicked(
-        Color.Gray, 3, Icons.Outlined.Add,
-        TextStyle(
-            fontFamily = appFont,
-            color = Color.Gray,
-            fontStyle = FontStyle.Italic,
-            fontWeight = FontWeight.Normal
-        )
-    ),
-    ;
-
-    companion object {
-        fun resolveStatus(
-            category: Category,
-            pickedItems: List<Item>
-        ): GroupPickState {
-            @Suppress("KotlinConstantConditions")
-            return when {
-                category.needed && category.picked -> NeededAndPicked
-                category.needed && !category.picked -> NeededButNotPicked
-                !category.needed && category.picked -> PickedWithoutNeeded
-                !category.needed && !category.picked -> NotNeededNotPicked
-                else -> throw RuntimeException()
-            }
-        }
-    }
-}
-
-data class GroupInvoiceItemForm(val id: Long, val text: String, val status: GroupPickState)
 
 enum class CameraUsage {
     None,

@@ -14,7 +14,7 @@ import androidx.compose.ui.text.TextStyle
 import farayan.sabad.R
 import farayan.sabad.commons.InvoiceSummary
 import farayan.sabad.core.commons.localize
-import farayan.sabad.ui.appFont
+import farayan.sabad.utility.appFont
 import farayan.sabad.utility.hasValue
 
 @Composable

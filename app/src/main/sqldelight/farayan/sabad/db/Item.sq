@@ -37,5 +37,5 @@ SELECT * FROM item WHERE invoiceId IS NULL;
 delete:
 DELETE FROM item WHERE id = ?;
 
-pickingsSummary:
+itemSummaryReport:
 SELECT SUM(quantity) AS quantitySum, SUM(total) AS totalSum, currency FROM item WHERE invoiceId IS NULL GROUP BY currency;

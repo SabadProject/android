@@ -3,13 +3,12 @@ package farayan.sabad.repo
 import android.util.Log
 import app.cash.sqldelight.coroutines.asFlow
 import app.cash.sqldelight.coroutines.mapToList
-import app.cash.sqldelight.coroutines.mapToOne
 import app.cash.sqldelight.coroutines.mapToOneOrNull
 import farayan.sabad.core.commons.Currency
 import farayan.sabad.core.commons.UnitVariations
 import farayan.sabad.db.Item
 import farayan.sabad.db.ItemQueries
-import farayan.sabad.db.PickingsSummary
+import farayan.sabad.db.ItemSummaryReport
 import farayan.sabad.db.Product
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -78,7 +77,7 @@ class ItemRepo(private val queries: ItemQueries) {
                 quantity.toString(),
                 unit?.id,
                 currency?.name,
-                price.toString(),
+                price?.toString(),
                 BigDecimal.ZERO.toString(),
                 price?.multiply(quantity).toString(),
                 packageWorth?.toString(),
@@ -110,9 +109,5 @@ class ItemRepo(private val queries: ItemQueries) {
         queries.delete(item.id)
     }
 
-    fun pickingSummary(): Flow<PickingsSummary?> {
-        return queries.pickingsSummary().asFlow().mapToOneOrNull(Dispatchers.IO).onEach {
-            Log.d("flow", "new summary: ${it}")
-        }
-    }
+    val itemSummary: Flow<ItemSummaryReport?> = queries.itemSummaryReport().asFlow().mapToOneOrNull(Dispatchers.IO)
 }

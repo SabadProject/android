@@ -59,6 +59,7 @@ import farayan.sabad.db.Category
 import farayan.sabad.utility.hasValue
 import farayan.sabad.utility.isUsable
 import farayan.sabad.vms.HomeViewModel
+import farayan.sabad.utility.appFont
 
 class MainActivity : ComponentActivity() {
 

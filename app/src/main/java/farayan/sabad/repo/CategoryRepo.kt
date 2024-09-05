@@ -2,6 +2,7 @@ package farayan.sabad.repo
 
 import app.cash.sqldelight.coroutines.asFlow
 import app.cash.sqldelight.coroutines.mapToList
+import app.cash.sqldelight.coroutines.mapToOne
 import farayan.commons.queryable
 import farayan.sabad.commons.Text
 import farayan.sabad.db.Category
@@ -73,4 +74,8 @@ class CategoryRepo(private val queries: CategoryQueries) {
     fun delete(removingCategories: List<Category>) {
         queries.softDelete(Instant.now().toEpochMilli().toString(), removingCategories.map { it.id })
     }
+
+    val remainedCategoriesCountFlow: Flow<Long> = queries.remainedCategoriesCount().asFlow().mapToOne(Dispatchers.IO)
+
+    val pickedCategoriesCountFlow: Flow<Long> = queries.pickedCategoriesCount().asFlow().mapToOne(Dispatchers.IO)
 }

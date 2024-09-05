@@ -10,6 +10,10 @@ val String?.isUsable: Boolean
     get() = this?.isNotBlank() == true
 
 
+fun String?.or(replacement: String): String {
+    return if (this.isUsable) this!! else replacement
+}
+
 fun String.displayable(): String {
     return this.trim()
 }

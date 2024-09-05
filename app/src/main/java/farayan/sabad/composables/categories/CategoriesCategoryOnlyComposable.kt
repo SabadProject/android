@@ -22,7 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import farayan.sabad.R
 import farayan.sabad.db.Category
-import farayan.sabad.ui.appFont
+import farayan.sabad.utility.appFont
 import farayan.sabad.utility.invoke
 
 @OptIn(ExperimentalFoundationApi::class)

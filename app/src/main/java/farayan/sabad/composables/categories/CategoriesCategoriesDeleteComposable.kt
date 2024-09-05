@@ -16,7 +16,7 @@ import farayan.sabad.R
 import farayan.sabad.commons.ConditionalErrorMessage
 import farayan.sabad.core.commons.localize
 import farayan.sabad.db.Category
-import farayan.sabad.ui.appFont
+import farayan.sabad.utility.appFont
 
 @Composable
 fun CategoriesCategoriesDeleteComposable(

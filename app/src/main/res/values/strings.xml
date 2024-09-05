@@ -116,4 +116,8 @@
     <string name="category_delete_and_more_template">و %s دسته‌بندی دیگر</string>
     <string name="category_delete_delete_command">حذف دسته‌بندی‌ها</string>
     <string name="category_delete_cancel_command">لغو</string>
+    <string name="category_item_price_default">بدون قیمت</string>
+    <string name="category_item_unit_default">واحد</string>
+    <string name="category_item_name_default">«کالا»</string>
+    <string name="item_form_persist_error">نام، بارکد یا مبلغ کالا را درج کنید</string>
 </resources>

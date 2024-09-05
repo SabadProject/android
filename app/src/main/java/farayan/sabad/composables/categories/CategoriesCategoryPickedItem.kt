@@ -15,47 +15,52 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import farayan.sabad.R
 import farayan.sabad.core.commons.Currency
 import farayan.sabad.core.commons.localize
 import farayan.sabad.db.Item
 import farayan.sabad.db.Product
-import farayan.sabad.ui.appFont
+import farayan.sabad.utility.appFont
 import farayan.sabad.utility.invoke
 import farayan.sabad.utility.isUsable
+import farayan.sabad.utility.or
 import java.math.BigDecimal
 
 @Composable
 fun CategoriesCategoryPickedItem(item: Item, product: Product, unit: farayan.sabad.db.Unit?, onEdit: (Item) -> Unit, onRemove: (Item) -> Unit, modifier: Modifier = Modifier) {
     val ctx = LocalContext.current
+    val textStyle = TextStyle(fontFamily = appFont, color = Color.DarkGray, fontSize = 10.sp)
     Divider(color = Color.White, modifier = Modifier.padding(8.dp, 0.dp))
     Row(modifier = modifier
         .padding(5.dp)
         .clickable { onEdit(item) }) {
         Text(
-            text = product.displayableName,
+            text = product.displayableName.or(stringResource(id = R.string.category_item_name_default)),
             modifier = Modifier
                 .weight(1.0f)
                 .padding(4.dp, 2.dp),
-            style = TextStyle(fontFamily = appFont, color = Color.DarkGray)
+            style = textStyle
         )
         Text(
-            text = "${item.quantity.localize()} ${unit?.displayableName ?: ""}",
+            text = "${item.quantity.localize()} ${unit?.displayableName.or(stringResource(id = R.string.category_item_unit_default))}",
             modifier = Modifier
                 .padding(4.dp, 2.dp)
                 .width(64.dp),
-            style = TextStyle(fontFamily = appFont, color = Color.DarkGray)
+            style = textStyle
         )
         val currency = item.currency.isUsable({ Currency.valueOf(item.currency!!) }, { null })
-        val price = currency?.let { currency.formatter(BigDecimal(item.fee), ctx) } ?: item.fee?.localize()
+        val price = currency?.let { currency.formatter(BigDecimal(item.fee), ctx) } ?: item.fee?.localize() ?: stringResource(id = R.string.category_item_price_default)
 
         Text(
             text = price ?: "",
             modifier = Modifier
                 .padding(4.dp, 2.dp)
                 .width(48.dp),
-            style = TextStyle(fontFamily = appFont, color = Color.DarkGray)
+            style = textStyle
         )
         Icon(
             Icons.Filled.Edit, contentDescription = "edit", tint = Color.White, modifier = Modifier

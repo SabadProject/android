@@ -77,7 +77,7 @@ fun CategoriesCategoryWithItemsComposable(
                     item,
                     product!!,
                     unit,
-                    onEdit = { displayItemDialog(item, ctx as AppCompatActivity) },
+                    onEdit = { displayItemDialog(item, ctx as Activity) },
                     onRemove = { onRemove(ItemRich(item, product, category)) },
                     Modifier.fillMaxWidth()
                 )
@@ -91,7 +91,7 @@ fun CategoriesCategoryWithItemsComposable(
 private fun categoryBackgroundRes(needed: Boolean, picked: Boolean, selected: Boolean): Color {
     return when {
         selected -> Color(0xFF, 0x7F, 0x00)
-        needed && picked -> Color(0x5b, 0xc0, 0xde)
+        picked -> Color(0x5b, 0xc0, 0xde)
         needed -> Color(0x5c, 0xb8, 0x5c)
         else -> Color(0xf5, 0xf5, 0xf5)
     }

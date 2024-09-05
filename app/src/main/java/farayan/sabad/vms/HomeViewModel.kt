@@ -24,6 +24,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
@@ -123,38 +124,28 @@ class HomeViewModel @Inject constructor(
     val pickedUnits = unitRepo.pickingsFlow(viewModelScope)
     val pickedItems = itemRepo.pickings(viewModelScope)
 
-    val invoiceSummary: Flow<InvoiceSummary> = itemRepo.pickingSummary().map {
-        if (it.hasValue) {
+    data class CategorySummaryReport(val remainedCategoriesCount: Long, val pickedCategoriesCount: Long)
+
+    val invoiceSummary = categoryRepo
+        .remainedCategoriesCountFlow
+        .combine(categoryRepo.pickedCategoriesCountFlow) { r, p -> CategorySummaryReport(r, p) }
+        .combine(itemRepo.itemSummary) { categorySummaryReport, itemSummaryReport ->
             InvoiceSummary(
-                categoryRepo.pickedCount(),
-                categoryRepo.remainingCount(),
-                it!!.totalSum?.toLong() ?: 0,
-                (it.totalSum.hasValue && it.currency.hasValue)(
-                    { Money(BigDecimal.valueOf(it.totalSum ?: 0.0), Currency.valueOf(it.currency!!)) },
+                categorySummaryReport.pickedCategoriesCount,
+                categorySummaryReport.remainedCategoriesCount,
+                itemSummaryReport?.totalSum?.toLong() ?: 0,
+                (itemSummaryReport.hasValue && itemSummaryReport!!.totalSum.hasValue && itemSummaryReport.currency.hasValue)(
+                    { Money(BigDecimal.valueOf(itemSummaryReport!!.totalSum ?: 0.0), Currency.valueOf(itemSummaryReport.currency!!)) },
                     { null }
                 )
             )
-        } else {
-            InvoiceSummary(
-                0,
-                categoryRepo.remainingCount(),
-                0,
-                null
-            )
         }
-    }
 
     private val selectedCategoriesMutable = MutableStateFlow(listOf<Category>())
     val selectedCategoriesReadonly = selectedCategoriesMutable.asStateFlow()
 
     private val editingCategoryErrorMutable = MutableStateFlow<ConditionalErrorMessage?>(null)
     val editingCategoryErrorReadOnly = editingCategoryErrorMutable.asStateFlow()
-
-    init {
-        viewModelScope.launch {
-            Log.i("flow", "HomeViewModel: pickedItems: $pickedItems, itemRepo: $itemRepo")
-        }
-    }
 
     companion object {
         val Factory: ViewModelProvider.Factory = object : ViewModelProvider.Factory {

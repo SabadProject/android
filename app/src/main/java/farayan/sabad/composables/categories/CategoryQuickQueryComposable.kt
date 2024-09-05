@@ -14,7 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import farayan.sabad.R
-import farayan.sabad.ui.appFont
+import farayan.sabad.utility.appFont
 
 @Composable
 fun CategoryQuickQueryComposable(

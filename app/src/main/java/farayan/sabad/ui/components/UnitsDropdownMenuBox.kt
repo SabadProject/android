@@ -22,7 +22,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
-import farayan.sabad.ui.appFont
+import farayan.sabad.utility.appFont
 import farayan.sabad.db.Unit as PersistenceUnit
 
 @OptIn(ExperimentalMaterialApi::class)

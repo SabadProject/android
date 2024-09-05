@@ -15,7 +15,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
-import farayan.sabad.ui.appFont
+import farayan.sabad.utility.appFont
 
 
 @OptIn(ExperimentalMaterialApi::class)

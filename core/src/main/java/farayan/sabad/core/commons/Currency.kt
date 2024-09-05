@@ -16,5 +16,12 @@ enum class Currency(val precision: Int, val resourceId: Int, val formatter: (amo
     Dollar(2, R.string.currency_name_dollar, { a, c -> "$a${c.getString(R.string.currency_name_dollar)}" }),
 
     ;
+}
 
+fun String.currency(): Currency? {
+    return try {
+        Currency.valueOf(this)
+    } catch (e: Exception) {
+        null
+    }
 }
