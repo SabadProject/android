@@ -39,3 +39,6 @@ DELETE FROM item WHERE id = ?;
 
 itemSummaryReport:
 SELECT SUM(quantity) AS quantitySum, SUM(total) AS totalSum, currency FROM item WHERE invoiceId IS NULL GROUP BY currency;
+
+currentCurrency:
+SELECT currency FROM item WHERE invoiceId IS NULL AND currency IS NOT NULL GROUP BY currency;

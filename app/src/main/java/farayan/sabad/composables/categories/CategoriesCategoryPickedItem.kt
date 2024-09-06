@@ -21,10 +21,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import farayan.sabad.R
 import farayan.sabad.core.commons.Currency
+import farayan.sabad.core.commons.Money
 import farayan.sabad.core.commons.localize
 import farayan.sabad.db.Item
 import farayan.sabad.db.Product
 import farayan.sabad.utility.appFont
+import farayan.sabad.utility.hasValue
 import farayan.sabad.utility.invoke
 import farayan.sabad.utility.isUsable
 import farayan.sabad.utility.or
@@ -53,10 +55,12 @@ fun CategoriesCategoryPickedItem(item: Item, product: Product, unit: farayan.sab
             style = textStyle
         )
         val currency = item.currency.isUsable({ Currency.valueOf(item.currency!!) }, { null })
-        val price = currency?.let { currency.formatter(BigDecimal(item.fee), ctx) } ?: item.fee?.localize() ?: stringResource(id = R.string.category_item_price_default)
+        val fee = item.fee?.let { BigDecimal(it) }
+        val feeCurrency = if (currency.hasValue && fee.hasValue) Money(fee!!, currency!!) else null
+        val price = feeCurrency?.textual(ctx) ?: item.fee?.localize() ?: stringResource(id = R.string.category_item_price_default)
 
         Text(
-            text = price ?: "",
+            text = price,
             modifier = Modifier
                 .padding(4.dp, 2.dp)
                 .width(48.dp),

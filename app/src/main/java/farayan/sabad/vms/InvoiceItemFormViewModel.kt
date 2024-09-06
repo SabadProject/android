@@ -39,6 +39,7 @@ import farayan.sabad.utility.isUsable
 import farayan.sabad.utility.queryable
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.lastOrNull
 import java.io.File
 import java.math.BigDecimal
 import javax.inject.Inject
@@ -345,11 +346,11 @@ class InvoiceItemFormViewModel @Inject constructor(
         errorMessage.value = null
     }
 
-    fun init(selectedCategory: Category, fixedCurrency: Currency? = null): InvoiceItemFormViewModel {
+    fun init(selectedCategory: Category): InvoiceItemFormViewModel {
         reset()
         category.value = Fixable(selectedCategory, true)
         product.value = Fixable(null, false)
-        fixedCurrency?.apply { formPriceCurrencyMutable.value = Fixable(fixedCurrency, true) }
+        itemRepo.currentCurrency()?.apply { formPriceCurrencyMutable.value = Fixable(this, true) }
         return this
     }
 

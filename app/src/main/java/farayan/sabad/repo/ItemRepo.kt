@@ -109,5 +109,9 @@ class ItemRepo(private val queries: ItemQueries) {
         queries.delete(item.id)
     }
 
+    fun currentCurrency(): Currency? {
+        return queries.currentCurrency().executeAsOneOrNull()?.let { Currency.valueOf(it) }
+    }
+
     val itemSummary: Flow<ItemSummaryReport?> = queries.itemSummaryReport().asFlow().mapToOneOrNull(Dispatchers.IO)
 }
