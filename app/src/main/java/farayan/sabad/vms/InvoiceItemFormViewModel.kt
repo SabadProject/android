@@ -324,8 +324,9 @@ class InvoiceItemFormViewModel @Inject constructor(
             formQuantityUnit.value = item.unitId?.let { unitRepo.byId(it) }
             formPackageWorth.value = item.packageWorth?.let { BigDecimal(item.packageWorth) }
             formPackageUnit.value = item.packageUnit?.let { UnitVariations.valueOf(item.packageUnit) }
-            val currency = price!!.currency.currency()
-            if ((!formPriceCurrencyMutable.hasFixedValue || formPriceCurrencyMutable.theValue == currency)) {
+            val currency = item.currency?.currency()
+            @Suppress("SimplifyBooleanWithConstants")
+            if ((formPriceCurrencyMutable.hasFixedValue == false || formPriceCurrencyMutable.theValue == currency)) {
                 formPriceAmount.value = item.fee?.let { BigDecimal(item.fee) }
                 formPriceCurrencyMutable.value = Fixable(currency)
             }
@@ -454,7 +455,6 @@ data class Question(
 
 data class QuestionButton(val label: String, val tag: String)
 data class QuestionOption(val label: String, val tag: String)
-
 
 
 data class ProductPhotoItem(val path: String, val record: Photo?)
