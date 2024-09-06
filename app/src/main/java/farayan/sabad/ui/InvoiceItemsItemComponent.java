@@ -53,15 +53,15 @@ public class InvoiceItemsItemComponent extends InvoiceItemsItemComponentParent i
                 entity.Group.Refreshed(TheGroupRepo).DisplayableName,
                 FarayanUtility.Or(entity.Product.Refreshed(TheProductRepo).DisplayableName, "")
         ));
-        if (entity.Quantity == 1) {
-            DetailsTextView().setText(new Rial(entity.Total).Textual(getResources()));
+        if (entity.Quantity.intValue() == 1) {
+            DetailsTextView().setText(new Rial(entity.Total.doubleValue()).Textual(getResources()));
         } else {
             DetailsTextView().setText(String.format(
                     "%s %s، فی %s، جمعا: %s",
-                    FarayanUtility.MoneyFormatted(entity.Quantity, true, false),
+                    FarayanUtility.MoneyFormatted(entity.Quantity.doubleValue(), true, false),
                     FarayanUtility.CatchException(() -> FarayanUtility.Or(entity.Unit.Refreshed(TheUnitRepo).getDisplayableName(), ""), x -> ""),
-                    new Rial(entity.Fee).Textual(getResources()),
-                    new Rial(entity.Total).Textual(getResources())
+                    new Rial(entity.Fee.doubleValue()).Textual(getResources()),
+                    new Rial(entity.Total.doubleValue()).Textual(getResources())
             ));
         }
     }

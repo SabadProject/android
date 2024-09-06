@@ -22,21 +22,21 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
-import farayan.sabad.core.model.unit.UnitEntity
-import farayan.sabad.ui.appFont
+import farayan.sabad.utility.appFont
+import farayan.sabad.db.Unit as PersistenceUnit
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun UnitsDropdownMenuBox(
-    selected: String,
+    selected: PersistenceUnit?,
     label: String,
-    units: List<UnitEntity>,
-    onValueChanged: (UnitEntity?) -> Unit,
+    units: List<PersistenceUnit>,
+    onValueChanged: (PersistenceUnit?) -> Unit,
     modifier: Modifier = Modifier,
     readonly: Boolean = false
 ) {
     var expanded by remember { mutableStateOf(false) }
-    var text by remember { mutableStateOf(TextFieldValue(selected)) }
+    var text = TextFieldValue(selected?.displayableName ?: "")
     val editable = !readonly
 
     ExposedDropdownMenuBox(
@@ -70,15 +70,15 @@ fun UnitsDropdownMenuBox(
                 DropdownMenuItem(
                     onClick = {
                         text = TextFieldValue(
-                            groupUnit.displayableName!!,
-                            selection = TextRange(groupUnit.displayableName!!.length)
+                            groupUnit.displayableName,
+                            selection = TextRange(groupUnit.displayableName.length)
                         )
                         onValueChanged(groupUnit)
                         expanded = false
                     }
                 ) {
                     Text(
-                        groupUnit.displayableName!!,
+                        groupUnit.displayableName,
                         style = TextStyle(fontFamily = appFont)
                     )
                 }

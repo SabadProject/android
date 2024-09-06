@@ -1,10 +1,10 @@
 package farayan.sabad.ui.Core;
 
 
-
 import android.app.Activity;
 
 import androidx.annotation.NonNull;
+
 import farayan.commons.UI.Core.FarayanCommonBaseDialog;
 
 public abstract class SabadBaseDialog extends FarayanCommonBaseDialog

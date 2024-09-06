@@ -12,6 +12,11 @@ import androidx.compose.material.ExposedDropdownMenuDefaults
 import androidx.compose.material.Icon
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material.icons.outlined.Add
+import androidx.compose.material.icons.outlined.CheckCircle
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -20,17 +25,21 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusEvent
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.Placeholder
 import androidx.compose.ui.text.PlaceholderVerticalAlign
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import farayan.sabad.ui.GroupInvoiceItemForm
-import farayan.sabad.ui.appFont
+import farayan.sabad.db.Category
+import farayan.sabad.db.Item
+import farayan.sabad.utility.appFont
 
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -106,3 +115,66 @@ fun GroupsDropdownMenuBox(
         }
     }
 }
+
+enum class GroupPickState(
+    val iconColor: Color,
+    val position: Int,
+    val icon: ImageVector,
+    val style: TextStyle
+) {
+    NeededButNotPicked(
+        Color.Black, 0, Icons.Outlined.CheckCircle,
+        TextStyle(
+            fontFamily = appFont,
+            color = Color.Black,
+            fontStyle = FontStyle.Normal,
+            fontWeight = FontWeight.Bold
+        )
+    ),
+    NeededAndPicked(
+        Color.Green, 1, Icons.Filled.CheckCircle,
+        TextStyle(
+            fontFamily = appFont,
+            color = Color.hsl(196F, 0.67F, 0.45F),
+            fontStyle = FontStyle.Normal,
+            fontWeight = FontWeight.Normal
+        )
+    ),
+    PickedWithoutNeeded(
+        Color.Blue, 2, Icons.Filled.Warning,
+        TextStyle(
+            fontFamily = appFont,
+            color = Color.hsl(26F, 0.73F, 0.57F),
+            fontStyle = FontStyle.Italic,
+            fontWeight = FontWeight.Normal
+        )
+    ),
+    NotNeededNotPicked(
+        Color.Gray, 3, Icons.Outlined.Add,
+        TextStyle(
+            fontFamily = appFont,
+            color = Color.Gray,
+            fontStyle = FontStyle.Italic,
+            fontWeight = FontWeight.Normal
+        )
+    ),
+    ;
+
+    companion object {
+        fun resolveStatus(
+            category: Category,
+            pickedItems: List<Item>
+        ): GroupPickState {
+            @Suppress("KotlinConstantConditions")
+            return when {
+                category.needed && category.picked -> NeededAndPicked
+                category.needed && !category.picked -> NeededButNotPicked
+                !category.needed && category.picked -> PickedWithoutNeeded
+                !category.needed && !category.picked -> NotNeededNotPicked
+                else -> throw RuntimeException()
+            }
+        }
+    }
+}
+
+data class GroupInvoiceItemForm(val id: Long, val text: String, val status: GroupPickState)

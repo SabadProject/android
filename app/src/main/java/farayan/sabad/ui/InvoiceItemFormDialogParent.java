@@ -1,13 +1,19 @@
 package farayan.sabad.ui;
-import android.app.*;
-import android.widget.*;
-import android.view.*;
-import android.util.*;
-import androidx.annotation.*;
+
+import android.app.Activity;
+import android.util.Log;
+import android.view.Gravity;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import farayan.commons.FarayanUtility;
 import farayan.sabad.R;
-import farayan.sabad.ui.Core.*;
+import farayan.sabad.ui.Core.SabadBaseDialog;
 public abstract class InvoiceItemFormDialogParent extends SabadBaseDialog {
 
 	private static final int layoutID = R.layout.dialog_invoice_item_form;

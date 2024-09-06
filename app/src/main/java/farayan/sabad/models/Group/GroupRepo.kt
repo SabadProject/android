@@ -19,7 +19,6 @@ import farayan.sabad.core.OnePlace.Group.IGroupRepo
 import farayan.sabad.core.OnePlace.Group.NewGroupNameNeededException
 import farayan.sabad.core.OnePlace.GroupUnit.GroupUnitParams
 import farayan.sabad.core.OnePlace.GroupUnit.IGroupUnitRepo
-import farayan.sabad.core.OnePlace.InvoiceItem.IInvoiceItemRepo
 import farayan.sabad.core.OnePlace.InvoiceItem.InvoiceItemParams
 import farayan.sabad.core.model.product.IProductRepo
 import farayan.sabad.core.model.product.ProductParams
@@ -68,17 +67,13 @@ class GroupRepo : IGroupRepo {
     }
 
     override fun Remove(
-        invoiceItemRepo: IInvoiceItemRepo,
         productRepo: IProductRepo,
         GroupUnitRepo: IGroupUnitRepo,
         Group: GroupEntity
     ) {
         val invoiceItemParams = InvoiceItemParams()
         invoiceItemParams.Purchasable = EntityFilter(Group)
-        if (invoiceItemRepo.Count(invoiceItemParams) > 0) {
-            Hide(Group)
-            return
-        }
+
         val productParams = ProductParams()
         productParams.Purchasable = EntityFilter(Group)
         if (productRepo.Count(productParams) > 0) {

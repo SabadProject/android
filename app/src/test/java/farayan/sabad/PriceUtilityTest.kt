@@ -1,5 +1,6 @@
 package farayan.sabad
 
+import farayan.sabad.utility.referencePrice
 import junit.framework.TestCase.assertEquals
 import org.junit.Test
 import java.math.BigDecimal

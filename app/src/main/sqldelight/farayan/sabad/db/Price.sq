@@ -1,0 +1,16 @@
+CREATE TABLE IF NOT EXISTS price (
+    id INTEGER PRIMARY KEY,
+    productId INTEGER NOT NULL,
+    amount TEXT NOT NULL,
+    currency TEXT NOT NULL,
+    moment INTEGER NOT NULL,
+    packagingUnitId INTEGER NOT NULL,
+    packagingBaseUnit TEXT NOT NULL,
+    packagingUnitQuantity TEXT NOT NULL
+);
+
+insert:
+INSERT OR REPLACE INTO price VALUES ?;
+
+last:
+SELECT * FROM price WHERE productId =:productId ORDER BY moment DESC LIMIT 1;

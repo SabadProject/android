@@ -12,13 +12,13 @@ import farayan.commons.FarayanUtility;
 import farayan.commons.QueryBuilderCore.ComparableFilter;
 import farayan.commons.QueryBuilderCore.SortConfig;
 import farayan.commons.QueryBuilderCore.SortDirections;
+import farayan.sabad.R;
 import farayan.sabad.constants.SabadFragmentEvents;
 import farayan.sabad.core.OnePlace.Invoice.IInvoiceRepo;
-import farayan.sabad.models.Invoice.InvoiceAdapter;
 import farayan.sabad.core.OnePlace.Invoice.InvoiceEntity;
 import farayan.sabad.core.OnePlace.Invoice.InvoiceParams;
-import farayan.sabad.R;
 import farayan.sabad.core.OnePlace.Invoice.InvoiceSchema;
+import farayan.sabad.models.Invoice.InvoiceAdapter;
 
 @AndroidEntryPoint
 public class InvoicesFragment extends InvoicesFragmentParent

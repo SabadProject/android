@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<style name="FarayanCommonsDateTimePickerStyle">
+		<item name="dateTimePickerDateTabStyle">@style/dateTimePickerDateTabStyle</item>
+		<item name="dateTimePickerYearWheelStyle">@style/dateTimePickerYearWheelStyle</item>
+		<item name="dateTimePickerMonthWheelStyle">@style/dateTimePickerMonthWheelStyle</item>
+	</style>
+	<style name="dateTimePickerDateTabStyle">
+		<item name="android:textColor">#fff</item>
+	</style>
+
+	<style name="dateTimePickerYearWheelStyle">
+		<item name="wheel_item_text_color">#fff</item>
+	</style>
+
+	<style name="dateTimePickerMonthWheelStyle">
+		<item name="wheel_item_text_color">#f0f</item>
+	</style>
+</resources>

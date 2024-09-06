@@ -1,10 +1,11 @@
 package farayan.sabad.ui;
+
 import android.os.Bundle;
-import android.util.*;
+import android.util.Log;
 
 import farayan.commons.FarayanUtility;
 import farayan.sabad.R;
-import farayan.sabad.ui.Core.*;
+import farayan.sabad.ui.Core.SabadBaseActivity;
 public abstract class ScanActivityParent extends SabadBaseActivity {
 	protected static final String tag = "ScanActivityParent";
 

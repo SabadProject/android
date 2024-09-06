@@ -1,5 +1,7 @@
 package farayan.sabad.ui;
 
+import static farayan.sabad.contracts.IVendorContractKt.UpdateActivityResultCode;
+
 import android.content.Intent;
 import android.net.Uri;
 import android.view.View;
@@ -8,12 +10,10 @@ import javax.inject.Inject;
 
 import dagger.hilt.android.AndroidEntryPoint;
 import farayan.commons.FarayanUtility;
+import farayan.sabad.R;
 import farayan.sabad.contracts.IVendorContract;
 import farayan.sabad.contracts.VendorUpdateStates;
 import farayan.sabad.contracts.VendorUpdatesPriorities;
-import farayan.sabad.R;
-
-import static farayan.sabad.contracts.IVendorContractKt.UpdateActivityResultCode;
 
 @AndroidEntryPoint
 public class AboutActivity extends AboutActivityParent

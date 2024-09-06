@@ -6,6 +6,9 @@ import android.util.AttributeSet;
 
 import androidx.annotation.Nullable;
 
+import java.math.BigDecimal;
+import java.util.Objects;
+
 import javax.inject.Inject;
 
 import dagger.hilt.android.AndroidEntryPoint;
@@ -18,7 +21,6 @@ import farayan.sabad.SabadUtility;
 import farayan.sabad.core.OnePlace.Group.GroupEntity;
 import farayan.sabad.core.OnePlace.Group.IGroupRepo;
 import farayan.sabad.core.OnePlace.GroupUnit.IGroupUnitRepo;
-import farayan.sabad.core.OnePlace.InvoiceItem.IInvoiceItemRepo;
 import farayan.sabad.core.OnePlace.NeedChange.INeedChangeRepo;
 import farayan.sabad.core.OnePlace.Unit.IUnitRepo;
 import farayan.sabad.core.model.product.IProductRepo;
@@ -31,7 +33,6 @@ public class GroupHomeItemComponent extends GroupHomeItemComponentParent impleme
     private final IGenericEvent<GroupEntity> OnRemoved;
     private final Rial.Coefficients RialFixedCoefficient;
     private IGroupRepo TheGroupRepo;
-    private IInvoiceItemRepo TheInvoiceItemRepo;
     private IProductRepo TheProductRepo;
     private IUnitRepo TheUnitRepo;
     private IGroupUnitRepo TheGroupUnitRepo;
@@ -93,14 +94,12 @@ public class GroupHomeItemComponent extends GroupHomeItemComponentParent impleme
     @Inject
     public void Inject(
             IGroupRepo GroupRepo,
-            IInvoiceItemRepo invoiceItemRepo,
             IProductRepo productRepo,
             IUnitRepo UnitRepo,
             IGroupUnitRepo GroupUnitRepo,
             INeedChangeRepo needChangeRepo
     ) {
         TheGroupRepo = GroupRepo;
-        TheInvoiceItemRepo = invoiceItemRepo;
         TheProductRepo = productRepo;
         TheUnitRepo = UnitRepo;
         TheGroupUnitRepo = GroupUnitRepo;
@@ -149,7 +148,6 @@ public class GroupHomeItemComponent extends GroupHomeItemComponentParent impleme
                     new GroupFormDialog.Input(
                             TheEntity,
                             TheGroupRepo,
-                            TheInvoiceItemRepo,
                             TheProductRepo,
                             TheGroupUnitRepo,
                             g -> DisplayEntity(g.Refreshed(TheGroupRepo)),
@@ -204,12 +202,12 @@ public class GroupHomeItemComponent extends GroupHomeItemComponentParent impleme
             InvoiceItemSummaryTextView().setText("");
             InvoiceItemSummaryTextView().setVisibility(GONE);
         } else {
-            if (entity.Item.Refreshed(TheInvoiceItemRepo).Quantity == 1d) {
+            if (Objects.equals(entity.Item.Quantity, BigDecimal.ONE)) {
                 String summary = "%s %s";
                 summary = String.format(
                         summary,
                         FarayanUtility.CatchException(() -> FarayanUtility.Or(entity.Item.Product.Refreshed(TheProductRepo).DisplayableName, ""), x -> ""),
-                        new Rial(RialFixedCoefficient, entity.Item.Total).Textual(getContext().getResources())
+                        new Rial(RialFixedCoefficient, entity.Item.Total.doubleValue()).Textual(getContext().getResources())
                 );
                 InvoiceItemSummaryTextView().setText(summary);
                 InvoiceItemSummaryTextView().setVisibility(VISIBLE);
@@ -217,11 +215,11 @@ public class GroupHomeItemComponent extends GroupHomeItemComponentParent impleme
                 String summary = "%s %s %s، فی: %s، جمع: %s";
                 summary = String.format(
                         summary,
-                        FarayanUtility.MoneyFormatted(entity.Item.Quantity, true, false),
+                        FarayanUtility.MoneyFormatted(entity.Item.Quantity.doubleValue(), true, false),
                         FarayanUtility.CatchException(() -> FarayanUtility.Or(entity.Item.Unit.Refreshed(TheUnitRepo).getDisplayableName(), "«واحد»"), x -> "«واحد»"),
                         FarayanUtility.CatchException(() -> FarayanUtility.Or(entity.Item.Product.Refreshed(TheProductRepo).DisplayableName, ""), x -> ""),
-                        new Rial(RialFixedCoefficient, entity.Item.Fee).Textual(getContext().getResources()),
-                        new Rial(RialFixedCoefficient, entity.Item.Total).Textual(getContext().getResources())
+                        new Rial(RialFixedCoefficient, entity.Item.Fee.doubleValue()).Textual(getContext().getResources()),
+                        new Rial(RialFixedCoefficient, entity.Item.Total.doubleValue()).Textual(getContext().getResources())
                 );
                 InvoiceItemSummaryTextView().setText(summary);
                 InvoiceItemSummaryTextView().setVisibility(VISIBLE);

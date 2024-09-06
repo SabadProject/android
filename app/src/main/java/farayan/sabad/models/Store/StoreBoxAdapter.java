@@ -6,8 +6,8 @@ import java.util.Collection;
 
 import farayan.commons.UI.Core.FilterableEntityAdapter;
 import farayan.commons.UI.Core.IEntityView;
-import farayan.sabad.ui.StoreBoxItemComponent;
 import farayan.sabad.core.OnePlace.Store.StoreEntity;
+import farayan.sabad.ui.StoreBoxItemComponent;
 
 public class StoreBoxAdapter extends FilterableEntityAdapter<StoreEntity>
 {

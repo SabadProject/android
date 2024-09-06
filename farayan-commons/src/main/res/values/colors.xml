@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="date_time_picker_header_background_normal">#5988da</color>
+    <color name="date_time_picker_header_background_checked">#0048bb</color>
+    <color name="debugColor1">#000</color>
+    <color name="debugColor2">#00f</color>
+    <color name="debugColor3">#0f0</color>
+    <color name="debugColor4">#f00</color>
+    <color name="debugColor5">#0ff</color>
+    <color name="debugColor6">#f0f</color>
+    <color name="debugColor61">#55ff00ff</color>
+    <color name="debugColor7">#ff0</color>
+    <color name="debugColor8">#000</color>
+</resources>

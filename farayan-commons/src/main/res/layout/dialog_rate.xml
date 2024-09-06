@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/dialog_rate_bg"
+    android:gravity="center_horizontal"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/RateCommentTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="right"
+        android:padding="10dip"
+        android:textColor="#ef0056"
+        android:textSize="20sp" >
+    </TextView>
+
+    <ImageButton
+        android:id="@+id/RateImageButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dip"
+        android:background="@drawable/rate_star_selector" />
+
+    <ImageButton
+        android:id="@+id/NotNowImageButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dip"
+        android:background="@drawable/rate_not_now_selector" />
+
+</LinearLayout>

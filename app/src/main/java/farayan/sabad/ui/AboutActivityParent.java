@@ -1,11 +1,14 @@
 package farayan.sabad.ui;
+
 import android.os.Bundle;
-import android.widget.*;
-import android.util.*;
+import android.util.Log;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import farayan.commons.FarayanUtility;
 import farayan.sabad.R;
-import farayan.sabad.ui.Core.*;
+import farayan.sabad.ui.Core.SabadBaseActivity;
 public abstract class AboutActivityParent extends SabadBaseActivity {
 	protected static final String tag = "AboutActivityParent";
 

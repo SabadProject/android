@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Context
 import farayan.commons.FarayanUtility
 import farayan.commons.UI.Core.IGenericEvent
-import java.lang.Exception
 
 const val UpdateActivityResultCode: Int = 251478
 

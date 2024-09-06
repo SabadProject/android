@@ -4,16 +4,29 @@ apply plugin: "com.google.gms.google-services"
 apply plugin: "maven-publish"
 apply plugin: "kotlin-kapt"
 apply plugin: "com.google.dagger.hilt.android"
+apply plugin: "app.cash.sqldelight"
+
+sqldelight {
+    databases {
+        create("SabadPersistence") {
+            packageName.set("farayan.sabad.db")
+        }
+    }
+}
 
 android {
+    namespace 'farayan.sabad'
     lint {
-        baseline = file("lint-baseline.xml")
+        baseline = file("sabad-lint-baseline.xml")
+        lintOptions {
+            abortOnError false
+        }
     }
     dexOptions {
         javaMaxHeapSize "5g"
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.4.3"
+        kotlinCompilerExtensionVersion = "1.4.8"
     }
 
     signingConfigs {
@@ -23,7 +36,7 @@ android {
                         "SABAD_KEY_STORE_FILE_PATH=/path/to/key/store/file\n" +
                         "SABAD_KEY_STORE_FILE_PASS=key-store-password\n" +
                         "SABAD_KEY_STORE_ALIAS_NAME=key-alias-name\n" +
-                        "SABAD_KEY_STORE_ALIAS_PASS=key-alias-password")
+                        "SABAD_KEY_STORE_ALIAS_PASS=key-alias-password\n")
             }
             storeFile file(SABAD_KEY_STORE_FILE_PATH)
             storePassword SABAD_KEY_STORE_FILE_PASS
@@ -89,17 +102,17 @@ android {
         }
     }
 
-    flavorDimensions "publisher"
+    flavorDimensions = ["publisher"]
     productFlavors {
-        farayan {
+        Farayan {
             dimension "publisher"
             versionNameSuffix = "-Farayan"
         }
-        googlePlay {
+        GooglePlay {
             dimension "publisher"
             versionNameSuffix = "-GooglePlay"
         }
-        cafebazaar {
+        CafeBazaar {
             dimension "publisher"
             versionNameSuffix = "-Cafebazaar"
         }
@@ -150,22 +163,22 @@ dependencies {
     implementation "com.journeyapps:zxing-android-embedded:4.1.0"
     implementation group: "commons-io", name: "commons-io", version: "2.8.0"
 
+    implementation "androidx.activity:activity-compose:1.9.1"
+
     implementation "com.google.dagger:hilt-android:$hiltVersion"
-    implementation 'androidx.compose.material3:material3-android:1.2.1'
+    //implementation 'androidx.compose.material3:material3-android:1.2.1'
     kapt "com.google.dagger:hilt-compiler:$hiltVersion"
 
 
-    googlePlayImplementation "com.google.android.play:core-ktx:1.8.1"
+    GooglePlayImplementation "com.google.android.play:core-ktx:1.8.1"
 
     debugImplementation "com.facebook.stetho:stetho:1.5.1"
     debugImplementation "com.facebook.stetho:stetho-okhttp3:1.5.0"
     debugImplementation "com.facebook.stetho:stetho-js-rhino:1.5.0"
-    debugImplementation 'com.github.behzadian:debugghost:v1.1.3'
 
     stageImplementation "com.facebook.stetho:stetho:1.5.1"
     stageImplementation "com.facebook.stetho:stetho-okhttp3:1.5.0"
     stageImplementation "com.facebook.stetho:stetho-js-rhino:1.5.0"
-    stageImplementation 'com.github.behzadian:debugghost:v1.1.3'
 
     maintenanceImplementation "com.facebook.stetho:stetho:1.5.1"
     maintenanceImplementation "com.facebook.stetho:stetho-okhttp3:1.5.0"
@@ -177,7 +190,7 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
     androidTestImplementation 'androidx.test:runner:1.3.0'
     androidTestImplementation 'androidx.test:rules:1.3.0'
-    androidTestImplementation "androidx.test.ext:junit:1.1.2"
+    androidTestImplementation "androidx.test.ext:junit:1.2.1"
 
     implementation "com.github.behzadian:android-font-awesome-brands-icon:$fontIconsVersion"
     //api project(path: ":font-awesome-brands-icon-lib")
@@ -195,11 +208,11 @@ dependencies {
     //implementation "farayan.android.libs:farayan-commons:$farayanCommonsVersion"
     implementation project(path: ':farayan-commons')
 
-    implementation "com.github.behzadian:android-number-entry:$numberEntryVersion"
+    //implementation "com.github.behzadian:android-number-entry:$numberEntryVersion"
     //implementation project(path: ':number-entry')
 
     // Compose
-    def composeBom = platform('androidx.compose:compose-bom:2024.05.00')
+    def composeBom = platform('androidx.compose:compose-bom:2024.08.00')
     implementation(composeBom)
     androidTestImplementation(composeBom)
 
@@ -233,6 +246,11 @@ dependencies {
     implementation "androidx.camera:camera-lifecycle:$camerax_stable_version"
     implementation "androidx.camera:camera-view:$camerax_stable_version"
 
+    //sqldelight
+    implementation("app.cash.sqldelight:android-driver:$sqlDelightVer")
+    implementation("app.cash.sqldelight:coroutines-extensions-jvm:$sqlDelightVer")
+    implementation("app.cash.sqldelight:android-driver:$sqlDelightVer")
+    implementation("app.cash.sqldelight:primitive-adapters:$sqlDelightVer")
 }
 afterEvaluate {
     publishing {

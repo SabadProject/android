@@ -5,7 +5,7 @@ import com.j256.ormlite.table.DatabaseTable;
 
 import farayan.commons.FarayanUtility;
 import farayan.commons.UI.Core.IBoxEntity;
-import farayan.sabad.core.base.*;
+import farayan.sabad.core.base.SabadEntityBase;
 
 @DatabaseTable(tableName = CategorySchema.Categories)
 public class CategoryEntity extends SabadEntityBase<CategoryEntity> implements IBoxEntity

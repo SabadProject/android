@@ -3,7 +3,7 @@ package farayan.sabad.core.base
 import farayan.commons.QueryBuilderCore.BasePortable
 import farayan.commons.QueryBuilderCore.IEntity
 import org.jetbrains.annotations.NotNull
-import java.util.*
+import java.util.UUID
 
 open class SabadPortableBase<TEntity : IEntity>(
         localID: Long,

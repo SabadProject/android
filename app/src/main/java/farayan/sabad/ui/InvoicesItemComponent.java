@@ -3,17 +3,18 @@ package farayan.sabad.ui;
 import android.content.Context;
 import android.util.AttributeSet;
 
+import androidx.annotation.Nullable;
+
 import javax.inject.Inject;
 
-import androidx.annotation.Nullable;
 import dagger.hilt.android.AndroidEntryPoint;
 import farayan.commons.Commons.Rial;
 import farayan.commons.FarayanUtility;
 import farayan.commons.PersianCalendar;
 import farayan.commons.UI.Core.IEntityView;
 import farayan.commons.UI.Core.IGenericEvent;
-import farayan.sabad.core.OnePlace.Invoice.InvoiceEntity;
 import farayan.sabad.R;
+import farayan.sabad.core.OnePlace.Invoice.InvoiceEntity;
 import farayan.sabad.core.OnePlace.Store.IStoreRepo;
 
 @AndroidEntryPoint

@@ -1,0 +1,106 @@
+package farayan.commons.UI;
+
+import android.content.Context;
+import android.util.AttributeSet;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
+import androidx.annotation.Nullable;
+
+import farayan.commons.FarayanUtility;
+import farayan.commons.R;
+import farayan.commons.UI.Core.FarayanCommonBaseComponent;
+public abstract class DateTimeBottomSheetComponentParent extends FarayanCommonBaseComponent {
+	private View rootView = null;
+
+	protected static final String tag = "DateTimeBottomSheetComponentParent";
+
+	private void LoadLayout(Context context) {
+		Ctx = context;
+		NullLoadedViews();
+		LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+		long start = System.currentTimeMillis();
+		rootView = inflater.inflate(R.layout.date_time_bottom_sheet, this);
+		long finish = System.currentTimeMillis();
+		Log.i("Performance", String.format("inflating date_time_bottom_sheet takes %s milliseconds", FarayanUtility.MoneyFormatted(finish - start, false)));
+		FarayanUtility.OverrideFonts(rootView,getDefaultFont());
+	}
+
+
+	
+	Context Ctx;
+
+	public DateTimeBottomSheetComponentParent(Context context) {
+		super(context);
+		LoadLayout(context);
+		InitializeLayout();
+	}
+
+	public DateTimeBottomSheetComponentParent(Context context, AttributeSet attrs) {
+		super(context,attrs);
+		LoadLayout(context);
+		InitializeLayout(attrs);
+	}
+
+	public DateTimeBottomSheetComponentParent(Context context, AttributeSet attrs, int defStyle) {
+		super(context, attrs, defStyle);
+		LoadLayout(context);
+		InitializeLayout(attrs, defStyle);
+	}
+
+	public DateTimeBottomSheetComponentParent(Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+		super(context, attrs, defStyleAttr, defStyleRes);
+		LoadLayout(context);
+		InitializeLayout(attrs, defStyleAttr, defStyleRes);
+	}
+
+	private void NullLoadedViews() {
+		m_TopContainer = null;
+		m_HeaderTextView = null;
+		m_Picker = null;
+		m_SelectButton = null;
+	}
+
+	private LinearLayout m_TopContainer;
+
+	protected LinearLayout TopContainer(){
+		if(m_TopContainer == null)
+			m_TopContainer = (LinearLayout)rootView.findViewById(R.id.TopContainer);
+		return m_TopContainer; 
+	}
+
+	private TextView m_HeaderTextView;
+
+	protected TextView HeaderTextView(){
+		if(m_HeaderTextView == null)
+			m_HeaderTextView = (TextView)rootView.findViewById(R.id.HeaderTextView);
+		return m_HeaderTextView; 
+	}
+
+	private farayan.commons.UI.DateTimePickerComponent m_Picker;
+
+	protected farayan.commons.UI.DateTimePickerComponent Picker(){
+		if(m_Picker == null)
+			m_Picker = (farayan.commons.UI.DateTimePickerComponent)rootView.findViewById(R.id.Picker);
+		return m_Picker; 
+	}
+
+	private Button m_SelectButton;
+
+	protected Button SelectButton(){
+		if(m_SelectButton == null)
+			m_SelectButton = (Button)rootView.findViewById(R.id.SelectButton);
+		return m_SelectButton; 
+	}
+
+	protected void InitializeComponents(){}
+	protected void InitializeLayout(){InitializeComponents();}
+	protected void InitializeLayout(AttributeSet attrs){InitializeComponents();}
+	protected void InitializeLayout(AttributeSet attrs, int defStyleAttr){InitializeComponents();}
+	protected void InitializeLayout(@Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes){InitializeComponents();}
+}

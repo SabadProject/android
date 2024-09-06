@@ -94,4 +94,30 @@
     <string name="invoice_item_form_dialog_reference_price_measurable_value" formatted="true">وزن یا حجم هر %s:</string>
     <string name="invoice_item_form_dialog_reference_quantity_unit_unacceptable" formatted="true">مقدار یا تعداد را مثبت درج کنید</string>
     <string name="invoice_item_form_dialog_reference_package_unit_unacceptable" formatted="true">وزن یا حجم را مثبت درج کنید</string>
+    <string name="invoice_item_form_dialog_submit" formatted="true">افزودن</string>
+    <string name="home_item_remove_dialog_title">تایید حذف یک قلم</string>
+    <string name="home_item_remove_dialog_text">در صورت تایید، کالای %s حذف می‌شود</string>
+    <string name="home_item_remove_dialog_action_remove_text">تایید، حذف</string>
+    <string name="home_item_remove_dialog_action_skip_text">خیر، برگرد</string>
+    <string name="purchase_summary_picked_items_count_label">تعداد اقلام برداشته</string>
+    <string name="purchase_summary_picked_items_count_value">%s قلم، %s عدد</string>
+    <string name="purchase_summary_remained_items_count_label">تعداد اقلام مانده</string>
+    <string name="purchase_summary_remained_items_count_value">%s قلم</string>
+    <string name="purchase_summary_price_label">جمع کل</string>
+    <string name="category_quick_query_label">بخشی از نام کالا</string>
+    <string name="category_edit_dialog_title">ویرایش دسته‌بندی</string>
+    <string name="category_edit_name_entry_label">نام دسته‌بندی</string>
+    <string name="category_edit_submit_command">ثبت</string>
+    <string name="category_edit_cancel_command">لغو</string>
+    <string name="category_edit_empty_name_error">نام را درج کنید</string>
+    <string name="category_edit_duplicate_name_error">این دسته‌بندی هم‌اکنون وجود دارد</string>
+    <string name="category_delete_dialog_title">حذف دسته‌بندی‌ها</string>
+    <string name="category_delete_dialog_message">در صورت تایید، دسته‌بندی‌های زیر حذف می‌شوند</string>
+    <string name="category_delete_and_more_template">و %s دسته‌بندی دیگر</string>
+    <string name="category_delete_delete_command">حذف دسته‌بندی‌ها</string>
+    <string name="category_delete_cancel_command">لغو</string>
+    <string name="category_item_price_default">بدون قیمت</string>
+    <string name="category_item_unit_default">واحد</string>
+    <string name="category_item_name_default">«کالا»</string>
+    <string name="item_form_persist_error">نام، بارکد یا مبلغ کالا را درج کنید</string>
 </resources>

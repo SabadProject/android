@@ -9,8 +9,8 @@ import farayan.commons.Commons.Rial;
 import farayan.commons.UI.Core.EntityRecyclerViewAdapter;
 import farayan.commons.UI.Core.IEntityView;
 import farayan.commons.UI.Core.IGenericEvent;
-import farayan.sabad.ui.GroupHomeItemComponent;
 import farayan.sabad.core.OnePlace.Group.GroupEntity;
+import farayan.sabad.ui.GroupHomeItemComponent;
 
 public class GroupRecyclerAdapter extends EntityRecyclerViewAdapter<GroupEntity>
 {

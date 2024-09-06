@@ -3,8 +3,8 @@ package farayan.sabad.core.OnePlace.StoreGroup;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
-import farayan.sabad.core.OnePlace.Store.StoreEntity;
 import farayan.sabad.core.OnePlace.Group.GroupEntity;
+import farayan.sabad.core.OnePlace.Store.StoreEntity;
 import farayan.sabad.core.base.SabadEntityBase;
 
 @DatabaseTable(tableName = StoreGroupSchema.StoreGroups)

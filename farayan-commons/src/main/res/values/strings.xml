@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="fcv_title_activity_install_update">InstallUpdateActivity</string>
+    <string name="fcv_action_settings">Settings</string>
+    <string name="fcv_hello_world">Hello world!</string>
+    <string name="fcv_download_service_notification_title">Downloading %s.</string>
+    <string name="fcv_download_service_notification_completed">Download %s completed.</string>
+    <string name="fcv_download_service_notification_failed">Download %s failed.</string>
+    <string name="Upgrade_OldVersionComment">\u0634\u0645\u0627 \u0627\u0632 \u0646\u0633\u062E\u0647 \u0642\u062F\u06CC\u0645\u06CC \u0628\u0631\u0646\u0627\u0645\u0647 \u0627\u0633\u062A\u0641\u0627\u062F\u0647 \u0645\u06CC \u06A9\u0646\u06CC\u062F. \u0644\u0637\u0641\u0627 \u0628\u0627 \u06A9\u0644\u06CC\u06A9 \u0628\u0631\u0631\u0648\u06CC \u062F\u06A9\u0645\u0647 \u00AB\u0646\u0635\u0628\u00BB \u0628\u0631\u0646\u0627\u0645\u0647 \u0631\u0627 \u0628\u0647 \u0631\u0648\u0632 \u06A9\u0646\u06CC\u062F</string>
+    <string name="Upgrade_OldVersionTitle">\u0646\u0633\u062E\u0647 \u0642\u062F\u06CC\u0645\u06CC</string>
+    <string name="Upgrade_OldVersionButton">نصب نسخه جدید برنامه</string>
+    <string name="Upgrade_UpdateFailedNotificationTitle">به روزرسانی %s</string>
+    <string name="Upgrade_UpdateFailedNotificationComment">برای اطلاع از آخرین نسخه %s کلیک کنید</string>
+    <string name="Upgrade_UpdateFailedNotificationBigText" formatted="false">ما نتوانستیم بررسی کنیم آیا نسخه جدید %s منتشر شده است یا نه؟ ممکن است اتصال اینترنت قطع باشد. لطفا برای اطلاع از آخرین نسخه %s کلیک کنید</string>
+    <string name="Upgrade_UpdateFailedNotificationTicker">بررسی نسخه جدید %s</string>
+    <string name="rate_text">از %s خوشت اومد؟ خب به بقیه هم بگو و به ما 5 ستاره بده !!!</string>
+    <string name="MonthName01Farvardin">فروردین</string>
+    <string name="MonthName02Ordibehesht">اردیبهشت</string>
+    <string name="MonthName03Khordad">خرداد</string>
+    <string name="MonthName04Tir">تیر</string>
+    <string name="MonthName05Mordad">مرداد</string>
+    <string name="MonthName06Shahrivar">شهریور</string>
+    <string name="MonthName07Mehr">مهر</string>
+    <string name="MonthName08Aban">آبان</string>
+    <string name="MonthName09Azar">آذر</string>
+    <string name="MonthName10Day">دی</string>
+    <string name="MonthName11Bahman">بهمن</string>
+    <string name="MonthName12Esfand">اسفند</string>
+    
+    <string name="PasswordProblemsOk">رمز مناسب است</string>
+    <string name="PasswordProblemsNotEnoughLength">رمز باید دستکم %s حرف باشد</string>
+    <string name="PasswordProblemsLengthExceed">رمز حداکثر باید %s حرف باشد</string>
+    <string name="PasswordProblemsLength">رمز باید بین ۵ تا ۶۳ حرف باشد</string>
+    <string name="PasswordProblemsNotEnoughLetters">رمز باید دستکم %s حرف انگلیسی داشته باشد</string>
+    <string name="PasswordProblemsNotEnoughUppercaseLetters">رمز باید دستکم شامل %s حرف انگلیسی بزرگ باشد</string>
+    <string name="PasswordProblemsNotEnoughLowercaseLetters">رمز باید دستکم شامل %s حرف انگلیسی کوچک باشد</string>
+    <string name="PasswordProblemsNotEnoughNumbers">رمز باید دستکم شامل %s عدد باشد</string>
+    <string name="PasswordProblemsNotEnoughPunctuations">رمز باید دستکم شامل %s نماد باشد</string>
+    <string name="PasswordProblemsDisallowedChars">رمز باید از اعداد و حروف انگلیسی و سمبل تشکیل شده باشد</string>
+
+    <string name="PleaseWait">لطفا صبر کنید …</string>
+
+    <string name="DateRangeBoxComponent_SelectDate">تاریخ مد نظر را انتخاب کنید</string>
+    <string name="DateRangeBoxComponentSelectPeriodStart">شروع دوره را انتخاب کنید</string>
+    <string name="DateRangeBoxComponentSelectPeriodFinish">پایان دوره را انتخاب کنید</string>
+    <string name="DateRangeBoxComponentComeOn">بی خیال</string>
+    <string name="DateRangeBoxComponentToday">"امروز "</string>
+    <string name="DateRangeBoxComponentYesterday">"دیروز "</string>
+    <string name="DateRangeBoxComponentCurrentWeek" formatted="false">هفته کنونی</string>
+    <string name="DateRangeBoxComponentPreviousWeek" formatted="false">هفته قبلی</string>
+    <string name="DateRangeBoxComponentCurrentMonth" formatted="false">ماه کنونی</string>
+    <string name="DateRangeBoxComponentPreviousMonth" formatted="false">ماه قبلی</string>
+    <string name="DateRangeBoxComponentCurrentSeason" formatted="false">فصل کنونی</string>
+    <string name="DateRangeBoxComponentPreviousSeason" formatted="false">فصل قبلی</string>
+    <string name="DateRangeBoxComponentCurrentYear" formatted="false">سال کنونی</string>
+    <string name="DateRangeBoxComponentPreviousYear" formatted="false">سال قبلی</string>
+    <string name="DateRangeBoxComponentSpecificDay">روز مشخص</string>
+    <string name="DateRangeBoxComponentSpecificDays" formatted="false">روزهای مشخص </string>
+    <string name="DateRangeBoxComponentFrom">" از "</string>
+    <string name="DateRangeBoxComponentTo">" تا "</string>
+    <string name="RialCoefficientRial">ریال</string>
+    <string name="RialCoefficientTooman">تومان</string>
+    <string name="RialCoefficientHezarTooman">هزار تومان</string>
+    <string name="RialCoefficientMillionTooman">میلیون تومان</string>
+    <string name="RialCoefficientMillardTooman">میلیارد تومان</string>
+
+
+</resources>

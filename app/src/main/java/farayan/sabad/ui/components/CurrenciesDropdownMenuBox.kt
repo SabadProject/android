@@ -26,7 +26,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import farayan.sabad.R
 import farayan.sabad.core.commons.Currency
-import farayan.sabad.ui.appFont
+import farayan.sabad.utility.appFont
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -43,7 +43,7 @@ fun CurrenciesDropdownMenuBox(
     }
 
     var expanded by remember { mutableStateOf(false) }
-    var text by remember { mutableStateOf(TextFieldValue(selected?.textual() ?: "")) }
+    var text = TextFieldValue(selected?.textual() ?: "")
     val editable = !readonly
 
     ExposedDropdownMenuBox(
