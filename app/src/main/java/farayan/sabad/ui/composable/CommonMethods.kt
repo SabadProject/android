@@ -1,12 +1,12 @@
-package farayan.sabad.composables.categories
+package farayan.sabad.ui.composable
 
 import android.app.Activity
 import farayan.sabad.db.Category
 import farayan.sabad.db.Item
 import farayan.sabad.ui.InvoiceItemFormDialog
 import farayan.sabad.utility.maximize
-import farayan.sabad.vms.InvoiceItemFormViewModel
-import farayan.sabad.vms.InvoiceItemFormViewModel.Companion.Factory
+import farayan.sabad.vm.InvoiceItemFormViewModel
+import farayan.sabad.vm.InvoiceItemFormViewModel.Companion.Factory
 
 fun displayItemDialog(item: Item, activity: Activity) {
     val dialogViewModel = Factory.create(InvoiceItemFormViewModel::class.java)

@@ -1,4 +1,4 @@
-package farayan.sabad.composables.categories
+package farayan.sabad.ui.composable
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image

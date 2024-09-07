@@ -11,6 +11,7 @@ import android.view.WindowManager
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -22,17 +23,14 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.AlertDialog
 import androidx.compose.material.Button
 import androidx.compose.material.IconButton
 import androidx.compose.material.LocalTextStyle
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.CheckCircle
-import androidx.compose.material.icons.filled.Warning
-import androidx.compose.material.icons.outlined.Add
-import androidx.compose.material.icons.outlined.CheckCircle
+import androidx.compose.material.TextButton
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.State
@@ -45,23 +43,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDirection
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelStoreOwner
@@ -83,8 +77,7 @@ import farayan.sabad.SabadConstants
 import farayan.sabad.commons.anyValue
 import farayan.sabad.commons.hasFixedValue
 import farayan.sabad.core.commons.UnitVariations
-import farayan.sabad.db.Category
-import farayan.sabad.db.Item
+import farayan.sabad.core.commons.displayable
 import farayan.sabad.ui.components.CameraCapture
 import farayan.sabad.ui.components.CurrenciesDropdownMenuBox
 import farayan.sabad.ui.components.GroupInvoiceItemForm
@@ -93,14 +86,13 @@ import farayan.sabad.ui.components.GroupsDropdownMenuBox
 import farayan.sabad.ui.components.NumberEntry
 import farayan.sabad.ui.components.UnitVariationDropdownBox
 import farayan.sabad.ui.components.UnitsDropdownMenuBox
-import farayan.sabad.ui.components.displayable
 import farayan.sabad.utility.appFont
 import farayan.sabad.utility.defaults
 import farayan.sabad.utility.errorBorder
 import farayan.sabad.utility.hasValue
 import farayan.sabad.utility.isUsable
 import farayan.sabad.utility.referencePrice
-import farayan.sabad.vms.InvoiceItemFormViewModel
+import farayan.sabad.vm.InvoiceItemFormViewModel
 import java.math.BigDecimal
 import farayan.sabad.db.Unit as PersistenceUnit
 
@@ -141,9 +133,9 @@ class InvoiceItemFormDialog(
                     val groups = viewModel.categories.collectAsState()
                     val groupValue = viewModel.category.collectAsState()
                     val product = viewModel.product.collectAsState()
-                    val question = viewModel.question.collectAsState()
+                    val question by viewModel.question.collectAsState()
                     val barcodeValue = viewModel.formScannedExtractedBarcode.collectAsState()
-                    val nameValue = viewModel.formName.collectAsState()
+                    val nameValue = viewModel.formNameReadonly.collectAsState()
                     val quantityValue = viewModel.formQuantityValue.collectAsState()
                     val quantityUnit: State<PersistenceUnit?> = viewModel.formQuantityUnit.collectAsState()
                     val packageMeasurementUnit = viewModel.formPackageUnit.collectAsState()
@@ -187,7 +179,7 @@ class InvoiceItemFormDialog(
                                 )
                             }
                             OutlinedTextField(
-                                value = barcodeValue.value?.textual ?: "",
+                                value = barcodeValue.value?.text ?: "",
                                 onValueChange = { },
                                 enabled = false,
                                 modifier = Modifier
@@ -248,7 +240,7 @@ class InvoiceItemFormDialog(
                                                     cameraUsage = CameraUsage.None
                                                     FarayanUtility.ReleaseScreenOn(window)
                                                     SabadConfigs.Notify(beepManager)
-                                                    viewModel.barcodeScanned(it)
+                                                    viewModel.barcodeScanned(it, ctx)
                                                 }
                                             }
                                         }
@@ -288,13 +280,13 @@ class InvoiceItemFormDialog(
                                         style = TextStyle(fontFamily = appFont)
                                     )
                                 },
-                                onValueChange = { viewModel.formName.value = it },
+                                onValueChange = { viewModel.formNameChanged(it) },
                                 modifier = Modifier
                                     .defaults()
                                     .errorBorder(persistErrorMessage.isUsable)
                                     .fillMaxWidth(),
                                 textStyle = TextStyle(fontFamily = appFont),
-                                readOnly = product.value.fixed,
+                                //readOnly = product.value.fixed,
                                 keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next),
                                 singleLine = true
                             )
@@ -433,27 +425,32 @@ class InvoiceItemFormDialog(
                                 }
                             }
 
-                            if (question.value.hasValue) {
-                                /*androidx.compose.material3.BasicAlertDialog(
-                                    onDismissRequest = {
-                                        // Dismiss the dialog when the user clicks outside the dialog or on the back
-                                        // button. If you want to disable that functionality, simply use an empty
-                                        // onDismissRequest.
-                                        //question = null
-                                    }
-                                ) {
-                                    Surface(
-                                        modifier = Modifier
-                                            .wrapContentWidth()
-                                            .wrapContentHeight(),
-                                        shape = MaterialTheme.shapes.large
-                                    ) {
-                                        Column(modifier = Modifier.padding(16.dp)) {
-
-                                            //... AlertDialog content
+                            if (question.hasValue) {
+                                val theQuestion = question!!
+                                AlertDialog(
+                                    onDismissRequest = { viewModel.clearQuestion() },
+                                    title = {
+                                        Text(text = theQuestion.title, fontFamily = appFont)
+                                    },
+                                    text = {
+                                        Text(text = theQuestion.message, fontFamily = appFont, fontSize = 11.sp)
+                                    },
+                                    buttons = {
+                                        Row(
+                                            modifier = Modifier.padding(all = 8.dp),
+                                            horizontalArrangement = Arrangement.Center
+                                        ) {
+                                            for (button in theQuestion.buttons) {
+                                                TextButton(
+                                                    modifier = Modifier.weight(1.0f),
+                                                    onClick = { button.onClicked() }
+                                                ) {
+                                                    Text(button.label, fontFamily = appFont)
+                                                }
+                                            }
                                         }
                                     }
-                                }*/
+                                )
                             }
                             Button(
                                 onClick = {

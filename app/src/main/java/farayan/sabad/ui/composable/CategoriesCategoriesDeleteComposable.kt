@@ -1,4 +1,4 @@
-package farayan.sabad.composables.categories
+package farayan.sabad.ui.composable
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -13,7 +13,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import farayan.sabad.R
-import farayan.sabad.commons.ConditionalErrorMessage
 import farayan.sabad.core.commons.localize
 import farayan.sabad.db.Category
 import farayan.sabad.utility.appFont

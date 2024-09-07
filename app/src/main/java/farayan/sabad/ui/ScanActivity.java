@@ -17,7 +17,7 @@ import farayan.sabad.core.OnePlace.GroupUnit.IGroupUnitRepo;
 import farayan.sabad.core.OnePlace.Unit.IUnitRepo;
 import farayan.sabad.core.model.product.IProductRepo;
 import farayan.sabad.core.model.product.ProductEntity;
-import farayan.sabad.vms.InvoiceItemFormViewModel;
+import farayan.sabad.vm.InvoiceItemFormViewModel;
 
 @AndroidEntryPoint
 public class ScanActivity extends ScanActivityParent {

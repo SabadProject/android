@@ -4,12 +4,13 @@ import com.google.zxing.BarcodeFormat;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 
 import farayan.commons.Commons.Rial;
 
 public interface SabadConstants
 {
-	Collection<BarcodeFormat> SupportedBarcodeFormats = Arrays.asList(BarcodeFormat.values());
+	Collection<BarcodeFormat> SupportedBarcodeFormats = Collections.singletonList(BarcodeFormat.EAN_13);
 	int DataChangedResultCode = 100;
 
 	int NewGroupGuideDisplayMaxCount = 5;

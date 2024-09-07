@@ -2,6 +2,7 @@ package farayan.sabad.repo
 
 import app.cash.sqldelight.coroutines.asFlow
 import app.cash.sqldelight.coroutines.mapToList
+import farayan.sabad.commons.Text
 import farayan.sabad.db.Category
 import farayan.sabad.db.Product
 import farayan.sabad.db.ProductQueries
@@ -42,5 +43,9 @@ class ProductRepo(private val queries: ProductQueries) {
 
     fun ensure(category: Category, name: String): Product {
         return byCategoryAndName(category, name) ?: create(category, name)
+    }
+
+    fun updateName(product: Product, name: Text) {
+        queries.updateName(name.displayable,name.queryable, product.id)
     }
 }

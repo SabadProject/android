@@ -1,4 +1,4 @@
-package farayan.sabad.ui.components
+package farayan.sabad.core.commons
 
 import android.util.Log
 import java.math.BigDecimal
