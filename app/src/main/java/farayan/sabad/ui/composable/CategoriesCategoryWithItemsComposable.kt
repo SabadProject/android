@@ -1,7 +1,6 @@
-package farayan.sabad.composables.categories
+package farayan.sabad.ui.composable
 
 import android.app.Activity
-import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable

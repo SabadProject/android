@@ -49,16 +49,16 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import farayan.sabad.R
 import farayan.sabad.commons.InvoiceSummary
-import farayan.sabad.composables.categories.CategoriesCategoriesDeleteComposable
-import farayan.sabad.composables.categories.CategoriesCategoryEditComposable
-import farayan.sabad.composables.categories.CategoriesCategoryRemoteItemComposable
-import farayan.sabad.composables.categories.CategoriesCategoryWithItemsComposable
-import farayan.sabad.composables.categories.CategoryQuickQueryComposable
-import farayan.sabad.composables.categories.PurchaseSummaryComposable
+import farayan.sabad.ui.composable.CategoriesCategoriesDeleteComposable
+import farayan.sabad.ui.composable.CategoriesCategoryEditComposable
+import farayan.sabad.ui.composable.CategoriesCategoryRemoteItemComposable
+import farayan.sabad.ui.composable.CategoriesCategoryWithItemsComposable
+import farayan.sabad.ui.composable.CategoryQuickQueryComposable
+import farayan.sabad.ui.composable.PurchaseSummaryComposable
 import farayan.sabad.db.Category
 import farayan.sabad.utility.hasValue
 import farayan.sabad.utility.isUsable
-import farayan.sabad.vms.HomeViewModel
+import farayan.sabad.vm.HomeViewModel
 import farayan.sabad.utility.appFont
 
 class MainActivity : ComponentActivity() {

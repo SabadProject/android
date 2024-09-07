@@ -7,8 +7,12 @@ CREATE TABLE IF NOT EXISTS product (
     queryableName TEXT NOT NULL,
     categoryId INTEGER NOT NULL
 );
+
 insert:
 INSERT OR REPLACE INTO product VALUES ?;
+
+updateName:
+UPDATE product SET displayableName = :displayableName, queryableName = :queryableName WHERE id = :id;
 
 create:
 INSERT INTO product (displayableName,queryableName,categoryId) VALUES (:displayableName,:queryableName,:categoryId);

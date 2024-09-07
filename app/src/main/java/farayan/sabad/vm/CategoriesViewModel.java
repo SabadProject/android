@@ -1,4 +1,4 @@
-package farayan.sabad.vms;
+package farayan.sabad.vm;
 
 import androidx.lifecycle.ViewModel;
 

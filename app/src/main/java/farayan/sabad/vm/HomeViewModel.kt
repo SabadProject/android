@@ -1,4 +1,4 @@
-package farayan.sabad.vms
+package farayan.sabad.vm
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
@@ -21,14 +21,11 @@ import farayan.sabad.repo.UnitRepo
 import farayan.sabad.utility.hasValue
 import farayan.sabad.utility.invoke
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.launch
 import java.math.BigDecimal
 import javax.inject.Inject
 import farayan.sabad.db.Unit as PersistenceUnit
@@ -148,6 +145,11 @@ class HomeViewModel @Inject constructor(
     val editingCategoryErrorReadOnly = editingCategoryErrorMutable.asStateFlow()
 
     companion object {
+        fun clearQuestion() {
+
+
+        }
+
         val Factory: ViewModelProvider.Factory = object : ViewModelProvider.Factory {
             @Suppress("UNCHECKED_CAST")
             override fun <T : ViewModel> create(

@@ -8,7 +8,7 @@ import farayan.sabad.db.Product
 class BarcodeRepo(private val queries: BarcodeQueries) {
     fun create(product: Product, barcode: ExtractedBarcode): Barcode {
         return queries.transactionWithResult {
-            queries.create(product.id, barcode.textual, barcode.format.name, null, null, null)
+            queries.create(product.id, barcode.text, barcode.format.name, null, null, null)
             queries.created().executeAsOne()
         }
     }
@@ -19,7 +19,7 @@ class BarcodeRepo(private val queries: BarcodeQueries) {
     }
 
     fun byBarcode(barcode: ExtractedBarcode): List<Barcode> {
-        return queries.byBarcode(barcode.textual, barcode.format.name).executeAsList()
+        return queries.byBarcode(barcode.text, barcode.format.name).executeAsList()
     }
 
     fun byProduct(product: Product): List<Barcode> {
