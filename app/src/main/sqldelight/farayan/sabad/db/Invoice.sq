@@ -1,0 +1,20 @@
+CREATE TABLE IF NOT EXISTS invoice (
+    id INTEGER PRIMARY KEY,
+    checkoutInstant INTEGER NOT NULL,
+    itemsCount INTEGER NOT NULL,
+    currency TEXT,
+    subtotal TEXT,
+    discount TEXT,
+    payable TEXT
+);
+
+create:
+INSERT INTO invoice
+( checkoutInstant, itemsCount, currency, subtotal, currency, discount, discount, payable) VALUES
+(:checkoutInstant,:itemsCount,:currency,:subtotal,:currency,:discount,:discount,:payable);
+
+created:
+SELECT * FROM invoice WHERE id = last_insert_rowid();
+
+byId:
+SELECT * FROM invoice WHERE id = :id;

@@ -58,7 +58,7 @@ class InvoiceItemFormViewModel @Inject constructor(
 ) : ViewModel() {
 
     val categories = MutableStateFlow(categoryRepo.all())
-    val pickedItems = itemRepo.pickings(viewModelScope)
+    val pickedItems = itemRepo.pickingsFlow()
 
     val category = MutableStateFlow(Fixable<Category>())
     val product = MutableStateFlow(Fixable<Product>())

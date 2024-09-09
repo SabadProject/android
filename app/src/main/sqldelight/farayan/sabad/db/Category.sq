@@ -72,6 +72,12 @@ UPDATE category SET deleted = :deleted WHERE id IN :ids;
 hardDelete:
 DELETE FROM category WHERE id IN :ids;
 
+needed:
+SELECT * FROM category WHERE needed = 1;
+
+picked:
+UPDATE category SET needed = 0 WHERE id IN :ids;
+
 summaryReport:
 SELECT count(*) FROM category WHERE deleted IS NULL AND needed = 1 AND id IN (SELECT categoryId FROM item WHERE invoiceId IS NULL)
 UNION

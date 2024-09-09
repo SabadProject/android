@@ -6,6 +6,7 @@ import app.cash.sqldelight.coroutines.mapToList
 import app.cash.sqldelight.coroutines.mapToOneOrNull
 import farayan.sabad.core.commons.Currency
 import farayan.sabad.core.commons.UnitVariations
+import farayan.sabad.db.Invoice
 import farayan.sabad.db.Item
 import farayan.sabad.db.ItemQueries
 import farayan.sabad.db.ItemSummaryReport
@@ -53,7 +54,7 @@ class ItemRepo(private val queries: ItemQueries) {
             currency?.name,
             price.toString(),
             BigDecimal.ZERO.toString(),
-            price?.multiply(quantity).toString(),
+            price?.multiply(quantity)?.toString(),
             packageWorth?.toString(),
             packageUnit?.name,
             invoiceItem.id
@@ -79,7 +80,7 @@ class ItemRepo(private val queries: ItemQueries) {
                 currency?.name,
                 price?.toString(),
                 BigDecimal.ZERO.toString(),
-                price?.multiply(quantity).toString(),
+                price?.multiply(quantity)?.toString(),
                 packageWorth?.toString(),
                 packageUnit?.name
             )
@@ -93,13 +94,15 @@ class ItemRepo(private val queries: ItemQueries) {
 
     private val repoScope = CoroutineScope(Dispatchers.IO)
 
-    fun pickings(scope: CoroutineScope): SharedFlow<List<Item>> = _pickings
+    private val _pickings: SharedFlow<List<Item>> = queries
+        .pickings()
+        .asFlow()
+        .mapToList(Dispatchers.IO)
+        .shareIn(repoScope, SharingStarted.WhileSubscribed(500_000), 1)
 
-    private val _pickings: SharedFlow<List<Item>> = queries.pickings().asFlow().mapToList(Dispatchers.IO).onEach { items ->
-        // Log each emission
-        Log.d("flow", "Emitted items: ${items.size}")
-    }.shareIn(repoScope, SharingStarted.WhileSubscribed(500_000), 1)
+    fun pickingsFlow(): SharedFlow<List<Item>> = _pickings
 
+    fun pickingsList(): List<Item> = queries.pickings().executeAsList()
 
     fun pendingItemByProduct(product: Product): Item? {
         return queries.byProductAndNullInvoice(product.id).executeAsOneOrNull()
@@ -111,6 +114,10 @@ class ItemRepo(private val queries: ItemQueries) {
 
     fun currentCurrency(): Currency? {
         return queries.currentCurrency().executeAsOneOrNull()?.let { Currency.valueOf(it) }
+    }
+
+    fun checkout(invoice: Invoice) {
+        queries.checkout(invoice.id)
     }
 
     val itemSummary: Flow<ItemSummaryReport?> = queries.itemSummaryReport().asFlow().mapToOneOrNull(Dispatchers.IO)

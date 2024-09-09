@@ -6,6 +6,7 @@ import app.cash.sqldelight.logs.LogSqliteDriver
 import farayan.sabad.db.SabadPersistence
 import farayan.sabad.repo.BarcodeRepo
 import farayan.sabad.repo.CategoryRepo
+import farayan.sabad.repo.InvoiceRepo
 import farayan.sabad.repo.ItemRepo
 import farayan.sabad.repo.PriceRepo
 import farayan.sabad.repo.ProductPhotoRepo
@@ -94,6 +95,10 @@ object SabadDeps {
     }
 
     fun categoryRepo(): CategoryRepo = CategoryRepo(persistence().categoryQueries)
+
+    private val invoiceRepoValue by lazy { InvoiceRepo(persistence().invoiceQueries) }
+
+    fun invoiceRepo(): InvoiceRepo = invoiceRepoValue
 
     private val itemRepoValue by lazy { ItemRepo(persistence().itemQueries) }
 

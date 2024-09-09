@@ -1,6 +1,5 @@
 package farayan.sabad.vm
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -11,10 +10,12 @@ import farayan.sabad.commons.InvoiceSummary
 import farayan.sabad.commons.Text
 import farayan.sabad.core.commons.Currency
 import farayan.sabad.core.commons.Money
+import farayan.sabad.core.commons.currency
 import farayan.sabad.db.Category
 import farayan.sabad.db.Item
 import farayan.sabad.db.Product
 import farayan.sabad.repo.CategoryRepo
+import farayan.sabad.repo.InvoiceRepo
 import farayan.sabad.repo.ItemRepo
 import farayan.sabad.repo.ProductRepo
 import farayan.sabad.repo.UnitRepo
@@ -26,12 +27,14 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
+import org.joda.time.Instant
 import java.math.BigDecimal
 import javax.inject.Inject
 import farayan.sabad.db.Unit as PersistenceUnit
 
 class HomeViewModel @Inject constructor(
     private val categoryRepo: CategoryRepo,
+    private val invoiceRepo: InvoiceRepo,
     private val itemRepo: ItemRepo,
     private val productRepo: ProductRepo,
     private val unitRepo: UnitRepo,
@@ -102,6 +105,17 @@ class HomeViewModel @Inject constructor(
         editingCategoryErrorMutable.value = null
     }
 
+    fun checkout() {
+        val items = itemRepo.pickingsList()
+        val currency = items.filter { it.currency.hasValue }.map { it.currency!!.currency() }.distinct().firstOrNull()
+        val subtotal = items.filter { it.total.hasValue }.sumOf { BigDecimal(it.total) }
+        val discount = items.filter { it.discount.hasValue }.sumOf { BigDecimal(it.discount!!) }
+        val payable = subtotal - discount
+        val invoice = invoiceRepo.create(Instant.now(), items.size.toLong(), currency, subtotal, discount, payable)
+        itemRepo.checkout(invoice)
+        categoryRepo.picked(items.map { it.categoryId })
+    }
+
     private val refreshingMutable = MutableStateFlow(false)
     val refreshingReadOnly = refreshingMutable.asStateFlow()
     private val queryMutable = MutableStateFlow(Text(""))
@@ -119,7 +133,8 @@ class HomeViewModel @Inject constructor(
         }
     val pickedProducts = productRepo.pickingsFlow(viewModelScope)
     val pickedUnits = unitRepo.pickingsFlow(viewModelScope)
-    val pickedItems = itemRepo.pickings(viewModelScope)
+    val pickedItems = itemRepo.pickingsFlow()
+    val neededItems = categoryRepo.neededFlow()
 
     data class CategorySummaryReport(val remainedCategoriesCount: Long, val pickedCategoriesCount: Long)
 
@@ -145,20 +160,14 @@ class HomeViewModel @Inject constructor(
     val editingCategoryErrorReadOnly = editingCategoryErrorMutable.asStateFlow()
 
     companion object {
-        fun clearQuestion() {
-
-
-        }
-
         val Factory: ViewModelProvider.Factory = object : ViewModelProvider.Factory {
             @Suppress("UNCHECKED_CAST")
             override fun <T : ViewModel> create(
                 modelClass: Class<T>
             ): T {
-                Log.i("flow", "creating HomeViewModel")
-
                 return HomeViewModel(
                     SabadDeps.categoryRepo(),
+                    SabadDeps.invoiceRepo(),
                     SabadDeps.itemRepo(),
                     SabadDeps.productRepo(),
                     SabadDeps.unitRepo(),

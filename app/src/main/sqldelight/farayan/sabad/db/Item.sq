@@ -17,10 +17,15 @@ current:
 SELECT * FROM item WHERE invoiceId IS NULL AND productId = :productId;
 
 create:
-INSERT INTO item (categoryId,productId,quantity,unitId,currency,fee,discount,total,packageWorth,packageUnit) VALUES (:categoryId,:productId,:quantity,:unitId,:currency,:fee,:discount,:total,:packageWorth,:packageUnit);
+INSERT INTO item
+    ( categoryId, productId, quantity, unitId, currency, fee, discount, total, packageWorth, packageUnit) VALUES
+    (:categoryId,:productId,:quantity,:unitId,:currency,:fee,:discount,:total,:packageWorth,:packageUnit);
 
 created:
 SELECT * FROM item WHERE id = last_insert_rowid();
+
+checkout:
+UPDATE item SET invoiceId = :invoiceId WHERE invoiceId IS NULL;
 
 byId:
 SELECT * FROM item WHERE id = :id;
