@@ -5,7 +5,9 @@ CREATE TABLE IF NOT EXISTS product (
     id INTEGER PRIMARY KEY,
     displayableName TEXT NOT NULL,
     queryableName TEXT NOT NULL,
-    categoryId INTEGER NOT NULL
+    categoryId INTEGER NOT NULL,
+    updated INTEGER NOT NULL,
+    deleted INTEGER
 );
 
 insert:
@@ -15,7 +17,9 @@ updateName:
 UPDATE product SET displayableName = :displayableName, queryableName = :queryableName WHERE id = :id;
 
 create:
-INSERT INTO product (displayableName,queryableName,categoryId) VALUES (:displayableName,:queryableName,:categoryId);
+INSERT INTO product
+( displayableName, queryableName, categoryId, updated) VALUES
+(:displayableName,:queryableName,:categoryId, unixepoch());
 
 created:
 SELECT * FROM product WHERE id = last_insert_rowid();

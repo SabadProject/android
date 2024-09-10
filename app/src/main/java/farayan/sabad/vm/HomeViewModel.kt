@@ -1,5 +1,6 @@
 package farayan.sabad.vm
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -27,9 +28,11 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.onEach
 import org.joda.time.Instant
 import java.math.BigDecimal
 import javax.inject.Inject
+import kotlin.math.log
 import farayan.sabad.db.Unit as PersistenceUnit
 
 class HomeViewModel @Inject constructor(
@@ -39,6 +42,36 @@ class HomeViewModel @Inject constructor(
     private val productRepo: ProductRepo,
     private val unitRepo: UnitRepo,
 ) : ViewModel() {
+    val pickedProducts = productRepo.pickingsFlow(viewModelScope)
+    val pickedUnits = unitRepo.pickingsFlow(viewModelScope)
+    val pickedItems = itemRepo.pickingsFlow()
+
+    private val refreshingMutable = MutableStateFlow(false)
+    val refreshingReadOnly = refreshingMutable.asStateFlow()
+    private val queryMutable = MutableStateFlow(Text(""))
+    val queryReadOnly = queryMutable.asStateFlow()
+
+    private val selectedCategoriesMutable = MutableStateFlow(listOf<Category>())
+    val selectedCategoriesReadonly = selectedCategoriesMutable.asStateFlow()
+
+    private val editingCategoryErrorMutable = MutableStateFlow<ConditionalErrorMessage?>(null)
+    val editingCategoryErrorReadOnly = editingCategoryErrorMutable.asStateFlow()
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val categories = queryReadOnly.flatMapLatest { if (it.isEmpty) categoryRepo.allFlow() else categoryRepo.filterFlow("%${it.queryable}%") }
+        .distinctUntilChanged { filtered, all ->
+            if (skipThisUpdate) {
+                Log.i("flow", "skipping categories update")
+                skipThisUpdate = false
+                true
+            } else {
+                Log.i("flow", "publishing categories update. needed count: ${filtered.count { it.needed }} OR : ${all.count { it.needed }}")
+                false
+            }
+        }
+
+    private var skipThisUpdate = false
+
     fun changeNeeded(category: Category, needed: Boolean): Category {
         skipThisUpdate = true
         return categoryRepo.changeNeeded(category, needed)
@@ -116,28 +149,6 @@ class HomeViewModel @Inject constructor(
         categoryRepo.picked(items.map { it.categoryId })
     }
 
-    private val refreshingMutable = MutableStateFlow(false)
-    val refreshingReadOnly = refreshingMutable.asStateFlow()
-    private val queryMutable = MutableStateFlow(Text(""))
-    val queryReadOnly = queryMutable.asStateFlow()
-
-    private var skipThisUpdate = false
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    val categories = queryReadOnly.flatMapLatest { if (it.isEmpty) categoryRepo.allFlow() else categoryRepo.filterFlow("%${it.queryable}%") }
-        .distinctUntilChanged { _, _ ->
-            if (skipThisUpdate) {
-                skipThisUpdate = false
-                true
-            } else false
-        }
-    val pickedProducts = productRepo.pickingsFlow(viewModelScope)
-    val pickedUnits = unitRepo.pickingsFlow(viewModelScope)
-    val pickedItems = itemRepo.pickingsFlow()
-    val neededItems = categoryRepo.neededFlow()
-
-    data class CategorySummaryReport(val remainedCategoriesCount: Long, val pickedCategoriesCount: Long)
-
     val invoiceSummary = categoryRepo
         .remainedCategoriesCountFlow
         .combine(categoryRepo.pickedCategoriesCountFlow) { r, p -> CategorySummaryReport(r, p) }
@@ -153,11 +164,7 @@ class HomeViewModel @Inject constructor(
             )
         }
 
-    private val selectedCategoriesMutable = MutableStateFlow(listOf<Category>())
-    val selectedCategoriesReadonly = selectedCategoriesMutable.asStateFlow()
-
-    private val editingCategoryErrorMutable = MutableStateFlow<ConditionalErrorMessage?>(null)
-    val editingCategoryErrorReadOnly = editingCategoryErrorMutable.asStateFlow()
+    data class CategorySummaryReport(val remainedCategoriesCount: Long, val pickedCategoriesCount: Long)
 
     companion object {
         val Factory: ViewModelProvider.Factory = object : ViewModelProvider.Factory {

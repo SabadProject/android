@@ -10,7 +10,9 @@ CREATE TABLE IF NOT EXISTS item (
     fee TEXT,
     discount TEXT,
     total TEXT,
-    invoiceId INTEGER
+    invoiceId INTEGER,
+    updated INTEGER NOT NULL,
+    deleted INTEGER
 );
 
 current:
@@ -18,8 +20,8 @@ SELECT * FROM item WHERE invoiceId IS NULL AND productId = :productId;
 
 create:
 INSERT INTO item
-    ( categoryId, productId, quantity, unitId, currency, fee, discount, total, packageWorth, packageUnit) VALUES
-    (:categoryId,:productId,:quantity,:unitId,:currency,:fee,:discount,:total,:packageWorth,:packageUnit);
+    ( categoryId, productId, quantity, unitId, currency, fee, discount, total, packageWorth, packageUnit, updated) VALUES
+    (:categoryId,:productId,:quantity,:unitId,:currency,:fee,:discount,:total,:packageWorth,:packageUnit, unixepoch());
 
 created:
 SELECT * FROM item WHERE id = last_insert_rowid();

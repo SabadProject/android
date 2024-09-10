@@ -8,13 +8,11 @@ CREATE TABLE IF NOT EXISTS category (
     displayableDescription TEXT NOT NULL,
     queryableDescription TEXT NOT NULL,
     needed INTEGER AS Boolean NOT NULL,
-    deleted TEXT, --TODO
     picked INTEGER AS Boolean NOT NULL,
-    position INTEGER NOT NULL
+    position INTEGER NOT NULL,
+    updated INTEGER NOT NULL,
+    deleted INTEGER
 );
-
-insert:
-INSERT OR REPLACE INTO category VALUES ?;
 
 create:
 INSERT INTO category (
@@ -23,18 +21,18 @@ INSERT INTO category (
     displayableDescription,
     queryableDescription,
     needed,
-    deleted,
     picked,
-    position
+    position,
+    updated
 ) VALUES(
     :displayableName,
     :queryableName,
     :displayableDescription,
     :queryableDescription,
     :needed,
-    NULL,
     0,
-    :position
+    :position,
+    unixepoch()
 );
 
 created:
@@ -47,10 +45,10 @@ all:
 SELECT * FROM category WHERE deleted IS NULL ORDER BY picked ASC, needed DESC, position ASC;
 
 changeNeeded:
-UPDATE category SET needed=:needed WHERE id = :categoryId;
+UPDATE category SET needed=:needed, updated = unixepoch() WHERE id = :categoryId;
 
 updateName:
-UPDATE category SET displayableName=:displayableName, queryableName=:queryableName WHERE id = :categoryId;
+UPDATE category SET displayableName=:displayableName, queryableName=:queryableName, updated = unixepoch() WHERE id = :categoryId;
 
 byId:
 SELECT * FROM category WHERE id =:id;
@@ -67,7 +65,7 @@ remainedCategoriesCount:
 SELECT count(*) FROM category WHERE deleted IS NULL AND needed = 1 AND id NOT IN (SELECT categoryId FROM item WHERE invoiceId IS NULL);
 
 softDelete:
-UPDATE category SET deleted = :deleted WHERE id IN :ids;
+UPDATE category SET deleted = unixepoch(), updated = unixepoch() WHERE id IN :ids;
 
 hardDelete:
 DELETE FROM category WHERE id IN :ids;
@@ -76,7 +74,7 @@ needed:
 SELECT * FROM category WHERE needed = 1;
 
 picked:
-UPDATE category SET needed = 0 WHERE id IN :ids;
+UPDATE category SET needed = 0, updated = unixepoch() WHERE id IN :ids;
 
 summaryReport:
 SELECT count(*) FROM category WHERE deleted IS NULL AND needed = 1 AND id IN (SELECT categoryId FROM item WHERE invoiceId IS NULL)

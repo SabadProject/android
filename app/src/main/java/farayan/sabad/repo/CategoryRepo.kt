@@ -82,7 +82,7 @@ class CategoryRepo(private val queries: CategoryQueries) {
     }
 
     fun delete(removingCategories: List<Category>) {
-        queries.softDelete(Instant.now().toEpochMilli().toString(), removingCategories.map { it.id })
+        queries.softDelete(removingCategories.map { it.id })
     }
 
     fun picked(ids: List<Long>) {

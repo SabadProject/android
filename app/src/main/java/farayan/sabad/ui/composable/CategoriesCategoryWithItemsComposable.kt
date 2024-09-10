@@ -1,6 +1,7 @@
 package farayan.sabad.ui.composable
 
 import android.app.Activity
+import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
@@ -24,6 +25,7 @@ import farayan.sabad.db.Product
 import farayan.sabad.ui.ItemRich
 import farayan.sabad.utility.hasValue
 import farayan.sabad.utility.tryCatch
+import java.text.NumberFormat
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -40,7 +42,10 @@ fun CategoriesCategoryWithItemsComposable(
     onUnselect: (Category) -> Unit,
 ) {
     val categoryItems = tryCatch({ items.filter { it.categoryId == category.id } }, listOf())
-    var needed by remember { mutableStateOf(category.needed) }
+    var needed by remember {
+        Log.i("flow","saving needed value for category: ${category.displayableName} = ${category.needed}, ${NumberFormat.getNumberInstance().format(category.updated)}")
+        mutableStateOf(category.needed)
+    }
     val picked = categoryItems.isNotEmpty()
     val ctx = LocalContext.current
     Column(

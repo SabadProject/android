@@ -168,7 +168,7 @@ class MainActivity : ComponentActivity() {
                                 .weight(1.0f)
                         ) {
                             LazyColumn(modifier = Modifier.pullRefresh(refreshState)) {
-                                items(categories, key = { it.id }) { category -> // import androidx.compose.foundation.lazy.items
+                                items(categories, key = { "${it.id}@${it.updated}" }) { category -> // import androidx.compose.foundation.lazy.items
                                     CategoriesCategoryWithItemsComposable(
                                         category,
                                         items,

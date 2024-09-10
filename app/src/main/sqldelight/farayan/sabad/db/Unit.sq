@@ -3,31 +3,33 @@ CREATE TABLE IF NOT EXISTS unit (
     displayableName TEXT NOT NULL,
     queryableName TEXT NOT NULL,
     variation TEXT,
-    position INTEGER NOT NULL
+    position INTEGER NOT NULL,
+    updated INTEGER NOT NULL,
+    deleted INTEGER
 );
-INSERT INTO unit VALUES (1,'کیلوگرم','کیلوگرم','kg',1);
-INSERT INTO unit VALUES (2,'گرم','گرم','g',2);
-INSERT INTO unit VALUES (3,'لیتر','لیتر','l',3);
-INSERT INTO unit VALUES (4,'میلی‌لیتر','میلی‌لیتر','ml',4);
-INSERT INTO unit VALUES (5,'عدد','عدد',NULL,5);
-INSERT INTO unit VALUES (6,'قوطی','قوطی',NULL,6);
-INSERT INTO unit VALUES (7,'بطری','بطری',NULL,7);
-INSERT INTO unit VALUES (8,'بسته','بسته',NULL,8);
-INSERT INTO unit VALUES (9,'قرص','قرص',NULL,9);
-INSERT INTO unit VALUES (10,'قطعه','قطعه',NULL,10);
-INSERT INTO unit VALUES (11,'دستگاه','دستگاه',NULL,11);
-INSERT INTO unit VALUES (12,'جفت','جفت',NULL,12);
-INSERT INTO unit VALUES (13,'دست','دست',NULL,13);
-INSERT INTO unit VALUES (14,'شاخه','شاخه',NULL,14);
-INSERT INTO unit VALUES (15,'شعله','شعله',NULL,15);
-INSERT INTO unit VALUES (16,'طاقه','طاقه',NULL,16);
-INSERT INTO unit VALUES (17,'قواره','قواره',NULL,17);
-INSERT INTO unit VALUES (18,'نخ','نخ',NULL,18);
-INSERT INTO unit VALUES (19,'قالب','قالب',NULL,19);
-INSERT INTO unit VALUES (20,'جین','جین',NULL,20);
-INSERT INTO unit VALUES (21,'جعبه','جعبه',NULL,21);
-INSERT INTO unit VALUES (22,'کارتن','کارتن',NULL,22);
-INSERT INTO unit VALUES (23,'پاکت','پاکت',NULL,23);
+INSERT INTO unit VALUES (1,'کیلوگرم','کیلوگرم','kg',1,unixepoch(), NULL);
+INSERT INTO unit VALUES (2,'گرم','گرم','g',2,unixepoch(), NULL);
+INSERT INTO unit VALUES (3,'لیتر','لیتر','l',3,unixepoch(), NULL);
+INSERT INTO unit VALUES (4,'میلی‌لیتر','میلی‌لیتر','ml',4,unixepoch(), NULL);
+INSERT INTO unit VALUES (5,'عدد','عدد',NULL,5,unixepoch(), NULL);
+INSERT INTO unit VALUES (6,'قوطی','قوطی',NULL,6,unixepoch(), NULL);
+INSERT INTO unit VALUES (7,'بطری','بطری',NULL,7,unixepoch(), NULL);
+INSERT INTO unit VALUES (8,'بسته','بسته',NULL,8,unixepoch(), NULL);
+INSERT INTO unit VALUES (9,'قرص','قرص',NULL,9,unixepoch(), NULL);
+INSERT INTO unit VALUES (10,'قطعه','قطعه',NULL,10,unixepoch(), NULL);
+INSERT INTO unit VALUES (11,'دستگاه','دستگاه',NULL,11,unixepoch(), NULL);
+INSERT INTO unit VALUES (12,'جفت','جفت',NULL,12,unixepoch(), NULL);
+INSERT INTO unit VALUES (13,'دست','دست',NULL,13,unixepoch(), NULL);
+INSERT INTO unit VALUES (14,'شاخه','شاخه',NULL,14,unixepoch(), NULL);
+INSERT INTO unit VALUES (15,'شعله','شعله',NULL,15,unixepoch(), NULL);
+INSERT INTO unit VALUES (16,'طاقه','طاقه',NULL,16,unixepoch(), NULL);
+INSERT INTO unit VALUES (17,'قواره','قواره',NULL,17,unixepoch(), NULL);
+INSERT INTO unit VALUES (18,'نخ','نخ',NULL,18,unixepoch(), NULL);
+INSERT INTO unit VALUES (19,'قالب','قالب',NULL,19,unixepoch(), NULL);
+INSERT INTO unit VALUES (20,'جین','جین',NULL,20,unixepoch(), NULL);
+INSERT INTO unit VALUES (21,'جعبه','جعبه',NULL,21,unixepoch(), NULL);
+INSERT INTO unit VALUES (22,'کارتن','کارتن',NULL,22,unixepoch(), NULL);
+INSERT INTO unit VALUES (23,'پاکت','پاکت',NULL,23,unixepoch(), NULL);
 
 
 insert:
