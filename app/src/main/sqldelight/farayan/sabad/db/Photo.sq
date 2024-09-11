@@ -12,11 +12,15 @@ CREATE TABLE IF NOT EXISTS photo (
     heightPixels INTEGER NOT NULL,
     widthHeightRatio REAL NOT NULL,
     sizeInBytes INTEGER NOT NULL,
-    type TEXT NOT NULL
+    type TEXT NOT NULL,
+    updated INTEGER NOT NULL,
+    deleted INTEGER
 );
 
 create:
-INSERT INTO photo (productId, path, position, widthPixels, heightPixels, widthHeightRatio, sizeInBytes, type) VALUES (:productId, :path, :position, :widthPixels, :heightPixels, :widthHeightRatio, :sizeInBytes, :type);
+INSERT INTO photo
+( productId,  path,  position,  widthPixels,  heightPixels,  widthHeightRatio,  sizeInBytes,  type, updated) VALUES
+(:productId, :path, :position, :widthPixels, :heightPixels, :widthHeightRatio, :sizeInBytes, :type, unixepoch());
 
 created:
 SELECT * FROM photo WHERE id = last_insert_rowid();

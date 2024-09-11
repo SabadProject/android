@@ -5,13 +5,17 @@ CREATE TABLE IF NOT EXISTS barcode (
     format TEXT NOT NULL,
     bitmapResultPoints TEXT,
     bitmapScaleFactor INTEGER,
-    bitmapFile TEXT
+    bitmapFile TEXT,
+    updated INTEGER NOT NULL,
+    deleted INTEGER
 );
 insert:
 INSERT OR REPLACE INTO barcode VALUES ?;
 
 create:
-INSERT INTO barcode (productId, textual, format, bitmapResultPoints, bitmapScaleFactor, bitmapFile) VALUES (:productId, :textual, :format, :bitmapResultPoints, :bitmapScaleFactor, :bitmapFile);
+INSERT INTO barcode
+( productId,  textual,  format,  bitmapResultPoints,  bitmapScaleFactor,  bitmapFile, updated) VALUES
+(:productId, :textual, :format, :bitmapResultPoints, :bitmapScaleFactor, :bitmapFile, unixepoch());
 
 created:
 SELECT * FROM barcode WHERE id = last_insert_rowid();

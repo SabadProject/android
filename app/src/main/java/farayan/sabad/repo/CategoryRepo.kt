@@ -21,6 +21,8 @@ class CategoryRepo(private val queries: CategoryQueries) {
         return queries.all().executeAsList()
     }
 
+    private val repoScope = CoroutineScope(Dispatchers.IO)
+
     fun allFlow(): Flow<List<Category>> = queries.all().asFlow().mapToList(Dispatchers.IO)
 
     fun allSharedFlow(scope: CoroutineScope): SharedFlow<List<Category>> = queries.all().asFlow().mapToList(Dispatchers.IO).shareIn(scope, SharingStarted.WhileSubscribed(5_000), 1)
@@ -34,6 +36,14 @@ class CategoryRepo(private val queries: CategoryQueries) {
 
     fun filterFlow(q: String): Flow<List<Category>> =
         queries.filter(q).asFlow().mapToList(Dispatchers.IO)
+
+    private val _needed: SharedFlow<List<Category>> = queries
+        .needed()
+        .asFlow()
+        .mapToList(Dispatchers.IO)
+        .shareIn(repoScope, SharingStarted.WhileSubscribed(500_000), 1)
+
+    fun neededFlow(): SharedFlow<List<Category>> = _needed
 
     fun byId(id: Long): Category? {
         return queries.byId(id).executeAsOneOrNull()
@@ -72,7 +82,11 @@ class CategoryRepo(private val queries: CategoryQueries) {
     }
 
     fun delete(removingCategories: List<Category>) {
-        queries.softDelete(Instant.now().toEpochMilli().toString(), removingCategories.map { it.id })
+        queries.softDelete(removingCategories.map { it.id })
+    }
+
+    fun picked(ids: List<Long>) {
+        queries.picked(ids)
     }
 
     val remainedCategoriesCountFlow: Flow<Long> = queries.remainedCategoriesCount().asFlow().mapToOne(Dispatchers.IO)

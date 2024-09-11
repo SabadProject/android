@@ -6,7 +6,9 @@ CREATE TABLE IF NOT EXISTS price (
     moment INTEGER NOT NULL,
     packagingUnitId INTEGER NOT NULL,
     packagingBaseUnit TEXT NOT NULL,
-    packagingUnitQuantity TEXT NOT NULL
+    packagingUnitQuantity TEXT NOT NULL,
+    updated INTEGER NOT NULL,
+    deleted INTEGER
 );
 
 insert:

@@ -11,10 +11,12 @@ import farayan.sabad.commons.InvoiceSummary
 import farayan.sabad.commons.Text
 import farayan.sabad.core.commons.Currency
 import farayan.sabad.core.commons.Money
+import farayan.sabad.core.commons.currency
 import farayan.sabad.db.Category
 import farayan.sabad.db.Item
 import farayan.sabad.db.Product
 import farayan.sabad.repo.CategoryRepo
+import farayan.sabad.repo.InvoiceRepo
 import farayan.sabad.repo.ItemRepo
 import farayan.sabad.repo.ProductRepo
 import farayan.sabad.repo.UnitRepo
@@ -26,16 +28,50 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.onEach
+import org.joda.time.Instant
 import java.math.BigDecimal
 import javax.inject.Inject
+import kotlin.math.log
 import farayan.sabad.db.Unit as PersistenceUnit
 
 class HomeViewModel @Inject constructor(
     private val categoryRepo: CategoryRepo,
+    private val invoiceRepo: InvoiceRepo,
     private val itemRepo: ItemRepo,
     private val productRepo: ProductRepo,
     private val unitRepo: UnitRepo,
 ) : ViewModel() {
+    val pickedProducts = productRepo.pickingsFlow(viewModelScope)
+    val pickedUnits = unitRepo.pickingsFlow(viewModelScope)
+    val pickedItems = itemRepo.pickingsFlow()
+
+    private val refreshingMutable = MutableStateFlow(false)
+    val refreshingReadOnly = refreshingMutable.asStateFlow()
+    private val queryMutable = MutableStateFlow(Text(""))
+    val queryReadOnly = queryMutable.asStateFlow()
+
+    private val selectedCategoriesMutable = MutableStateFlow(listOf<Category>())
+    val selectedCategoriesReadonly = selectedCategoriesMutable.asStateFlow()
+
+    private val editingCategoryErrorMutable = MutableStateFlow<ConditionalErrorMessage?>(null)
+    val editingCategoryErrorReadOnly = editingCategoryErrorMutable.asStateFlow()
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val categories = queryReadOnly.flatMapLatest { if (it.isEmpty) categoryRepo.allFlow() else categoryRepo.filterFlow("%${it.queryable}%") }
+        .distinctUntilChanged { filtered, all ->
+            if (skipThisUpdate) {
+                Log.i("flow", "skipping categories update")
+                skipThisUpdate = false
+                true
+            } else {
+                Log.i("flow", "publishing categories update. needed count: ${filtered.count { it.needed }} OR : ${all.count { it.needed }}")
+                false
+            }
+        }
+
+    private var skipThisUpdate = false
+
     fun changeNeeded(category: Category, needed: Boolean): Category {
         skipThisUpdate = true
         return categoryRepo.changeNeeded(category, needed)
@@ -102,26 +138,16 @@ class HomeViewModel @Inject constructor(
         editingCategoryErrorMutable.value = null
     }
 
-    private val refreshingMutable = MutableStateFlow(false)
-    val refreshingReadOnly = refreshingMutable.asStateFlow()
-    private val queryMutable = MutableStateFlow(Text(""))
-    val queryReadOnly = queryMutable.asStateFlow()
-
-    private var skipThisUpdate = false
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    val categories = queryReadOnly.flatMapLatest { if (it.isEmpty) categoryRepo.allFlow() else categoryRepo.filterFlow("%${it.queryable}%") }
-        .distinctUntilChanged { _, _ ->
-            if (skipThisUpdate) {
-                skipThisUpdate = false
-                true
-            } else false
-        }
-    val pickedProducts = productRepo.pickingsFlow(viewModelScope)
-    val pickedUnits = unitRepo.pickingsFlow(viewModelScope)
-    val pickedItems = itemRepo.pickings(viewModelScope)
-
-    data class CategorySummaryReport(val remainedCategoriesCount: Long, val pickedCategoriesCount: Long)
+    fun checkout() {
+        val items = itemRepo.pickingsList()
+        val currency = items.filter { it.currency.hasValue }.map { it.currency!!.currency() }.distinct().firstOrNull()
+        val subtotal = items.filter { it.total.hasValue }.sumOf { BigDecimal(it.total) }
+        val discount = items.filter { it.discount.hasValue }.sumOf { BigDecimal(it.discount!!) }
+        val payable = subtotal - discount
+        val invoice = invoiceRepo.create(Instant.now(), items.size.toLong(), currency, subtotal, discount, payable)
+        itemRepo.checkout(invoice)
+        categoryRepo.picked(items.map { it.categoryId })
+    }
 
     val invoiceSummary = categoryRepo
         .remainedCategoriesCountFlow
@@ -138,27 +164,17 @@ class HomeViewModel @Inject constructor(
             )
         }
 
-    private val selectedCategoriesMutable = MutableStateFlow(listOf<Category>())
-    val selectedCategoriesReadonly = selectedCategoriesMutable.asStateFlow()
-
-    private val editingCategoryErrorMutable = MutableStateFlow<ConditionalErrorMessage?>(null)
-    val editingCategoryErrorReadOnly = editingCategoryErrorMutable.asStateFlow()
+    data class CategorySummaryReport(val remainedCategoriesCount: Long, val pickedCategoriesCount: Long)
 
     companion object {
-        fun clearQuestion() {
-
-
-        }
-
         val Factory: ViewModelProvider.Factory = object : ViewModelProvider.Factory {
             @Suppress("UNCHECKED_CAST")
             override fun <T : ViewModel> create(
                 modelClass: Class<T>
             ): T {
-                Log.i("flow", "creating HomeViewModel")
-
                 return HomeViewModel(
                     SabadDeps.categoryRepo(),
+                    SabadDeps.invoiceRepo(),
                     SabadDeps.itemRepo(),
                     SabadDeps.productRepo(),
                     SabadDeps.unitRepo(),

@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.appcompat.widget.Toolbar
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -12,6 +13,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -28,6 +30,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material.primarySurface
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.PullRefreshState
@@ -82,6 +85,18 @@ class MainActivity : ComponentActivity() {
                 val editingCategoryError by homeViewModel.editingCategoryErrorReadOnly.collectAsStateWithLifecycle()
                 var removingCategories by remember { mutableStateOf<List<Category>>(listOf()) }
 
+                val categories by homeViewModel.categories.collectAsStateWithLifecycle(listOf())
+                val products by homeViewModel.pickedProducts.collectAsStateWithLifecycle(listOf())
+                val units by homeViewModel.pickedUnits.collectAsStateWithLifecycle(listOf())
+                val items by homeViewModel.pickedItems.collectAsStateWithLifecycle(listOf())
+                val categoriesQuery by homeViewModel.queryReadOnly.collectAsStateWithLifecycle()
+                val invoiceSummary by homeViewModel.invoiceSummary.collectAsStateWithLifecycle(InvoiceSummary(0, 0, 0, null))
+
+                val refreshing by homeViewModel.refreshingReadOnly.collectAsStateWithLifecycle()
+                val refreshState: PullRefreshState = rememberPullRefreshState(refreshing, onRefresh = { homeViewModel.refresh() })
+
+                var removingItem by remember { mutableStateOf<ItemRich?>(null) }
+
                 Scaffold(
                     topBar = {
                         Row(
@@ -101,47 +116,50 @@ class MainActivity : ComponentActivity() {
                             }
                             Row(
                                 modifier = Modifier
-                                    .padding(8.dp, 4.dp),
+                                    .padding(8.dp, 0.dp),
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
+                                val iconSize = 48.dp
+                                val iconPadding = 12.dp
                                 if (selectedCategories.isNotEmpty()) {
-                                    val size = 32.dp
                                     if (selectedCategories.size == 1) {
                                         Icon(Icons.Filled.Edit, contentDescription = "edit", modifier = Modifier
                                             .clickable { editingCategory = selectedCategories.first() }
-                                            .width(size)
-                                            .height(size)
-                                            .padding(4.dp, 0.dp),
+                                            .width(iconSize)
+                                            .height(iconSize)
+                                            .padding(iconPadding),
                                             tint = Color.White
                                         )
                                         Spacer(modifier = Modifier.width(8.dp))
                                     }
                                     Icon(
                                         Icons.Filled.Delete, contentDescription = "delete", modifier = Modifier
-                                            .width(size)
-                                            .height(size)
-                                            .padding(4.dp, 0.dp)
-                                            .clickable {
-                                                removingCategories = selectedCategories
-                                            },
+                                            .width(iconSize)
+                                            .height(iconSize)
+                                            .padding(0.dp)
+                                            .clickable { removingCategories = selectedCategories }
+                                            .padding(iconPadding),
                                         tint = Color.White
                                     )
+                                } else {
+                                    if (items.any()) {
+                                        Icon(
+                                            Icons.Filled.ShoppingCart,
+                                            contentDescription = "checkout",
+                                            modifier = Modifier
+                                                .width(iconSize)
+                                                .height(iconSize)
+                                                .padding(0.dp)
+                                                .clickable { homeViewModel.checkout() }
+                                                .padding(iconPadding),
+                                            tint = Color.White
+                                        )
+                                    }
                                 }
                             }
                         }
                     },
                 ) {
-                    val categories by homeViewModel.categories.collectAsStateWithLifecycle(listOf())
-                    val products by homeViewModel.pickedProducts.collectAsStateWithLifecycle(listOf())
-                    val units by homeViewModel.pickedUnits.collectAsStateWithLifecycle(listOf())
-                    val items by homeViewModel.pickedItems.collectAsStateWithLifecycle(listOf())
-                    val categoriesQuery by homeViewModel.queryReadOnly.collectAsStateWithLifecycle()
-                    val invoiceSummary by homeViewModel.invoiceSummary.collectAsStateWithLifecycle(InvoiceSummary(0, 0, 0, null))
-
-                    val refreshing by homeViewModel.refreshingReadOnly.collectAsStateWithLifecycle()
-                    val refreshState: PullRefreshState = rememberPullRefreshState(refreshing, onRefresh = { homeViewModel.refresh() })
-
-                    var removingItem by remember { mutableStateOf<ItemRich?>(null) }
 
                     Column(modifier = Modifier.padding(4.dp)) {
                         Box(
@@ -150,7 +168,7 @@ class MainActivity : ComponentActivity() {
                                 .weight(1.0f)
                         ) {
                             LazyColumn(modifier = Modifier.pullRefresh(refreshState)) {
-                                items(categories, key = { it.id }) { category -> // import androidx.compose.foundation.lazy.items
+                                items(categories, key = { "${it.id}@${it.updated}" }) { category -> // import androidx.compose.foundation.lazy.items
                                     CategoriesCategoryWithItemsComposable(
                                         category,
                                         items,
