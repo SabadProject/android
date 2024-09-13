@@ -6,11 +6,10 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Star
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewModelScope
 import com.google.zxing.BarcodeFormat
 import com.journeyapps.barcodescanner.BarcodeResult
 import farayan.sabad.R
-import farayan.sabad.SabadDeps
+import farayan.sabad.di.SabadDeps
 import farayan.sabad.commons.ExtractedBarcode
 import farayan.sabad.commons.Fixable
 import farayan.sabad.commons.Text

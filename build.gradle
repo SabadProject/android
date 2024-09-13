@@ -9,6 +9,7 @@ buildscript {
         lifecycleVersion = '2.8.1'
         camerax_stable_version = '1.3.4'
         sqlDelightVer = '2.0.0'
+        navVersion = '2.8.0'
 
         //WHY?
         SabadExportInvoiceAction = "SabadExportInvoice"

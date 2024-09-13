@@ -118,8 +118,6 @@ android {
         }
     }
     buildFeatures {
-        viewBinding true
-        //dataBinding true
         compose true
     }
     compileOptions {
@@ -251,6 +249,9 @@ dependencies {
     implementation("app.cash.sqldelight:coroutines-extensions-jvm:$sqlDelightVer")
     implementation("app.cash.sqldelight:android-driver:$sqlDelightVer")
     implementation("app.cash.sqldelight:primitive-adapters:$sqlDelightVer")
+
+    implementation "androidx.navigation:navigation-compose:$navVersion"
+
 }
 afterEvaluate {
     publishing {
