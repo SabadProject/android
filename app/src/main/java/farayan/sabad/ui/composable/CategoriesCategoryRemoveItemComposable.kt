@@ -10,12 +10,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import farayan.sabad.R
-import farayan.sabad.ui.ItemRich
+import farayan.sabad.commons.ItemRich
 import farayan.sabad.utility.appFont
 
 val appTextStyle = TextStyle(fontFamily = appFont)
+val boldTextStyle = TextStyle(fontFamily = appFont, fontWeight = FontWeight.Bold)
 
 @Composable
 fun CategoriesCategoryRemoteItemComposable(removingItem: ItemRich, onConfirmed: () -> Unit, onCancelled: () -> Unit) {

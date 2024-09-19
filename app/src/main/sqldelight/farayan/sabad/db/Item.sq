@@ -32,6 +32,12 @@ UPDATE item SET invoiceId = :invoiceId WHERE invoiceId IS NULL;
 byId:
 SELECT * FROM item WHERE id = :id;
 
+byInvoice:
+SELECT * FROM item WHERE invoiceId = :invoiceId;
+
+all:
+SELECT * FROM item;
+
 update:
 UPDATE item SET quantity=:quantity, unitId=:unitId, currency=:currency, fee=:fee, discount=:discount, total=:total, packageWorth=:packageWorth,packageUnit=:packageUnit WHERE id = ?;
 

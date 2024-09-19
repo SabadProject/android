@@ -24,10 +24,12 @@ import java.math.BigDecimal
 import farayan.sabad.db.Unit as PersistenceUnit
 
 class InvoiceRepo(private val queries: InvoiceQueries) {
-    fun create(now: Instant, size: Long, currency: Currency?, subtotal: BigDecimal, discount: BigDecimal, payable: BigDecimal): Invoice {
+    fun create(shop: String, now: Instant, size: Long, currency: Currency?, subtotal: BigDecimal, discount: BigDecimal, payable: BigDecimal): Invoice {
         return queries.transactionWithResult {
-            queries.create(now.millis, size, currency?.name, subtotal.toString(), discount.toString(), payable.toString())
+            queries.create(shop, now.millis, size, currency?.name, subtotal.toString(), discount.toString(), payable.toString())
             queries.created().executeAsOne()
         }
     }
+
+    val allFlow: Flow<List<Invoice>> = queries.all().asFlow().mapToList(Dispatchers.IO)
 }

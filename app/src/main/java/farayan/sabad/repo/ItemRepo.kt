@@ -98,7 +98,7 @@ class ItemRepo(private val queries: ItemQueries) {
         .pickings()
         .asFlow()
         .mapToList(Dispatchers.IO)
-        .shareIn(repoScope, SharingStarted.WhileSubscribed(500_000), 1)
+        .shareIn(repoScope, SharingStarted.WhileSubscribed(50_000), 1)
 
     fun pickingsFlow(): SharedFlow<List<Item>> = _pickings
 
@@ -120,5 +120,11 @@ class ItemRepo(private val queries: ItemQueries) {
         queries.checkout(invoice.id)
     }
 
+    fun byInvoice(invoice: Invoice): List<Item> {
+        return queries.byInvoice(invoice.id).executeAsList()
+    }
+
     val itemSummary: Flow<ItemSummaryReport?> = queries.itemSummaryReport().asFlow().mapToOneOrNull(Dispatchers.IO)
+
+    val allFlow: Flow<List<Item>> = queries.all().asFlow().mapToList(Dispatchers.IO)
 }

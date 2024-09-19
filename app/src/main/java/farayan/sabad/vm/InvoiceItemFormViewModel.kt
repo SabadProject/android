@@ -6,11 +6,10 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Star
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewModelScope
 import com.google.zxing.BarcodeFormat
 import com.journeyapps.barcodescanner.BarcodeResult
 import farayan.sabad.R
-import farayan.sabad.SabadDeps
+import farayan.sabad.di.SabadDeps
 import farayan.sabad.commons.ExtractedBarcode
 import farayan.sabad.commons.Fixable
 import farayan.sabad.commons.Text
@@ -33,10 +32,10 @@ import farayan.sabad.repo.BarcodeRepo
 import farayan.sabad.repo.CategoryRepo
 import farayan.sabad.repo.ItemRepo
 import farayan.sabad.repo.PriceRepo
-import farayan.sabad.repo.ProductPhotoRepo
+import farayan.sabad.repo.PhotoRepo
 import farayan.sabad.repo.ProductRepo
 import farayan.sabad.repo.UnitRepo
-import farayan.sabad.utility.hasValue
+import farayan.sabad.core.commons.hasValue
 import farayan.sabad.utility.isUsable
 import farayan.sabad.utility.queryable
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -52,7 +51,7 @@ class InvoiceItemFormViewModel @Inject constructor(
     private val categoryRepo: CategoryRepo,
     private val itemRepo: ItemRepo,
     private val productRepo: ProductRepo,
-    private val productPhotoRepo: ProductPhotoRepo,
+    private val photoRepo: PhotoRepo,
     private val barcodeRepo: BarcodeRepo,
     private val priceRepo: PriceRepo,
 ) : ViewModel() {
@@ -322,7 +321,7 @@ class InvoiceItemFormViewModel @Inject constructor(
             }
         }
 
-        formPhotos.value = productPhotoRepo.byProduct(selected).map { ProductPhotoItem(it.path, it) }
+        formPhotos.value = photoRepo.byProduct(selected).map { ProductPhotoItem(it.path, it) }
 
         val item = itemRepo.pendingItemByProduct(selected)
         if (item.hasValue) {
@@ -402,7 +401,7 @@ class InvoiceItemFormViewModel @Inject constructor(
             productRepo.updateName(product, name)
         }
         for (photo in formPhotos.value) {
-            productPhotoRepo.ensure(product, photo.path)
+            photoRepo.ensure(product, photo.path)
         }
         if (formScannedExtractedBarcode.value.hasValue) {
             barcodeRepo.ensure(product, formScannedExtractedBarcode.value!!)

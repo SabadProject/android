@@ -15,7 +15,7 @@ import farayan.sabad.R
 import farayan.sabad.commons.InvoiceSummary
 import farayan.sabad.core.commons.localize
 import farayan.sabad.utility.appFont
-import farayan.sabad.utility.hasValue
+import farayan.sabad.core.commons.hasValue
 
 @Composable
 fun PurchaseSummaryComposable(summary: InvoiceSummary) {

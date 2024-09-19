@@ -4,12 +4,14 @@ import app.cash.sqldelight.coroutines.asFlow
 import app.cash.sqldelight.coroutines.mapToList
 import farayan.sabad.commons.Text
 import farayan.sabad.db.Category
+import farayan.sabad.db.Item
 import farayan.sabad.db.Product
 import farayan.sabad.db.ProductQueries
 import farayan.sabad.utility.displayable
 import farayan.sabad.utility.queryable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.shareIn
@@ -48,4 +50,7 @@ class ProductRepo(private val queries: ProductQueries) {
     fun updateName(product: Product, name: Text) {
         queries.updateName(name.displayable,name.queryable, product.id)
     }
+
+
+    val allFlow: Flow<List<Product>> = queries.all().asFlow().mapToList(Dispatchers.IO)
 }

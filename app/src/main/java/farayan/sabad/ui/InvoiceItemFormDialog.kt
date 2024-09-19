@@ -72,7 +72,6 @@ import com.journeyapps.barcodescanner.BarcodeView
 import com.journeyapps.barcodescanner.DefaultDecoderFactory
 import farayan.commons.FarayanUtility
 import farayan.sabad.R
-import farayan.sabad.SabadConfigs
 import farayan.sabad.SabadConstants
 import farayan.sabad.commons.anyValue
 import farayan.sabad.commons.hasFixedValue
@@ -86,10 +85,11 @@ import farayan.sabad.ui.components.GroupsDropdownMenuBox
 import farayan.sabad.ui.components.NumberEntry
 import farayan.sabad.ui.components.UnitVariationDropdownBox
 import farayan.sabad.ui.components.UnitsDropdownMenuBox
+import farayan.sabad.ui.composable.InvoiceItemProduct
 import farayan.sabad.utility.appFont
 import farayan.sabad.utility.defaults
 import farayan.sabad.utility.errorBorder
-import farayan.sabad.utility.hasValue
+import farayan.sabad.core.commons.hasValue
 import farayan.sabad.utility.isUsable
 import farayan.sabad.utility.referencePrice
 import farayan.sabad.vm.InvoiceItemFormViewModel
@@ -239,7 +239,7 @@ class InvoiceItemFormDialog(
                                                     pause()
                                                     cameraUsage = CameraUsage.None
                                                     FarayanUtility.ReleaseScreenOn(window)
-                                                    SabadConfigs.Notify(beepManager)
+                                                    beepManager.playBeepSound()
                                                     viewModel.barcodeScanned(it, ctx)
                                                 }
                                             }
