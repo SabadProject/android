@@ -1,6 +1,7 @@
 CREATE TABLE IF NOT EXISTS invoice (
     id INTEGER PRIMARY KEY,
-    checkoutInstant INTEGER NOT NULL,
+    shop TEXT NOT NULL,
+    moment INTEGER NOT NULL,
     itemsCount INTEGER NOT NULL,
     currency TEXT,
     subtotal TEXT,
@@ -12,11 +13,14 @@ CREATE TABLE IF NOT EXISTS invoice (
 
 create:
 INSERT INTO invoice
-( checkoutInstant, itemsCount, currency, subtotal, currency, discount, discount, payable, updated) VALUES
-(:checkoutInstant,:itemsCount,:currency,:subtotal,:currency,:discount,:discount,:payable, unixepoch());
+( shop,  moment, itemsCount, currency, subtotal, currency, discount, discount, payable, updated) VALUES
+(:shop, :moment,:itemsCount,:currency,:subtotal,:currency,:discount,:discount,:payable, unixepoch());
 
 created:
 SELECT * FROM invoice WHERE id = last_insert_rowid();
 
 byId:
 SELECT * FROM invoice WHERE id = :id;
+
+all:
+SELECT * FROM invoice ORDER BY moment DESC;

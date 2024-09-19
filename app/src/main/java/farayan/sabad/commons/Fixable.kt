@@ -1,6 +1,6 @@
 package farayan.sabad.commons
 
-import farayan.sabad.utility.hasValue
+import farayan.sabad.core.commons.hasValue
 import kotlinx.coroutines.flow.MutableStateFlow
 
 class Fixable<T>(val value: T? = null, val fixed: Boolean = false) {

@@ -41,6 +41,9 @@ SELECT * FROM category WHERE id = last_insert_rowid();
 byName:
 SELECT * FROM category WHERE queryableName = :queryableName AND deleted IS NULL;
 
+byNameIncludingDeleted:
+SELECT * FROM category WHERE queryableName = :queryableName;
+
 all:
 SELECT * FROM category WHERE deleted IS NULL ORDER BY picked ASC, needed DESC, position ASC;
 

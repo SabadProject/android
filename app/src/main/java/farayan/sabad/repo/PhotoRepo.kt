@@ -1,10 +1,14 @@
 package farayan.sabad.repo
 
+import app.cash.sqldelight.coroutines.asFlow
+import app.cash.sqldelight.coroutines.mapToList
 import farayan.sabad.db.Photo
 import farayan.sabad.db.PhotoQueries
 import farayan.sabad.db.Product
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 
-class ProductPhotoRepo(private val queries: PhotoQueries) {
+class PhotoRepo(private val queries: PhotoQueries) {
     fun create(product: Product, path: String): Photo {
         return queries.transactionWithResult {
             val position = 0L
@@ -23,4 +27,5 @@ class ProductPhotoRepo(private val queries: PhotoQueries) {
     }
 
     fun byProduct(product: Product): List<Photo> = queries.byProduct(product.id).executeAsList()
+    val allFlow: Flow<List<Photo>> = queries.all().asFlow().mapToList(Dispatchers.IO)
 }

@@ -30,3 +30,6 @@ SELECT * FROM photo WHERE productId = :productId AND path = :path;
 
 byProduct:
 SELECT * FROM photo WHERE productId = :productId;
+
+all:
+SELECT * FROM photo;

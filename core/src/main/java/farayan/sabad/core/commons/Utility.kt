@@ -1,4 +1,4 @@
-package farayan.sabad.utility
+package farayan.sabad.core.commons
 
 import android.app.Dialog
 import android.view.Gravity

@@ -3,9 +3,6 @@ package farayan.sabad.di
 import android.util.Log
 import app.cash.sqldelight.driver.android.AndroidSqliteDriver
 import app.cash.sqldelight.logs.LogSqliteDriver
-import dagger.Module
-import dagger.hilt.InstallIn
-import dagger.hilt.components.SingletonComponent
 import farayan.sabad.SabadTheApp
 import farayan.sabad.db.SabadPersistence
 import farayan.sabad.repo.BarcodeRepo
@@ -13,7 +10,7 @@ import farayan.sabad.repo.CategoryRepo
 import farayan.sabad.repo.InvoiceRepo
 import farayan.sabad.repo.ItemRepo
 import farayan.sabad.repo.PriceRepo
-import farayan.sabad.repo.ProductPhotoRepo
+import farayan.sabad.repo.PhotoRepo
 import farayan.sabad.repo.ProductRepo
 import farayan.sabad.repo.UnitRepo
 import farayan.sabad.utility.displayable
@@ -94,7 +91,7 @@ object SabadDeps {
     }
 
     private fun createCategory(name: String) {
-        db.categoryQueries.byName(name.queryable()).executeAsOneOrNull() ?: db.categoryQueries.create(name.displayable(), name.queryable(), "", "", false, index++)
+        db.categoryQueries.byNameIncludingDeleted(name.queryable()).executeAsOneOrNull() ?: db.categoryQueries.create(name.displayable(), name.queryable(), "", "", false, index++)
     }
 
     fun categoryRepo(): CategoryRepo = CategoryRepo(persistence().categoryQueries)
@@ -111,7 +108,7 @@ object SabadDeps {
 
     fun barcodeRepo(): BarcodeRepo = BarcodeRepo(persistence().barcodeQueries)
 
-    fun photoRepo(): ProductPhotoRepo = ProductPhotoRepo(persistence().photoQueries)
+    fun photoRepo(): PhotoRepo = PhotoRepo(persistence().photoQueries)
 
     fun unitRepo(): UnitRepo = UnitRepo(persistence().unitQueries)
 

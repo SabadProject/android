@@ -1,59 +1,49 @@
 package farayan.sabad.ui.composable
 
 import android.annotation.SuppressLint
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.ShoppingCart
-import androidx.compose.material.primarySurface
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.PullRefreshState
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import farayan.sabad.R
+import androidx.lifecycle.viewModelScope
+import androidx.navigation.NavHostController
 import farayan.sabad.commons.InvoiceSummary
 import farayan.sabad.commons.ItemRich
 import farayan.sabad.db.Category
-import farayan.sabad.utility.appFont
-import farayan.sabad.utility.hasValue
+import farayan.sabad.core.commons.hasValue
 import farayan.sabad.utility.isUsable
 import farayan.sabad.vm.CategoriesViewModel
+import farayan.sabad.vm.TopAppBarIcon
+import kotlinx.coroutines.launch
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun CategoriesCategoriesComposable(categoriesViewModel: CategoriesViewModel) {
-    val selectedCategories by categoriesViewModel.selectedCategoriesReadonly.collectAsStateWithLifecycle()
+fun CategoriesCategoriesComposable(categoriesViewModel: CategoriesViewModel, onAppBarIconChange: (List<TopAppBarIcon>) -> Unit, navController: NavHostController) {
+    var selectedCategories by remember { mutableStateOf(listOf<Category>()) } // categoriesViewModel.selectedCategoriesReadonly.collectAsStateWithLifecycle()
     var editingCategory by remember { mutableStateOf<Category?>(null) }
+    var checkingOut by remember { mutableStateOf(false) }
     val editingCategoryError by categoriesViewModel.editingCategoryErrorReadOnly.collectAsStateWithLifecycle()
     var removingCategories by remember { mutableStateOf<List<Category>>(listOf()) }
 
@@ -69,12 +59,43 @@ fun CategoriesCategoriesComposable(categoriesViewModel: CategoriesViewModel) {
 
     var removingItem by remember { mutableStateOf<ItemRich?>(null) }
 
+    val editCategoryButton = TopAppBarIcon(Icons.Filled.Edit, "edit", { editingCategory = selectedCategories.first() }, 0)
+    val deleteCategoriesButton = TopAppBarIcon(Icons.Filled.Delete, "delete", { removingCategories = selectedCategories }, 0)
+    val checkoutButton = TopAppBarIcon(Icons.Filled.ShoppingCart, "checkout", { checkingOut = true }, 0)
+
+    fun updateActionIcons() {
+        val actionIcons = mutableListOf<TopAppBarIcon>()
+        if (selectedCategories.size == 1) {
+            actionIcons.add(editCategoryButton)
+        }
+        if (selectedCategories.isNotEmpty()) {
+            actionIcons.add(deleteCategoriesButton)
+        }
+        if (items.isNotEmpty()) {
+            actionIcons.add(checkoutButton)
+        }
+        onAppBarIconChange(actionIcons)
+    }
+
+    fun select(it: Category) {
+        selectedCategories += it
+        updateActionIcons()
+    }
+
+    fun unselect(it: Category) {
+        selectedCategories -= it
+        updateActionIcons()
+    }
+
     Column(modifier = Modifier.padding(4.dp)) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1.0f)
         ) {
+            LaunchedEffect(key1 = items) {
+                updateActionIcons()
+            }
             LazyColumn(modifier = Modifier.pullRefresh(refreshState)) {
                 items(categories, key = { "${it.id}@${it.updated}" }) { category -> // import androidx.compose.foundation.lazy.items
                     CategoriesCategoryWithItemsComposable(
@@ -86,8 +107,8 @@ fun CategoriesCategoriesComposable(categoriesViewModel: CategoriesViewModel) {
                         { removingItem = it },
                         selectedCategories.isNotEmpty(),
                         selectedCategories.contains(category),
-                        { categoriesViewModel.select(it) },
-                        { categoriesViewModel.unselect(it) },
+                        { /*categoriesViewModel.*/select(it); },
+                        { /*categoriesViewModel.*/unselect(it); },
                     )
                 }
             }
@@ -135,6 +156,12 @@ fun CategoriesCategoriesComposable(categoriesViewModel: CategoriesViewModel) {
                 onCancelled = { removingItem = null }
             )
         }
+        if (checkingOut) {
+            CategoriesCheckoutComposable(
+                onConfirmed = { shop -> categoriesViewModel.checkout(shop); checkingOut = false },
+                onCancelled = { checkingOut = false }
+            )
+        }
         PurchaseSummaryComposable(invoiceSummary)
         CategoryQuickQueryComposable(
             addable = categoriesQuery.queryable.isUsable && categories.none { it.queryableName.contentEquals(categoriesQuery.queryable) },
@@ -145,5 +172,4 @@ fun CategoriesCategoriesComposable(categoriesViewModel: CategoriesViewModel) {
             onAddClicked = { categoriesViewModel.addCategory() }
         )
     }
-
 }

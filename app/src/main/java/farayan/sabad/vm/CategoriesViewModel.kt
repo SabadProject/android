@@ -20,8 +20,8 @@ import farayan.sabad.repo.InvoiceRepo
 import farayan.sabad.repo.ItemRepo
 import farayan.sabad.repo.ProductRepo
 import farayan.sabad.repo.UnitRepo
-import farayan.sabad.utility.hasValue
-import farayan.sabad.utility.invoke
+import farayan.sabad.core.commons.hasValue
+import farayan.sabad.core.commons.invoke
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -56,7 +56,7 @@ class CategoriesViewModel @Inject constructor(
     val editingCategoryErrorReadOnly = editingCategoryErrorMutable.asStateFlow()
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val categories = queryReadOnly.flatMapLatest { if (it.isEmpty) categoryRepo.allFlow() else categoryRepo.filterFlow("%${it.queryable}%") }
+    val categories = queryReadOnly.flatMapLatest { if (it.isEmpty) categoryRepo.allFlow else categoryRepo.filterFlow("%${it.queryable}%") }
         .distinctUntilChanged { filtered, all ->
             if (skipThisUpdate) {
                 Log.i("flow", "skipping categories update")
@@ -136,13 +136,13 @@ class CategoriesViewModel @Inject constructor(
         editingCategoryErrorMutable.value = null
     }
 
-    fun checkout() {
+    fun checkout(shop: String) {
         val items = itemRepo.pickingsList()
         val currency = items.filter { it.currency.hasValue }.map { it.currency!!.currency() }.distinct().firstOrNull()
         val subtotal = items.filter { it.total.hasValue }.sumOf { BigDecimal(it.total) }
         val discount = items.filter { it.discount.hasValue }.sumOf { BigDecimal(it.discount!!) }
         val payable = subtotal - discount
-        val invoice = invoiceRepo.create(Instant.now(), items.size.toLong(), currency, subtotal, discount, payable)
+        val invoice = invoiceRepo.create(shop, Instant.now(), items.size.toLong(), currency, subtotal, discount, payable)
         itemRepo.checkout(invoice)
         categoryRepo.picked(items.map { it.categoryId })
     }

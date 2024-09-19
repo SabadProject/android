@@ -124,4 +124,13 @@
     <string name="item_form_barcode_registered_for_other_category_message_template">در حالی که %s کالا با بارکد اسکن شده (%s) ثبت شده، ولی هیچکدام در دسته‌بندی %s نیستند، لطفا تصمیم بگیرید که کالای جدیدی با همان بارکد ولی در دسته‌بندی جدید درج کنید یا بارکد دیگری را اسکن می‌کنید؟ </string>
     <string name="item_form_barcode_registered_for_other_category_create_product_label">درج کالای جدید</string>
     <string name="item_form_barcode_registered_for_other_category_skip_barcode_label">اسکن دوباره</string>
+    <string name="categories_checkout_title">پایان خرید</string>
+    <string name="categories_checkout_shop_placeholder">نام فروشگاه</string>
+    <string name="categories_checkout_shop_label">نام فروشگاه</string>
+    <string name="categories_checkout_checkout_command">پایان</string>
+    <string name="categories_checkout_cancel_command">لغو</string>
+    <string name="invoices_invoice_shop_label">"خرید از: "</string>
+    <string name="invoices_invoice_unit_default">واحد</string>
+    <string name="invoices_invoice_fee_label">هر %s: </string>
+    <string name="invoices_invoice_total_label">"در مجموع: "</string>
 </resources>

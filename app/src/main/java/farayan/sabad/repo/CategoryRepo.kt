@@ -23,7 +23,7 @@ class CategoryRepo(private val queries: CategoryQueries) {
 
     private val repoScope = CoroutineScope(Dispatchers.IO)
 
-    fun allFlow(): Flow<List<Category>> = queries.all().asFlow().mapToList(Dispatchers.IO)
+    val allFlow: Flow<List<Category>> = queries.all().asFlow().mapToList(Dispatchers.IO)
 
     fun allSharedFlow(scope: CoroutineScope): SharedFlow<List<Category>> = queries.all().asFlow().mapToList(Dispatchers.IO).shareIn(scope, SharingStarted.WhileSubscribed(5_000), 1)
 

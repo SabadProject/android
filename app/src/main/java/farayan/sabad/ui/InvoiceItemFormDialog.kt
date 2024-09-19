@@ -89,7 +89,7 @@ import farayan.sabad.ui.composable.InvoiceItemProduct
 import farayan.sabad.utility.appFont
 import farayan.sabad.utility.defaults
 import farayan.sabad.utility.errorBorder
-import farayan.sabad.utility.hasValue
+import farayan.sabad.core.commons.hasValue
 import farayan.sabad.utility.isUsable
 import farayan.sabad.utility.referencePrice
 import farayan.sabad.vm.InvoiceItemFormViewModel

@@ -252,6 +252,7 @@ dependencies {
 
     implementation "androidx.navigation:navigation-compose:$navVersion"
 
+    implementation group: 'com.ibm.icu', name: 'icu4j', version: '75.1'
 }
 afterEvaluate {
     publishing {
