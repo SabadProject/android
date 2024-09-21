@@ -1,6 +1,6 @@
 apply plugin: "com.android.application"
 apply plugin: "kotlin-android"
-apply plugin: "com.google.gms.google-services"
+//apply plugin: "com.google.gms.google-services"
 apply plugin: "maven-publish"
 apply plugin: "kotlin-kapt"
 apply plugin: "com.google.dagger.hilt.android"
@@ -48,7 +48,7 @@ android {
     defaultConfig {
         multiDexEnabled true
 
-        applicationId "farayan.sabad"
+        applicationId "market.sabad"
         minSdkVersion 24
         compileSdkVersion 34
         targetSdkVersion 34
