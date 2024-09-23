@@ -1,14 +1,20 @@
 package farayan.sabad.ui.composable
 
 import android.util.Log
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -20,14 +26,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import coil.compose.rememberAsyncImagePainter
 import com.ibm.icu.util.Calendar
 import farayan.sabad.R
 import farayan.sabad.core.commons.Money
+import farayan.sabad.core.commons.UnitVariations
 import farayan.sabad.core.commons.hasValue
 import farayan.sabad.core.commons.localize
 import farayan.sabad.utility.PERSIAN_LOCALE
+import farayan.sabad.utility.appFont
+import farayan.sabad.utility.isUsable
 import farayan.sabad.utility.standard
 import farayan.sabad.vm.InvoicesViewModel
 import java.math.BigDecimal
@@ -43,13 +54,20 @@ fun InvoicesInvoicesComposable(invoicesViewModel: InvoicesViewModel) {
     val units = invoicesViewModel.units.collectAsStateWithLifecycle(initialValue = listOf())
     val ctx = LocalContext.current
 
+    if (invoices.value.isEmpty()) {
+        Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center) {
+            Text(text = stringResource(R.string.invoices_empty_invoices_label), modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center, style = appTextStyle)
+        }
+    }
+
     LazyColumn(
         modifier = Modifier
-            .fillMaxWidth()
+            .fillMaxSize()
             .padding(4.dp)
     )
     {
         val horizontalSpacingModifier = Modifier.padding(0.dp, 0.dp, 4.dp, 0.dp)
+
         items(invoices.value) { invoice ->
             Column(
                 modifier = Modifier
@@ -58,16 +76,18 @@ fun InvoicesInvoicesComposable(invoicesViewModel: InvoicesViewModel) {
                     .padding(7.dp),
             ) {
                 Row(modifier = Modifier.horizontalScroll(rememberScrollState())) {
-                    Text(text = stringResource(id = R.string.invoices_invoice_shop_label), style = appTextStyle)
-                    Text(text = invoice.shop, style = boldTextStyle)
-                    Spacer(modifier = horizontalSpacingModifier)
+                    if(invoice.shop.isUsable) {
+                        Text(text = stringResource(id = R.string.invoices_invoice_shop_label), style = appTextStyle)
+                        Text(text = invoice.shop, style = boldTextStyle)
+                        Spacer(modifier = horizontalSpacingModifier)
+                    }
 
-                    Text(text = "در تاریخ: ", style = appTextStyle)
+                    Text(text = stringResource(R.string.invoices_invoiec_date_label), style = appTextStyle)
                     Text(text = Date(invoice.moment).standard(), style = boldTextStyle)
                     Spacer(modifier = horizontalSpacingModifier)
 
                     Money.of(invoice.payable, invoice.currency)?.let {
-                        Text(text = "به مبلغ: ", style = appTextStyle)
+                        Text(text = stringResource(R.string.invoices_invoice_amount_label), style = appTextStyle)
                         Text(text = Money.of(invoice.payable, invoice.currency)?.textual(ctx) ?: "", style = boldTextStyle)
                         Spacer(modifier = horizontalSpacingModifier)
                     }
@@ -80,14 +100,14 @@ fun InvoicesInvoicesComposable(invoicesViewModel: InvoicesViewModel) {
                         .height(1.dp)
                 )
                 items.value.filter { item -> item.invoiceId == invoice.id }.forEachIndexed() { index, item ->
+                    val category = categories.value.firstOrNull { c -> c.id == item.categoryId } ?: return@items
                     val product = products.value.firstOrNull { p -> p.id == item.productId } ?: return@items
                     val unit = item.unitId?.let { units.value.singleOrNull { u -> u.id == item.unitId } }
-                    if (item.unitId.hasValue && unit == null) {
-                        Log.i("debug-unit", "unit with id ${item.unitId} not found")
-                    }
+                    val quantity = BigDecimal(item.quantity)
                     Row(modifier = Modifier.horizontalScroll(rememberScrollState())) {
-                        val quantity = BigDecimal(item.quantity)
                         Text(text = "(${index + 1})", style = appTextStyle)
+                        Spacer(modifier = horizontalSpacingModifier)
+                        Text(text = category.displayableName + ":", style = boldTextStyle)
                         Spacer(modifier = horizontalSpacingModifier)
                         Text(text = product.displayableName, style = boldTextStyle)
                         Spacer(modifier = horizontalSpacingModifier)
@@ -96,6 +116,10 @@ fun InvoicesInvoicesComposable(invoicesViewModel: InvoicesViewModel) {
                         val unitName = unit?.displayableName ?: stringResource(id = R.string.invoices_invoice_unit_default)
                         Text(text = unitName, style = boldTextStyle)
                         Spacer(modifier = horizontalSpacingModifier)
+                        if (item.packageUnit.hasValue && item.packageWorth.hasValue) {
+                            Text(text = "(${item.packageWorth!!.localize()} ${stringResource(id = UnitVariations.valueOf(item.packageUnit!!).nameResId)})", style = appTextStyle)
+                            Spacer(modifier = horizontalSpacingModifier)
+                        }
                         val fee = Money.of(item.fee, item.currency)
                         if (fee.hasValue) {
                             if (quantity == BigDecimal.ONE) {
@@ -112,7 +136,14 @@ fun InvoicesInvoicesComposable(invoicesViewModel: InvoicesViewModel) {
                     }
                     LazyRow {
                         items(photos.value.filter { p -> p.productId == product.id }) { photo ->
-                            Text(text = photo.path)
+                            Image(
+                                painter = rememberAsyncImagePainter(photo.path),
+                                contentDescription = "",
+                                modifier = Modifier
+                                    .width(144.dp)
+                                    .height(144.dp)
+                                    .padding(4.dp)
+                            )
                         }
                     }
                 }

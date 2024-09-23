@@ -133,4 +133,7 @@
     <string name="invoices_invoice_unit_default">واحد</string>
     <string name="invoices_invoice_fee_label">هر %s: </string>
     <string name="invoices_invoice_total_label">"در مجموع: "</string>
+    <string name="invoices_empty_invoices_label">هیچ خریدی وجود ندارد</string>
+    <string name="invoices_invoiec_date_label">"در تاریخ: "</string>
+    <string name="invoices_invoice_amount_label">"به مبلغ: "</string>
 </resources>
