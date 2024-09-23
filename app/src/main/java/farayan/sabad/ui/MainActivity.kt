@@ -6,6 +6,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -79,7 +80,7 @@ class MainActivity : ComponentActivity() {
                     },
                 ) {
 
-                    NavHost(navController = navController, startDestination = "/home") {
+                    NavHost(navController = navController, startDestination = "/home", modifier = Modifier.fillMaxSize()) {
                         composable("/home") { CategoriesCategoriesComposable(categoriesViewModel, { homepageViewModel.changeActions(it) }, navController) }
                         composable("/orders") { InvoicesInvoicesComposable(invoicesViewModel) }
                     }
