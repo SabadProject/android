@@ -1,5 +1,6 @@
 package farayan.sabad.ui.components
 
+import android.util.Log
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.text.KeyboardOptions
@@ -36,8 +37,10 @@ fun UnitsDropdownMenuBox(
     readonly: Boolean = false
 ) {
     var expanded by remember { mutableStateOf(false) }
-    var text = TextFieldValue(selected?.displayableName ?: "")
+    var text by remember { mutableStateOf(TextFieldValue(selected?.displayableName ?: "")) }
     val editable = !readonly
+
+    Log.i("UnitsDropdownMenuBox", "out: ${text.text}")
 
     ExposedDropdownMenuBox(
         expanded = editable && expanded,
@@ -46,7 +49,7 @@ fun UnitsDropdownMenuBox(
     ) {
         OutlinedTextField(
             value = text,
-            onValueChange = { text = it; expanded = true },
+            onValueChange = { text = it; expanded = true;Log.i("UnitsDropdownMenuBox", "it: ${it.text}") },
             readOnly = readonly,
             singleLine = true,
             label = {
@@ -66,7 +69,7 @@ fun UnitsDropdownMenuBox(
             expanded = editable && expanded,
             onDismissRequest = { expanded = false },
         ) {
-            units.forEach { groupUnit ->
+            units.filter { text.text.isEmpty() || it.queryableName.contains(text.text) }.forEach { groupUnit ->
                 DropdownMenuItem(
                     onClick = {
                         text = TextFieldValue(
