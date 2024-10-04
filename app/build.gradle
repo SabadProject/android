@@ -111,10 +111,12 @@ android {
         GooglePlay {
             dimension "publisher"
             versionNameSuffix = "-GooglePlay"
+            applicationIdSuffix = ".gp"
         }
         CafeBazaar {
             dimension "publisher"
             versionNameSuffix = "-Cafebazaar"
+            applicationIdSuffix = ".cb"
         }
     }
     buildFeatures {

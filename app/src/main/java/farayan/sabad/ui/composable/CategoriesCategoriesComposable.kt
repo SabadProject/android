@@ -1,6 +1,7 @@
 package farayan.sabad.ui.composable
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -24,9 +25,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
 import farayan.sabad.commons.InvoiceSummary
 import farayan.sabad.commons.ItemRich
@@ -35,7 +36,6 @@ import farayan.sabad.core.commons.hasValue
 import farayan.sabad.utility.isUsable
 import farayan.sabad.vm.CategoriesViewModel
 import farayan.sabad.vm.TopAppBarIcon
-import kotlinx.coroutines.launch
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterialApi::class)
@@ -63,6 +63,8 @@ fun CategoriesCategoriesComposable(categoriesViewModel: CategoriesViewModel, onA
     val deleteCategoriesButton = TopAppBarIcon(Icons.Filled.Delete, "delete", { removingCategories = selectedCategories }, 0)
     val checkoutButton = TopAppBarIcon(Icons.Filled.ShoppingCart, "checkout", { checkingOut = true }, 0)
 
+    val ctx = LocalContext.current
+
     fun updateActionIcons() {
         val actionIcons = mutableListOf<TopAppBarIcon>()
         if (selectedCategories.size == 1) {
@@ -87,6 +89,11 @@ fun CategoriesCategoriesComposable(categoriesViewModel: CategoriesViewModel, onA
         updateActionIcons()
     }
 
+    fun clearSelection() {
+        selectedCategories = listOf()
+        updateActionIcons()
+    }
+
     Column(modifier = Modifier.padding(4.dp)) {
         Box(
             modifier = Modifier
@@ -101,14 +108,14 @@ fun CategoriesCategoriesComposable(categoriesViewModel: CategoriesViewModel, onA
                     CategoriesCategoryWithItemsComposable(
                         category,
                         items,
-                        { c, n -> categoriesViewModel.changeNeeded(c, n) },
+                        { c, n -> categoriesViewModel.changeNeeded(c, n, true) },
                         products,
                         units,
                         { removingItem = it },
                         selectedCategories.isNotEmpty(),
                         selectedCategories.contains(category),
-                        { /*categoriesViewModel.*/select(it); },
-                        { /*categoriesViewModel.*/unselect(it); },
+                        { select(it); },
+                        { unselect(it); },
                     )
                 }
             }
@@ -125,12 +132,12 @@ fun CategoriesCategoriesComposable(categoriesViewModel: CategoriesViewModel, onA
                 {
                     if (categoriesViewModel.editCategory(it, editingCategory!!)) {
                         editingCategory = null
-                        categoriesViewModel.clearSelection()
+                        clearSelection()
                     }
                 },
                 {
                     editingCategory = null;
-                    categoriesViewModel.clearSelection()
+                    clearSelection()
                 }
             )
         }
@@ -140,12 +147,12 @@ fun CategoriesCategoriesComposable(categoriesViewModel: CategoriesViewModel, onA
                 {
                     if (categoriesViewModel.deleteCategories(removingCategories)) {
                         removingCategories = listOf();
-                        categoriesViewModel.clearSelection()
+                        clearSelection()
                     }
                 },
                 {
                     removingCategories = listOf();
-                    categoriesViewModel.clearSelection()
+                    clearSelection()
                 }
             )
         }
@@ -165,11 +172,25 @@ fun CategoriesCategoriesComposable(categoriesViewModel: CategoriesViewModel, onA
         PurchaseSummaryComposable(invoiceSummary)
         CategoryQuickQueryComposable(
             addable = categoriesQuery.queryable.isUsable && categories.none { it.queryableName.contentEquals(categoriesQuery.queryable) },
+            needable = categoriesQuery.queryable.isUsable && categories.firstOrNull { it.queryableName.contentEquals(categoriesQuery.queryable) }?.needed == false,
+            pickable = categoriesQuery.queryable.isUsable && categories.firstOrNull { it.queryableName.contentEquals(categoriesQuery.queryable) }?.needed == true,
             value = categoriesQuery.original,
             onValueChanged = {
                 categoriesViewModel.filter(it)
             },
-            onAddClicked = { categoriesViewModel.addCategory() }
+            onAdd = { categoriesViewModel.addCategory() },
+            onNeed = {
+                if (categoriesQuery.queryable.isUsable) {
+                    categoriesViewModel.changeNeeded(categories.single { it.queryableName.contentEquals(categoriesQuery.queryable) }, needed = true, skipUpdate = false)
+                }
+            },
+            onPick = {
+                if (categoriesQuery.queryable.isUsable) {
+                    val category = categories.single { it.queryableName.contentEquals(categoriesQuery.queryable) }
+                    displayCategoryDialog(category, ctx as Activity)
+                }
+            }
         )
     }
 }
+

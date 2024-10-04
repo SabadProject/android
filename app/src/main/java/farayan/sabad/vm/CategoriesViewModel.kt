@@ -70,8 +70,10 @@ class CategoriesViewModel @Inject constructor(
 
     private var skipThisUpdate = false
 
-    fun changeNeeded(category: Category, needed: Boolean): Category {
-        skipThisUpdate = true
+    fun changeNeeded(category: Category, needed: Boolean, skipUpdate: Boolean): Category {
+        if (skipUpdate) {
+            skipThisUpdate = true
+        }
         return categoryRepo.changeNeeded(category, needed)
     }
 

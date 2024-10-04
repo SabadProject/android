@@ -43,7 +43,6 @@ fun CategoriesCategoryWithItemsComposable(
 ) {
     val categoryItems = tryCatch({ items.filter { it.categoryId == category.id } }, listOf())
     var needed by remember {
-        Log.i("flow","saving needed value for category: ${category.displayableName} = ${category.needed}, ${NumberFormat.getNumberInstance().format(category.updated)}")
         mutableStateOf(category.needed)
     }
     val picked = categoryItems.isNotEmpty()
