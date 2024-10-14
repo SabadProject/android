@@ -152,7 +152,7 @@ class CategoriesViewModel @Inject constructor(
     val invoiceSummary = categoryRepo
         .remainedCategoriesCountFlow
         .combine(categoryRepo.pickedCategoriesCountFlow) { r, p -> CategorySummaryReport(r, p) }
-        .combine(itemRepo.itemSummary) { categorySummaryReport, itemSummaryReport ->
+        .combine(itemRepo.itemSummaryFlow) { categorySummaryReport, itemSummaryReport ->
             InvoiceSummary(
                 categorySummaryReport.pickedCategoriesCount,
                 categorySummaryReport.remainedCategoriesCount,

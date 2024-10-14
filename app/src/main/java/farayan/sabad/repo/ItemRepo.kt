@@ -16,7 +16,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.shareIn
 import java.math.BigDecimal
 import farayan.sabad.db.Unit as PersistenceUnit
@@ -124,7 +124,16 @@ class ItemRepo(private val queries: ItemQueries) {
         return queries.byInvoice(invoice.id).executeAsList()
     }
 
-    val itemSummary: Flow<ItemSummaryReport?> = queries.itemSummaryReport().asFlow().mapToOneOrNull(Dispatchers.IO)
+    val itemSummaryFlow: Flow<ItemSummaryReport?> = queries
+        .itemSummaryReport()
+        .asFlow()
+        .catch { Log.i("itemSummary", "ERROR: ${it.message}") }
+        .mapToOneOrNull(Dispatchers.IO)
+        .catch { Log.i("itemSummary", "EXCEPTION: ${it.message}") }
+
+    fun itemSummaryItem(): ItemSummaryReport? = queries
+        .itemSummaryReport()
+        .executeAsOneOrNull()
 
     val allFlow: Flow<List<Item>> = queries.all().asFlow().mapToList(Dispatchers.IO)
 }

@@ -390,6 +390,12 @@ class InvoiceItemFormViewModel @Inject constructor(
             errorMessage.value = context.getString(R.string.item_form_persist_error)
             return false
         }
+        val itemSummaryCurrency = itemRepo.itemSummaryItem()?.currency
+        val formCurrency = formPriceCurrencyMutable.anyValue?.name
+        if(itemSummaryCurrency.hasValue && !itemSummaryCurrency.equals(formCurrency)){
+            errorMessage.value = context.getString(R.string.invoice_item_form_multiple_currency_error)
+            return false
+        }
         var product = product.anyValue
         if (product == null) {
             product = productRepo.ensure(

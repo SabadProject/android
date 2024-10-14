@@ -136,4 +136,5 @@
     <string name="invoices_empty_invoices_label">هیچ خریدی وجود ندارد</string>
     <string name="invoices_invoiec_date_label">"در تاریخ: "</string>
     <string name="invoices_invoice_amount_label">"به مبلغ: "</string>
+    <string name="invoice_item_form_multiple_currency_error">چندارزی ممکن نیست</string>
 </resources>
