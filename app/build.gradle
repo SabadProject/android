@@ -9,8 +9,9 @@ apply plugin: "com.google.firebase.crashlytics"
 
 sqldelight {
     databases {
-        create("SabadPersistence") {
+        register("SabadPersistence") {
             packageName.set("farayan.sabad.db")
+            //dialect.set("sqlite:3.25")
         }
     }
 }
@@ -124,8 +125,8 @@ android {
         compose true
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility 17
+        targetCompatibility 17
     }
 
     packagingOptions {
@@ -258,6 +259,9 @@ dependencies {
     implementation "androidx.navigation:navigation-compose:$navVersion"
 
     implementation group: 'com.ibm.icu', name: 'icu4j', version: '75.1'
+
+    implementation 'com.github.requery:sqlite-android:3.45.0'
+
 }
 afterEvaluate {
     publishing {
