@@ -1,6 +1,7 @@
 package farayan.sabad.di
 
 import android.util.Log
+import app.cash.sqldelight.db.SqlDriver
 import app.cash.sqldelight.driver.android.AndroidSqliteDriver
 import app.cash.sqldelight.logs.LogSqliteDriver
 import farayan.sabad.SabadTheApp
@@ -15,15 +16,25 @@ import farayan.sabad.repo.ProductRepo
 import farayan.sabad.repo.UnitRepo
 import farayan.sabad.utility.displayable
 import farayan.sabad.utility.queryable
+import net.zetetic.database.sqlcipher.SupportOpenHelperFactory
+
 
 object SabadDeps {
     private lateinit var db: SabadPersistence
 
     private fun persistence(): SabadPersistence {
         if (!this::db.isInitialized) {
-            val driver = AndroidSqliteDriver(YourDatabase.Schema, context, "sabad.sqdb")
+            System.loadLibrary("sqlcipher")
+            val driver: SqlDriver = LogSqliteDriver(
+                AndroidSqliteDriver(
+                    SabadPersistence.Schema,
+                    SabadTheApp.context(),
+                    "sabad.sqdb",
+                    SupportOpenHelperFactory("P".toByteArray())
+                )
+            ) { Log.i("SQLDelight", it) }
             db = SabadPersistence(driver)
-            ensureCategories(db)
+            //ensureCategories(db)
         }
         return db
     }

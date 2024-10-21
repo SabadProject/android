@@ -54,23 +54,6 @@ public class FarayanBaseApp extends Application {
 		return defaultFont;
 	}
 
-	protected String GoogleAnalyticsTrackerID() {
-		return "";
-	}
-
-	// TODO: 30/12/2017 uncomment for google analytics
-	/*static Tracker tracker = null;*/
-	/*public Tracker GoogleAnalyticsTracker() {
-		if (tracker == null && FarayanUtility.IsUsable(GoogleAnalyticsTrackerID())) {
-			tracker = GoogleAnalytics.getInstance(getContext()).newTracker(GoogleAnalyticsTrackerID());
-			tracker.enableAdvertisingIdCollection(true);
-			tracker.enableExceptionReporting(true);
-			tracker.enableAutoActivityTracking(true);
-		}
-
-		return tracker;
-	}*/
-
 	private static FarayanBaseApp m_instance;
 
 	public static FarayanBaseApp Instance() {

@@ -1,15 +1,16 @@
-package farayan.sabad;
+package farayan.sabad
 
-import com.j256.ormlite.android.apptools.OpenHelperManager;
+import android.content.Context
+import farayan.commons.FarayanBaseApp
 
-import farayan.commons.FarayanBaseApp;
-import io.github.inflationx.calligraphy3.CalligraphyConfig;
-import io.github.inflationx.calligraphy3.CalligraphyInterceptor;
-import io.github.inflationx.viewpump.ViewPump;
+abstract class SabadTheApp : FarayanBaseApp() {
+    override fun onCreate() {
+        ctx = this
+        super.onCreate()
+    }
 
-public abstract class SabadTheApp extends FarayanBaseApp {
-    @Override
-    public void onCreate() {
-        super.onCreate();
+    companion object {
+        private lateinit var ctx: Context
+        fun context() = ctx
     }
 }

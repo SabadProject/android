@@ -260,8 +260,10 @@ dependencies {
 
     implementation group: 'com.ibm.icu', name: 'icu4j', version: '75.1'
 
-    implementation 'com.github.requery:sqlite-android:3.45.0'
-    implementation "net.zetetic:android-database-sqlcipher:4.5.0"
+    //implementation 'com.github.requery:sqlite-android:3.45.0'
+    implementation 'net.zetetic:sqlcipher-android:4.6.1@aar'
+    //implementation "net.zetetic:android-database-sqlcipher:4.5.0" // SQLCipher dependency
+    implementation 'androidx.sqlite:sqlite-ktx:2.4.0'
 }
 afterEvaluate {
     publishing {
