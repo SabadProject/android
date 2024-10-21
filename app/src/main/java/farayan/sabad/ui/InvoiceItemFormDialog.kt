@@ -73,10 +73,12 @@ import com.journeyapps.barcodescanner.DefaultDecoderFactory
 import farayan.commons.FarayanUtility
 import farayan.sabad.R
 import farayan.sabad.SabadConstants
+import farayan.sabad.commons.CameraUsage
 import farayan.sabad.commons.anyValue
 import farayan.sabad.commons.hasFixedValue
 import farayan.sabad.core.commons.UnitVariations
 import farayan.sabad.core.commons.displayable
+import farayan.sabad.core.commons.hasValue
 import farayan.sabad.ui.components.CameraCapture
 import farayan.sabad.ui.components.CurrenciesDropdownMenuBox
 import farayan.sabad.ui.components.GroupInvoiceItemForm
@@ -89,7 +91,6 @@ import farayan.sabad.ui.composable.InvoiceItemProduct
 import farayan.sabad.utility.appFont
 import farayan.sabad.utility.defaults
 import farayan.sabad.utility.errorBorder
-import farayan.sabad.core.commons.hasValue
 import farayan.sabad.utility.isUsable
 import farayan.sabad.utility.referencePrice
 import farayan.sabad.vm.InvoiceItemFormViewModel
@@ -472,8 +473,3 @@ class InvoiceItemFormDialog(
     }
 }
 
-enum class CameraUsage {
-    None,
-    Barcode,
-    Photo
-}

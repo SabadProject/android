@@ -50,6 +50,7 @@ fun CameraPreview(
     onUseCase: (UseCase) -> Unit = { }
 ) {
     AndroidView(
+        
         modifier = modifier,
         factory = { context ->
             val previewView = PreviewView(context).apply {
@@ -66,92 +67,3 @@ fun CameraPreview(
     )
 }
 
-suspend fun Context.getCameraProvider(): ProcessCameraProvider = suspendCoroutine { continuation ->
-    getInstance(this).also { future ->
-        future.addListener({
-            continuation.resume(future.get())
-        }, executor)
-    }
-}
-
-val Context.executor: Executor
-    get() = ContextCompat.getMainExecutor(this)
-
-@Composable
-fun CameraCapture(
-    modifier: Modifier = Modifier,
-    cameraSelector: CameraSelector = CameraSelector.DEFAULT_BACK_CAMERA,
-    onImageFile: (File) -> Unit = { }
-) {
-    Box(modifier = modifier) {
-        val context = LocalContext.current
-        val lifecycleOwner = LocalLifecycleOwner.current
-        var previewUseCase by remember { mutableStateOf<UseCase>(Preview.Builder().build()) }
-        val imageCaptureUseCase by remember {
-            mutableStateOf(
-                ImageCapture.Builder()
-                    .setCaptureMode(CAPTURE_MODE_MAXIMIZE_QUALITY)
-                    .build()
-            )
-        }
-        val coroutineScope = rememberCoroutineScope()
-
-        CameraPreview(
-            modifier = Modifier.fillMaxWidth(),
-            scaleType = PreviewView.ScaleType.FIT_CENTER,
-            onUseCase = {
-                previewUseCase = it
-            }
-        )
-        Button(
-            modifier = Modifier
-                .wrapContentSize()
-                .padding(16.dp)
-                .align(Alignment.BottomCenter),
-            onClick = {
-                coroutineScope.launch {
-                    onImageFile(imageCaptureUseCase.takePicture(context.executor))
-                }
-            }
-        ) {
-            Icon(imageVector = Icons.Filled.AddCircle, contentDescription = "", tint = Color.White)
-        }
-        LaunchedEffect(previewUseCase) {
-            val cameraProvider = context.getCameraProvider()
-            try {
-                // Must unbind the use-cases before rebinding them.
-                cameraProvider.unbindAll()
-                cameraProvider.bindToLifecycle(
-                    lifecycleOwner, cameraSelector, previewUseCase, imageCaptureUseCase
-                )
-            } catch (ex: Exception) {
-                Log.e("CameraCapture", "Failed to bind camera use cases", ex)
-            }
-        }
-    }
-}
-
-suspend fun ImageCapture.takePicture(executor: Executor): File {
-    val photoFile = withContext(Dispatchers.IO) {
-        kotlin.runCatching {
-            File.createTempFile("image", ".jpg")
-        }.getOrElse { ex ->
-            Log.e("TakePicture", "Failed to create temporary file", ex)
-            File("/dev/null")
-        }
-    }
-
-    return suspendCoroutine { continuation ->
-        val outputOptions = ImageCapture.OutputFileOptions.Builder(photoFile).build()
-        takePicture(outputOptions, executor, object : ImageCapture.OnImageSavedCallback {
-            override fun onImageSaved(output: ImageCapture.OutputFileResults) {
-                continuation.resume(photoFile)
-            }
-
-            override fun onError(ex: ImageCaptureException) {
-                Log.e("TakePicture", "Image capture failed", ex)
-                continuation.resumeWithException(ex)
-            }
-        })
-    }
-}
