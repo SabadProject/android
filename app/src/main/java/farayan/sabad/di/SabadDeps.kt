@@ -21,7 +21,8 @@ object SabadDeps {
 
     private fun persistence(): SabadPersistence {
         if (!this::db.isInitialized) {
-            db = SabadPersistence(LogSqliteDriver(AndroidSqliteDriver(SabadPersistence.Schema, SabadTheApp.getContext(), "sabad.sqdb")) { Log.i("SQLDelight", it) })
+            val driver = AndroidSqliteDriver(YourDatabase.Schema, context, "sabad.sqdb")
+            db = SabadPersistence(driver)
             ensureCategories(db)
         }
         return db
